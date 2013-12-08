@@ -1,5 +1,3 @@
-#include <string>
-
 #include "formula.hpp"
 #include "language.hpp"
 
@@ -43,53 +41,92 @@ Operator::Operator(char symbol) : Formula(symbol)
 {
 }
 
-std::string Operator::printInPrefix() const
+// UnaryOperator
+
+UnaryOperator::UnaryOperator(char symbol) : Operator(symbol)
+{
+}
+
+std::string UnaryOperator::printInPrefix() const
 {
     std::string output;
-    output += this->character;
-    for (Formula * operand : operands)
-    {
-        output += operand->printInPrefix();
-    }
+    output += this->character + operand->printInPrefix();
     return output;
 }
 
-std::string Operator::printInInfix() const
+std::string UnaryOperator::printInInfix() const
+{
+    return printInPrefix();
+}
+
+std::string UnaryOperator::printInPostfix() const
 {
     std::string output;
-    output += '(';
-    for (Formula * operand : operands)
-    {
-        output += operand->printInInfix();
-        output += this->character;
-    }
-    output.pop_back();
-    output += ')';
+    output += operand->printInPostfix() + this->character;
     return output;
 }
 
-std::string Operator::printInPostfix() const
+int UnaryOperator::addOperandFromLeft(Formula * operand)
+{
+    this->operand = operand;
+    return 0;
+}
+
+int UnaryOperator::addOperandFromRight(Formula * operand)
+{
+    return addOperandFromLeft(operand);
+}
+
+// BinaryOperator
+
+BinaryOperator::BinaryOperator(char symbol) : Operator(symbol)
+{
+}
+
+std::string BinaryOperator::printInPrefix() const
 {
     std::string output;
-    for (Formula * operand : operands)
-    {
-        output += operand->printInPostfix();
-    }
-    output += this->character;
+    output += this->character + leftOperand->printInPrefix() + leftOperand->printInPrefix();
     return output;
 }
 
-int Operator::addOperandFromLeft(Formula * operand)
+std::string BinaryOperator::printInInfix() const
 {
-    this->operands.push_back(operand);
-    return language.at(character).operands - operands.size();
+    std::string output;
+    output += '(' + leftOperand->printInInfix() + this->character + rightOperand->printInInfix() + ')';
+    return output;
 }
 
-int Operator::addOperandFromRight(Formula * operand)
+std::string BinaryOperator::printInPostfix() const
 {
-    this->operands.insert(operands.begin(), operand);
-    return language.at(character).operands - operands.size();
+    std::string output;
+    output += leftOperand->printInPostfix() + rightOperand->printInPostfix() + this->character;
+    return output;
 }
 
+int BinaryOperator::addOperandFromLeft(Formula * operand)
+{
+    if (leftOperand == NULL)
+    {
+        leftOperand = operand;
+        return 1;
+    } else
+    {
+        rightOperand = operand;
+        return 0;
+    }
+}
 
+int BinaryOperator::addOperandFromRight(Formula * operand)
+{
+    if (rightOperand == NULL)
+    {
+        rightOperand = operand;
+        return 1;
+    } else
+    {
+        leftOperand = operand;
+        return 0;
+    }
+}
 

@@ -2,7 +2,6 @@
 #define	FORMULA_HPP
 
 #include <string>
-#include <vector>
 
 class Formula
 {
@@ -26,15 +25,40 @@ public:
 
 class Operator : public Formula
 {
-protected:
-    std::vector<Formula *> operands;
 public:
     Operator(char);
+    virtual std::string printInPrefix() const = 0;
+    virtual std::string printInInfix() const = 0;
+    virtual std::string printInPostfix() const = 0;
+    virtual int addOperandFromLeft(Formula *) = 0;
+    virtual int addOperandFromRight(Formula *) = 0;
+};
+
+class UnaryOperator : public Operator
+{
+private:
+    Formula * operand = NULL;
+public:
+    UnaryOperator(char);
     virtual std::string printInPrefix() const;
     virtual std::string printInInfix() const;
     virtual std::string printInPostfix() const;
-    int addOperandFromLeft(Formula *);
-    int addOperandFromRight(Formula *);
+    virtual int addOperandFromLeft(Formula *);
+    virtual int addOperandFromRight(Formula *);
+};
+
+class BinaryOperator : public Operator
+{
+private:
+    Formula * leftOperand = NULL;
+    Formula * rightOperand = NULL;
+public:
+    BinaryOperator(char);
+    virtual std::string printInPrefix() const;
+    virtual std::string printInInfix() const;
+    virtual std::string printInPostfix() const;
+    virtual int addOperandFromLeft(Formula *);
+    virtual int addOperandFromRight(Formula *);
 };
 
 #endif	/* FORMULA_HPP */

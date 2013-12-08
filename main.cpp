@@ -10,7 +10,7 @@ int main(int argc, char** argv)
 
     std::getline(std::cin, input);
 
-    std::cout << parser.parseInPrefix(input)->printInInfix() << std::endl;
+    std::cout << parser.parseInInfix(input)->printInInfix() << std::endl;
 
     return 0;
 }
