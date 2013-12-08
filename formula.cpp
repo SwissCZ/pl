@@ -54,7 +54,7 @@ int UnaryOperator::addOperand(Node * operand) {
     return --operandsLeft;
 }
 
-BinaryOperator::BinaryOperator(Connective connectvie) : Operator(connective, 2) {
+BinaryOperator::BinaryOperator(Connective connective) : Operator(connective, 2) {
 }
 
 std::string BinaryOperator::print(Notation notation) const {

@@ -13,11 +13,11 @@
 #define IMPLICATION_WORD "implies"
 #define EQUIVALENCE_WORD "iff"
 
-#define NEGATION_TEX "neg"
-#define CONJUNCTION_TEX "wedge"
-#define DISJUNCTION_TEX "vee"
-#define IMPLICATION_TEX "rigtharrow"
-#define EQUIVALENCE_TEX "leftrightarrow"
+#define NEGATION_TEX "\\neg"
+#define CONJUNCTION_TEX "\\wedge"
+#define DISJUNCTION_TEX "\\vee"
+#define IMPLICATION_TEX "\\rigtharrow"
+#define EQUIVALENCE_TEX "\\leftrightarrow"
 
 #endif	/* LANGUAGE_HPP */
 
