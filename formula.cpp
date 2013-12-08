@@ -1,94 +1,95 @@
-#include <cstdio>
-#include <ctype.h>
-#include <stack>
-#include <iostream>
+#include <string>
 
 #include "formula.hpp"
+#include "language.hpp"
 
-using namespace std;
+// Formula
 
-Preposition::Preposition(char name) {
-    this->name = name;
+Formula::Formula(char character)
+{
+    this->character = character;
 }
 
-std::string Preposition::print(Notation notation) const {
-    std::string retval;
-    retval = name;
-    return retval;
+// Preposition
+
+Preposition::Preposition(char name) : Formula(name)
+{
 }
 
-Operator::Operator(Connective connective, int operandsLeft) {
-    cout << (char)connective << endl;
-    this->connective = connective;
-    this->operandsLeft = operandsLeft;
+std::string Preposition::printInPrefix() const
+{
+    std::string output;
+    output += character;
+    return output;
 }
 
-UnaryOperator::UnaryOperator(Connective connective) : Operator(connective, 1) {
+std::string Preposition::printInInfix() const
+{
+    std::string output;
+    output += character;
+    return output;
 }
 
-std::string UnaryOperator::print(Notation notation) const {
-    std::string retval;
-    switch (notation) {
-        case PREFIX:
-            retval += this->connective;
-            retval += this->operand->print(notation);
-            break;
-        case INFIX:
-            retval += this->connective;
-            retval += this->operand->print(notation);
-            break;
-        case POSTFIX:
-            retval += this->operand->print(notation);
-            retval += this->connective;
-            break;
+std::string Preposition::printInPostfix() const
+{
+    std::string output;
+    output += character;
+    return output;
+}
+
+// Operator
+
+Operator::Operator(char symbol) : Formula(symbol)
+{
+}
+
+std::string Operator::printInPrefix() const
+{
+    std::string output;
+    output += this->character;
+    for (Formula * operand : operands)
+    {
+        output += operand->printInPrefix();
     }
-    return retval;
+    return output;
 }
 
-int UnaryOperator::addOperand(Node * operand) {
-    if (this->operand == NULL) {
-        this->operand = operand;
-    } else {
-        // syntax error
+std::string Operator::printInInfix() const
+{
+    std::string output;
+    output += '(';
+    for (Formula * operand : operands)
+    {
+        output += operand->printInInfix();
+        output += this->character;
     }
-    return --operandsLeft;
+    output.pop_back();
+    output += ')';
+    return output;
 }
 
-BinaryOperator::BinaryOperator(Connective connective) : Operator(connective, 2) {
-}
-
-std::string BinaryOperator::print(Notation notation) const {
-    std::string retval;
-    switch (notation) {
-        case PREFIX:
-            retval += this->connective;
-            retval += this->operand1->print(notation);
-            retval += this->operand2->print(notation);
-            break;
-        case INFIX:
-            retval += '(';
-            retval += this->operand1->print(notation);
-            retval += this->connective;
-            retval += this->operand2->print(notation);
-            retval += ')';
-            break;
-        case POSTFIX:
-            retval += this->operand1->print(notation);
-            retval += this->operand2->print(notation);
-            retval += this->connective;
-            break;
+std::string Operator::printInPostfix() const
+{
+    std::string output;
+    for (Formula * operand : operands)
+    {
+        output += operand->printInPostfix();
     }
-    return retval;
+    output += this->character;
+    return output;
 }
 
-int BinaryOperator::addOperand(Node * operand) {
-    if (this->operand1 == NULL) {
-        this->operand1 = operand;
-    } else if (this->operand2 == NULL) {
-        this->operand2 = operand;
-    } else {
-        // syntax error
-    }
-    return --operandsLeft;
+int Operator::addOperandFromLeft(Formula * operand)
+{
+    this->operands.push_back(operand);
+    return language.at(character).operands - operands.size();
 }
+
+int Operator::addOperandFromRight(Formula * operand)
+{
+    this->operands.insert(operands.begin(), operand);
+    return language.at(character).operands - operands.size();
+}
+
+
 

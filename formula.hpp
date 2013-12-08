@@ -2,49 +2,39 @@
 #define	FORMULA_HPP
 
 #include <string>
+#include <vector>
 
-#include "connective.hpp"
-#include "notation.hpp"
-
-class Node {
+class Formula
+{
+protected:
+    char character;
 public:
-    virtual std::string print(Notation) const = 0;
+    Formula(char);
+    virtual std::string printInPrefix() const = 0;
+    virtual std::string printInInfix() const = 0;
+    virtual std::string printInPostfix() const = 0;
 };
 
-class Preposition : public Node {
-private:
-    char name;
+class Preposition : public Formula
+{
 public:
     Preposition(char);
-    virtual std::string print(Notation) const;
+    virtual std::string printInPrefix() const;
+    virtual std::string printInInfix() const;
+    virtual std::string printInPostfix() const;
 };
 
-class Operator : public Node {
+class Operator : public Formula
+{
 protected:
-    Connective connective;
-    int operandsLeft;
+    std::vector<Formula *> operands;
 public:
-    Operator(Connective, int);
-    virtual int addOperand(Node *) = 0;
-};
-
-class UnaryOperator : public Operator {
-private:
-    Node * operand = NULL;
-public:
-    UnaryOperator(Connective);
-    virtual std::string print(Notation) const;
-    virtual int addOperand(Node *);
-};
-
-class BinaryOperator : public Operator {
-private:
-    Node * operand1 = NULL;
-    Node * operand2 = NULL;
-public:
-    BinaryOperator(Connective);
-    virtual std::string print(Notation) const;
-    virtual int addOperand(Node *);
+    Operator(char);
+    virtual std::string printInPrefix() const;
+    virtual std::string printInInfix() const;
+    virtual std::string printInPostfix() const;
+    int addOperandFromLeft(Formula *);
+    int addOperandFromRight(Formula *);
 };
 
 #endif	/* FORMULA_HPP */

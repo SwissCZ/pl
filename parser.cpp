@@ -1,69 +1,100 @@
 #include <cstdio>
 #include <sstream>
 #include <stack>
-#include <iostream>
 
-#include "connective.hpp"
 #include "formula.hpp"
 #include "language.hpp"
 #include "parser.hpp"
 
-Node * Parser::parse(std::string input, Notation notation) const
+Formula * Parser::parseInPrefix(std::string input) const
 {
     std::stringstream stream;
+    std::stack<Formula *> stack;
     char buffer;
-
-    // postfix
-    std::stack<Node *> stack;
-
-    // prefix
-    Operator * temp;
+    Operator * output;
 
     stream << input;
 
-    switch (notation)
+    while ((buffer = stream.get()) != EOF)
     {
-        case PREFIX:
-            while ((buffer = stream.get()) != EOF)
+        if (buffer == NEGATION_CHAR || buffer == CONJUNCTION_CHAR || buffer == DISJUNCTION_CHAR || buffer == IMPLICATION_CHAR || buffer == EQUIVALENCE_CHAR)
+        {
+            stack.push(new Operator(buffer));
+        } else if ('A' <= buffer && buffer <= 'Z')
+        {
+            if (((Operator *) stack.top())->addOperandFromLeft(new Preposition(buffer)) == 0)
             {
-                switch (buffer)
+                do
                 {
-                    case NEGATION_CHAR:
-                        stack.push(new UnaryOperator(NEGATION));
-                        break;
-                    case CONJUNCTION_CHAR:
-                        std::cout << (char) CONJUNCTION <<std::endl;
-                        stack.push(new BinaryOperator(CONJUNCTION));
-                        break;
-                    case DISJUNCTION_CHAR:
-                        stack.push(new BinaryOperator(DISJUNCTION));
-                        break;
-                    case IMPLICATION_CHAR:
-                        stack.push(new BinaryOperator(IMPLICATION));
-                        break;
-                    case EQUIVALENCE_CHAR:
-                        stack.push(new BinaryOperator(EQUIVALENCE));
-                        break;
-                    default:
-                        if ('A' <= buffer && buffer <= 'Z')
-                        {
-                            if (((Operator *) stack.top())->addOperand(new Preposition(buffer)) == 0)
-                            {
-                                do
-                                {
-                                    temp = (Operator *) stack.top();
-                                    stack.pop();
-                                } while (!stack.empty() && ((Operator *) stack.top())->addOperand(temp) == 0);
-                            }
-                        }
-                        break;
-                }
+                    output = (Operator *) stack.top();
+                    stack.pop();
+                } while (!stack.empty() && ((Operator *) stack.top())->addOperandFromLeft(output) == 0);
             }
-            break;
-        case INFIX:
-            break;
-        case POSTFIX:
-            break;
+        }
     }
-    return temp;
+    return output;
 }
+
+Formula * Parser::parseInInfix(std::string input) const
+{
+    std::stringstream stream;
+    std::stack<Formula *> stack;
+    std::stack<Operator *> operatorStack;
+    int brackets = 0;
+    char buffer;
+    Operator * output;
+    Formula * tempOperand;
+
+    stream << input;
+
+    while ((buffer = stream.get()) != EOF)
+    {
+        if (buffer == NEGATION_CHAR || buffer == CONJUNCTION_CHAR || buffer == DISJUNCTION_CHAR || buffer == IMPLICATION_CHAR || buffer == EQUIVALENCE_CHAR)
+        {
+            operatorStack.push(new Operator(buffer));
+        } else if ('A' <= buffer && buffer <= 'Z')
+        {
+            stack.push(new Preposition(buffer));
+        } else if (buffer == ')')
+        {
+            do
+            {
+                tempOperand = stack.top();
+                stack.pop();
+            } while (operatorStack.top()->addOperandFromRight(tempOperand) > 0);
+            stack.push(operatorStack.top());
+            operatorStack.pop();
+        }
+    }
+    return stack.top();
+}
+
+Formula * Parser::parseInPostfix(std::string input) const
+{
+    std::stringstream stream;
+    std::stack<Formula *> stack;
+    char buffer;
+    Operator * output;
+    Formula * temp;
+
+    stream << input;
+
+    while ((buffer = stream.get()) != EOF)
+    {
+        if (buffer == NEGATION_CHAR || buffer == CONJUNCTION_CHAR || buffer == DISJUNCTION_CHAR || buffer == IMPLICATION_CHAR || buffer == EQUIVALENCE_CHAR)
+        {
+            output = new Operator(buffer);
+            do
+            {
+                temp = stack.top();
+                stack.pop();
+            } while (output->addOperandFromRight(temp) > 0);
+            stack.push(output);
+        } else if ('A' <= buffer && buffer <= 'Z')
+        {
+            stack.push(new Preposition(buffer));
+        }
+    }
+    return output;
+}
+

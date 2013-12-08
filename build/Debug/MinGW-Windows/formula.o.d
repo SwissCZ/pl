@@ -1,10 +1,5 @@
-build/Debug/MinGW-Windows/formula.o: formula.cpp formula.hpp \
- connective.hpp language.hpp notation.hpp
+build/Debug/MinGW-Windows/formula.o: formula.cpp formula.hpp language.hpp
 
 formula.hpp:
 
-connective.hpp:
-
 language.hpp:
-
-notation.hpp:

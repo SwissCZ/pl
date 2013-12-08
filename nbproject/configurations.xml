@@ -4,10 +4,8 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>connective.hpp</itemPath>
       <itemPath>formula.hpp</itemPath>
       <itemPath>language.hpp</itemPath>
-      <itemPath>notation.hpp</itemPath>
       <itemPath>parser.hpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -43,11 +41,9 @@
       </toolsSet>
       <compileType>
         <ccTool>
-          <commandLine>-Wall -pedantic</commandLine>
+          <commandLine>-Wall -pedantic -std=c++11</commandLine>
         </ccTool>
       </compileType>
-      <item path="connective.hpp" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="formula.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="formula.hpp" ex="false" tool="3" flavor2="0">
@@ -55,8 +51,6 @@
       <item path="language.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="notation.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="parser.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -83,8 +77,6 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="connective.hpp" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="formula.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="formula.hpp" ex="false" tool="3" flavor2="0">
@@ -92,8 +84,6 @@
       <item path="language.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="notation.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="parser.cpp" ex="false" tool="1" flavor2="0">
       </item>
