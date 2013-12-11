@@ -14,9 +14,9 @@ private:
     std::stack<Formula *> stack;
     char buffer;
 public:
-    Formula * parseInPrefix(std::string);
-    Formula * parseInInfix(std::string);
-    Formula * parseInPostfix(std::string);
+    Formula * parsePrefix(std::string);
+    Formula * parseInfix(std::string);
+    Formula * parsePostfix(std::string);
 };
 
 #endif	/* PARSER_HPP */

@@ -14,21 +14,21 @@ Preposition::Preposition(char name) : Formula(name)
 {
 }
 
-std::string Preposition::printInPrefix() const
+std::string Preposition::printPrefix() const
 {
     std::string output;
     output += character;
     return output;
 }
 
-std::string Preposition::printInInfix() const
+std::string Preposition::printInfix() const
 {
     std::string output;
     output += character;
     return output;
 }
 
-std::string Preposition::printInPostfix() const
+std::string Preposition::printPostfix() const
 {
     std::string output;
     output += character;
@@ -47,22 +47,24 @@ UnaryOperator::UnaryOperator(char symbol) : Operator(symbol)
 {
 }
 
-std::string UnaryOperator::printInPrefix() const
+std::string UnaryOperator::printPrefix() const
 {
     std::string output;
-    output += this->character + operand->printInPrefix();
+    output += this->character + operand->printPrefix();
     return output;
 }
 
-std::string UnaryOperator::printInInfix() const
-{
-    return printInPrefix();
-}
-
-std::string UnaryOperator::printInPostfix() const
+std::string UnaryOperator::printInfix() const
 {
     std::string output;
-    output += operand->printInPostfix() + this->character;
+    output += '(' + std::string(1, this->character) + operand->printInfix() + ')';
+    return output;
+}
+
+std::string UnaryOperator::printPostfix() const
+{
+    std::string output;
+    output += operand->printPostfix() + this->character;
     return output;
 }
 
@@ -83,24 +85,24 @@ BinaryOperator::BinaryOperator(char symbol) : Operator(symbol)
 {
 }
 
-std::string BinaryOperator::printInPrefix() const
+std::string BinaryOperator::printPrefix() const
 {
     std::string output;
-    output += this->character + leftOperand->printInPrefix() + leftOperand->printInPrefix();
+    output += this->character + leftOperand->printPrefix() + rightOperand->printPrefix();
     return output;
 }
 
-std::string BinaryOperator::printInInfix() const
+std::string BinaryOperator::printInfix() const
 {
     std::string output;
-    output += '(' + leftOperand->printInInfix() + this->character + rightOperand->printInInfix() + ')';
+    output += '(' + leftOperand->printInfix() + this->character + rightOperand->printInfix() + ')';
     return output;
 }
 
-std::string BinaryOperator::printInPostfix() const
+std::string BinaryOperator::printPostfix() const
 {
     std::string output;
-    output += leftOperand->printInPostfix() + rightOperand->printInPostfix() + this->character;
+    output += leftOperand->printPostfix() + rightOperand->printPostfix() + this->character;
     return output;
 }
 

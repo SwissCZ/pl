@@ -9,27 +9,27 @@ protected:
     char character;
 public:
     Formula(char);
-    virtual std::string printInPrefix() const = 0;
-    virtual std::string printInInfix() const = 0;
-    virtual std::string printInPostfix() const = 0;
+    virtual std::string printPrefix() const = 0;
+    virtual std::string printInfix() const = 0;
+    virtual std::string printPostfix() const = 0;
 };
 
 class Preposition : public Formula
 {
 public:
     Preposition(char);
-    virtual std::string printInPrefix() const;
-    virtual std::string printInInfix() const;
-    virtual std::string printInPostfix() const;
+    virtual std::string printPrefix() const;
+    virtual std::string printInfix() const;
+    virtual std::string printPostfix() const;
 };
 
 class Operator : public Formula
 {
 public:
     Operator(char);
-    virtual std::string printInPrefix() const = 0;
-    virtual std::string printInInfix() const = 0;
-    virtual std::string printInPostfix() const = 0;
+    virtual std::string printPrefix() const = 0;
+    virtual std::string printInfix() const = 0;
+    virtual std::string printPostfix() const = 0;
     virtual int addOperandFromLeft(Formula *) = 0;
     virtual int addOperandFromRight(Formula *) = 0;
 };
@@ -40,9 +40,9 @@ private:
     Formula * operand = NULL;
 public:
     UnaryOperator(char);
-    virtual std::string printInPrefix() const;
-    virtual std::string printInInfix() const;
-    virtual std::string printInPostfix() const;
+    virtual std::string printPrefix() const;
+    virtual std::string printInfix() const;
+    virtual std::string printPostfix() const;
     virtual int addOperandFromLeft(Formula *);
     virtual int addOperandFromRight(Formula *);
 };
@@ -54,9 +54,9 @@ private:
     Formula * rightOperand = NULL;
 public:
     BinaryOperator(char);
-    virtual std::string printInPrefix() const;
-    virtual std::string printInInfix() const;
-    virtual std::string printInPostfix() const;
+    virtual std::string printPrefix() const;
+    virtual std::string printInfix() const;
+    virtual std::string printPostfix() const;
     virtual int addOperandFromLeft(Formula *);
     virtual int addOperandFromRight(Formula *);
 };

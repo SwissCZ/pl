@@ -3,7 +3,7 @@
 #include "language.hpp"
 #include "parser.hpp"
 
-Formula * Parser::parseInPrefix(std::string input)
+Formula * Parser::parsePrefix(std::string input)
 {
     Operator * output;
 
@@ -40,7 +40,7 @@ Formula * Parser::parseInPrefix(std::string input)
     return output;
 }
 
-Formula * Parser::parseInInfix(std::string input)
+Formula * Parser::parseInfix(std::string input)
 {
     std::stack<Operator *> operatorStack;
     Formula * temp;
@@ -80,7 +80,7 @@ Formula * Parser::parseInInfix(std::string input)
     return stack.top();
 }
 
-Formula * Parser::parseInPostfix(std::string input)
+Formula * Parser::parsePostfix(std::string input)
 {
     Operator * output;
 

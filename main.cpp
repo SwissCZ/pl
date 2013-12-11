@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <iostream>
 
 #include "formula.hpp"
@@ -5,12 +6,50 @@
 
 int main(int argc, char** argv)
 {
-    std::string input;
     Parser parser;
+    Formula * formula;
 
-    std::getline(std::cin, input);
+    const char * errorMessage = "Program syntax: <input format ... {0, 1, 2}> <output format ... {0, 1, 2}> <formula>";
 
-    std::cout << parser.parseInInfix(input)->printInInfix() << std::endl;
+    if (argc != 4)
+    {
+        std::cerr << errorMessage << std::endl;
+        return 1;
+    }
+
+    switch (atoi(argv[1]))
+    {
+        case 0:
+            formula = parser.parsePrefix(std::string(argv[3]));
+            break;
+        case 1:
+            formula = parser.parseInfix(std::string(argv[3]));
+            break;
+        case 2:
+            formula = parser.parsePostfix(std::string(argv[3]));
+            break;
+        default:
+            std::cerr << errorMessage << std::endl;
+            return 1;
+            break;
+    }
+
+    switch (atoi(argv[2]))
+    {
+        case 0:
+            std::cout << formula->printPrefix() << std::endl;
+            break;
+        case 1:
+            std::cout << formula->printInfix() << std::endl;
+            break;
+        case 2:
+            std::cout << formula->printPostfix() << std::endl;
+            break;
+        default:
+            std::cerr << errorMessage << std::endl;
+            return 1;
+            break;
+    }
 
     return 0;
 }
