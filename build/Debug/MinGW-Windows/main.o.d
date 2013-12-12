@@ -1,5 +1,5 @@
-build/Debug/MinGW-Windows/main.o: main.cpp formula.hpp parser.hpp
+build/Debug/MinGW-Windows/main.o: main.cpp formula.hpp parse.hpp
 
 formula.hpp:
 
-parser.hpp:
+parse.hpp:

@@ -1,5 +1,3 @@
-build/Debug/MinGW-Windows/formula.o: formula.cpp formula.hpp language.hpp
+build/Debug/MinGW-Windows/formula.o: formula.cpp formula.hpp
 
 formula.hpp:
-
-language.hpp:

@@ -1,37 +1,37 @@
-#include <cstdio>
 
+#include <stack>
+
+#include "parse.hpp"
 #include "language.hpp"
-#include "parser.hpp"
 
-Formula * Parser::parsePrefix(std::string input)
+Formula * parsePrefix(std::string input)
 {
+    std::stack<Operator *> stack;
     Operator * output;
 
-    stream << input;
-
-    while ((buffer = stream.get()) != EOF)
+    for (unsigned i = 0; i < input.length(); i++)
     {
-        switch (buffer)
+        switch (input[i])
         {
             case NEGATION_CHAR:
-                stack.push(new UnaryOperator(buffer));
+                stack.push(new UnaryOperator(input[i]));
                 break;
             case CONJUNCTION_CHAR:
             case DISJUNCTION_CHAR:
             case IMPLICATION_CHAR:
             case EQUIVALENCE_CHAR:
-                stack.push(new BinaryOperator(buffer));
+                stack.push(new BinaryOperator(input[i]));
                 break;
             default:
-                if ('A' <= buffer && buffer <= 'Z')
+                if ('A' <= input[i] && input[i] <= 'Z')
                 {
-                    if (((Operator *) stack.top())->addOperandFromLeft(new Preposition(buffer)) == 0)
+                    if (stack.top()->addOperandFromLeft(new Preposition(input[i])) == 0)
                     {
                         do
                         {
-                            output = (Operator *) stack.top();
+                            output = stack.top();
                             stack.pop();
-                        } while (!stack.empty() && ((Operator *) stack.top())->addOperandFromLeft(output) == 0);
+                        } while (!stack.empty() && (stack.top())->addOperandFromLeft(output) == 0);
                     }
                 }
                 break;
@@ -40,25 +40,24 @@ Formula * Parser::parsePrefix(std::string input)
     return output;
 }
 
-Formula * Parser::parseInfix(std::string input)
+Formula * parseInfix(std::string input)
 {
+    std::stack<Formula *> stack;
     std::stack<Operator *> operatorStack;
     Formula * temp;
 
-    stream << input;
-
-    while ((buffer = stream.get()) != EOF)
+    for (unsigned i = 0; i < input.length(); i++)
     {
-        switch (buffer)
+        switch (input[i])
         {
             case NEGATION_CHAR:
-                operatorStack.push(new UnaryOperator(buffer));
+                operatorStack.push(new UnaryOperator(input[i]));
                 break;
             case CONJUNCTION_CHAR:
             case DISJUNCTION_CHAR:
             case IMPLICATION_CHAR:
             case EQUIVALENCE_CHAR:
-                operatorStack.push(new BinaryOperator(buffer));
+                operatorStack.push(new BinaryOperator(input[i]));
                 break;
             case ')':
                 do
@@ -70,9 +69,9 @@ Formula * Parser::parseInfix(std::string input)
                 operatorStack.pop();
                 break;
             default:
-                if ('A' <= buffer && buffer <= 'Z')
+                if ('A' <= input[i] && input[i] <= 'Z')
                 {
-                    stack.push(new Preposition(buffer));
+                    stack.push(new Preposition(input[i]));
                 }
                 break;
         }
@@ -80,41 +79,40 @@ Formula * Parser::parseInfix(std::string input)
     return stack.top();
 }
 
-Formula * Parser::parsePostfix(std::string input)
+Formula * parsePostfix(std::string input)
 {
-    Operator * output;
+    std::stack<Formula *> stack;
+    Operator * temp;
 
-    stream << input;
-
-    while ((buffer = stream.get()) != EOF)
+    for (unsigned i = 0; i < input.length(); i++)
     {
-        switch (buffer)
+        switch (input[i])
         {
             case NEGATION_CHAR:
-                output = new UnaryOperator(buffer);
-                output->addOperandFromRight(stack.top());
+                temp = new UnaryOperator(input[i]);
+                temp->addOperandFromRight(stack.top());
                 stack.pop();
-                stack.push(output);
+                stack.push(temp);
                 break;
             case CONJUNCTION_CHAR:
             case DISJUNCTION_CHAR:
             case IMPLICATION_CHAR:
             case EQUIVALENCE_CHAR:
-                output = new BinaryOperator(buffer);
-                output->addOperandFromRight(stack.top());
+                temp = new BinaryOperator(input[i]);
+                temp->addOperandFromRight(stack.top());
                 stack.pop();
-                output->addOperandFromRight(stack.top());
+                temp->addOperandFromRight(stack.top());
                 stack.pop();
-                stack.push(output);
+                stack.push(temp);
                 break;
             default:
-                if ('A' <= buffer && buffer <= 'Z')
+                if ('A' <= input[i] && input[i] <= 'Z')
                 {
-                    stack.push(new Preposition(buffer));
+                    stack.push(new Preposition(input[i]));
                 }
                 break;
         }
     }
-    return output;
+    return stack.top();
 }
 

@@ -2,11 +2,10 @@
 #include <iostream>
 
 #include "formula.hpp"
-#include "parser.hpp"
+#include "parse.hpp"
 
 int main(int argc, char** argv)
 {
-    Parser parser;
     Formula * formula;
 
     const char * errorMessage = "Program syntax: <input format ... {0, 1, 2}> <output format ... {0, 1, 2}> <formula>";
@@ -20,13 +19,13 @@ int main(int argc, char** argv)
     switch (atoi(argv[1]))
     {
         case 0:
-            formula = parser.parsePrefix(std::string(argv[3]));
+            formula = parsePrefix(std::string(argv[3]));
             break;
         case 1:
-            formula = parser.parseInfix(std::string(argv[3]));
+            formula = parseInfix(std::string(argv[3]));
             break;
         case 2:
-            formula = parser.parsePostfix(std::string(argv[3]));
+            formula = parsePostfix(std::string(argv[3]));
             break;
         default:
             std::cerr << errorMessage << std::endl;

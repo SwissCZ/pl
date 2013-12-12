@@ -1,5 +1,4 @@
 #include "formula.hpp"
-#include "language.hpp"
 
 // Formula
 
@@ -16,23 +15,17 @@ Preposition::Preposition(char name) : Formula(name)
 
 std::string Preposition::printPrefix() const
 {
-    std::string output;
-    output += character;
-    return output;
+    return std::string() + this->character;
 }
 
 std::string Preposition::printInfix() const
 {
-    std::string output;
-    output += character;
-    return output;
+    return std::string() + this->character;
 }
 
 std::string Preposition::printPostfix() const
 {
-    std::string output;
-    output += character;
-    return output;
+    return std::string() + this->character;
 }
 
 // Operator
@@ -49,23 +42,17 @@ UnaryOperator::UnaryOperator(char symbol) : Operator(symbol)
 
 std::string UnaryOperator::printPrefix() const
 {
-    std::string output;
-    output += this->character + operand->printPrefix();
-    return output;
+    return std::string() + this->character + operand->printPrefix();
 }
 
 std::string UnaryOperator::printInfix() const
 {
-    std::string output;
-    output += '(' + std::string(1, this->character) + operand->printInfix() + ')';
-    return output;
+    return std::string() + '(' + this->character + operand->printInfix() + ')';
 }
 
 std::string UnaryOperator::printPostfix() const
 {
-    std::string output;
-    output += operand->printPostfix() + this->character;
-    return output;
+    return std::string() + operand->printPostfix() + this->character;
 }
 
 int UnaryOperator::addOperandFromLeft(Formula * operand)
@@ -87,23 +74,17 @@ BinaryOperator::BinaryOperator(char symbol) : Operator(symbol)
 
 std::string BinaryOperator::printPrefix() const
 {
-    std::string output;
-    output += this->character + leftOperand->printPrefix() + rightOperand->printPrefix();
-    return output;
+    return std::string() + this->character + leftOperand->printPrefix() + rightOperand->printPrefix();
 }
 
 std::string BinaryOperator::printInfix() const
 {
-    std::string output;
-    output += '(' + leftOperand->printInfix() + this->character + rightOperand->printInfix() + ')';
-    return output;
+    return std::string() + '(' + leftOperand->printInfix() + this->character + rightOperand->printInfix() + ')';
 }
 
 std::string BinaryOperator::printPostfix() const
 {
-    std::string output;
-    output += leftOperand->printPostfix() + rightOperand->printPostfix() + this->character;
-    return output;
+    return std::string() + leftOperand->printPostfix() + rightOperand->printPostfix() + this->character;
 }
 
 int BinaryOperator::addOperandFromLeft(Formula * operand)
