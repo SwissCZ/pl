@@ -1,13 +1,13 @@
 #ifndef PARSE_HPP
 #define	PARSE_HPP
 
-#include <string>
+#include <cstdio>
 
 #include "formula.hpp"
 
-Formula * parsePrefix(std::string);
-Formula * parseInfix(std::string);
-Formula * parsePostfix(std::string);
+Formula * parsePrefix(std::istream &);
+Formula * parseInfix(std::istream &);
+Formula * parsePostfix(std::istream &);
 
 #endif	/* PARSE_HPP */
 

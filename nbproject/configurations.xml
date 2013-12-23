@@ -5,6 +5,7 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>formula.hpp</itemPath>
+      <itemPath>infix_state.hpp</itemPath>
       <itemPath>language.hpp</itemPath>
       <itemPath>parse.hpp</itemPath>
     </logicalFolder>
@@ -41,12 +42,14 @@
       </toolsSet>
       <compileType>
         <ccTool>
-          <commandLine>-Wall -pedantic -std=c++11</commandLine>
+          <commandLine>-Wall -pedantic</commandLine>
         </ccTool>
       </compileType>
       <item path="formula.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="formula.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="infix_state.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="language.hpp" ex="false" tool="3" flavor2="0">
       </item>
@@ -80,6 +83,8 @@
       <item path="formula.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="formula.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="infix_state.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="language.hpp" ex="false" tool="3" flavor2="0">
       </item>

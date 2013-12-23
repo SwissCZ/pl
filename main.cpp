@@ -8,46 +8,55 @@ int main(int argc, char** argv)
 {
     Formula * formula;
 
-    const char * errorMessage = "Program syntax: <input format ... {0, 1, 2}> <output format ... {0, 1, 2}> <formula>";
-
-    if (argc != 4)
+    while (true)
     {
-        std::cerr << errorMessage << std::endl;
-        return 1;
-    }
+        try
+        {
+            // Input
+            switch (atoi(argv[1]))
+            {
+                case 0:
+                    formula = parsePrefix(std::cin);
+                    break;
+                case 1:
+                    formula = parseInfix(std::cin);
+                    break;
+                case 2:
+                    formula = parsePostfix(std::cin);
+                    break;
+                default:
+                    std::cout << "Re-run with a valid syntax." << std::endl;
+                    break;
+            }
 
-    switch (atoi(argv[1]))
-    {
-        case 0:
-            formula = parsePrefix(std::string(argv[3]));
-            break;
-        case 1:
-            formula = parseInfix(std::string(argv[3]));
-            break;
-        case 2:
-            formula = parsePostfix(std::string(argv[3]));
-            break;
-        default:
-            std::cerr << errorMessage << std::endl;
-            return 1;
-            break;
-    }
+            // EOF check
+            if (formula == NULL)
+            {
+                break;
+            };
 
-    switch (atoi(argv[2]))
-    {
-        case 0:
-            std::cout << formula->printPrefix() << std::endl;
-            break;
-        case 1:
-            std::cout << formula->printInfix() << std::endl;
-            break;
-        case 2:
-            std::cout << formula->printPostfix() << std::endl;
-            break;
-        default:
-            std::cerr << errorMessage << std::endl;
-            return 1;
-            break;
+            // Output
+            switch (atoi(argv[2]))
+            {
+                case 0:
+                    std::cout << formula->printPrefix() << std::endl;
+                    break;
+                case 1:
+                    std::cout << formula->printInfix() << std::endl;
+                    break;
+                case 2:
+                    std::cout << formula->printPostfix() << std::endl;
+                    break;
+                default:
+                    std::cout << "Re-run with a valid syntax." << std::endl;
+                    break;
+            }
+
+            delete formula;
+        } catch (int i)
+        {
+            std::cerr << "Syntax corrupted at position " << i << '.' << std::endl;
+        }
     }
 
     return 0;

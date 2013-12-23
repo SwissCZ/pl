@@ -8,16 +8,18 @@ class Formula
 protected:
     char character;
 public:
-    Formula(char);
+    Formula(const char &);
+    virtual ~Formula();
     virtual std::string printPrefix() const = 0;
     virtual std::string printInfix() const = 0;
     virtual std::string printPostfix() const = 0;
 };
 
-class Preposition : public Formula
+class Proposition : public Formula
 {
 public:
-    Preposition(char);
+    Proposition(const char &);
+    virtual ~Proposition();
     virtual std::string printPrefix() const;
     virtual std::string printInfix() const;
     virtual std::string printPostfix() const;
@@ -26,12 +28,13 @@ public:
 class Operator : public Formula
 {
 public:
-    Operator(char);
+    Operator(const char &);
+    virtual ~Operator();
     virtual std::string printPrefix() const = 0;
     virtual std::string printInfix() const = 0;
     virtual std::string printPostfix() const = 0;
-    virtual int addOperandFromLeft(Formula *) = 0;
-    virtual int addOperandFromRight(Formula *) = 0;
+    virtual int addOperandRightwards(Formula *) = 0;
+    virtual int addOperandLeftwards(Formula *) = 0;
 };
 
 class UnaryOperator : public Operator
@@ -39,12 +42,13 @@ class UnaryOperator : public Operator
 private:
     Formula * operand = NULL;
 public:
-    UnaryOperator(char);
+    UnaryOperator(const char &);
+    virtual ~UnaryOperator();
     virtual std::string printPrefix() const;
     virtual std::string printInfix() const;
     virtual std::string printPostfix() const;
-    virtual int addOperandFromLeft(Formula *);
-    virtual int addOperandFromRight(Formula *);
+    virtual int addOperandRightwards(Formula *);
+    virtual int addOperandLeftwards(Formula *);
 };
 
 class BinaryOperator : public Operator
@@ -53,12 +57,13 @@ private:
     Formula * leftOperand = NULL;
     Formula * rightOperand = NULL;
 public:
-    BinaryOperator(char);
+    BinaryOperator(const char &);
+    virtual ~BinaryOperator();
     virtual std::string printPrefix() const;
     virtual std::string printInfix() const;
     virtual std::string printPostfix() const;
-    virtual int addOperandFromLeft(Formula *);
-    virtual int addOperandFromRight(Formula *);
+    virtual int addOperandRightwards(Formula *);
+    virtual int addOperandLeftwards(Formula *);
 };
 
 #endif	/* FORMULA_HPP */

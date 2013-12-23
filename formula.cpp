@@ -2,42 +2,59 @@
 
 // Formula
 
-Formula::Formula(char character)
+Formula::Formula(const char & character)
 {
     this->character = character;
 }
 
-// Preposition
-
-Preposition::Preposition(char name) : Formula(name)
+Formula::~Formula()
 {
 }
 
-std::string Preposition::printPrefix() const
+// Proposition
+
+Proposition::Proposition(const char & name) : Formula(name)
+{
+}
+
+Proposition::~Proposition()
+{
+}
+
+std::string Proposition::printPrefix() const
 {
     return std::string() + this->character;
 }
 
-std::string Preposition::printInfix() const
+std::string Proposition::printInfix() const
 {
     return std::string() + this->character;
 }
 
-std::string Preposition::printPostfix() const
+std::string Proposition::printPostfix() const
 {
     return std::string() + this->character;
 }
 
 // Operator
 
-Operator::Operator(char symbol) : Formula(symbol)
+Operator::Operator(const char & symbol) : Formula(symbol)
+{
+}
+
+Operator::~Operator()
 {
 }
 
 // UnaryOperator
 
-UnaryOperator::UnaryOperator(char symbol) : Operator(symbol)
+UnaryOperator::UnaryOperator(const char & symbol) : Operator(symbol)
 {
+}
+
+UnaryOperator::~UnaryOperator()
+{
+    delete operand;
 }
 
 std::string UnaryOperator::printPrefix() const
@@ -55,21 +72,27 @@ std::string UnaryOperator::printPostfix() const
     return std::string() + operand->printPostfix() + this->character;
 }
 
-int UnaryOperator::addOperandFromLeft(Formula * operand)
+int UnaryOperator::addOperandRightwards(Formula * operand)
 {
     this->operand = operand;
     return 0;
 }
 
-int UnaryOperator::addOperandFromRight(Formula * operand)
+int UnaryOperator::addOperandLeftwards(Formula * operand)
 {
-    return addOperandFromLeft(operand);
+    return addOperandRightwards(operand);
 }
 
 // BinaryOperator
 
-BinaryOperator::BinaryOperator(char symbol) : Operator(symbol)
+BinaryOperator::BinaryOperator(const char & symbol) : Operator(symbol)
 {
+}
+
+BinaryOperator::~BinaryOperator()
+{
+    delete leftOperand;
+    delete rightOperand;
 }
 
 std::string BinaryOperator::printPrefix() const
@@ -87,7 +110,7 @@ std::string BinaryOperator::printPostfix() const
     return std::string() + leftOperand->printPostfix() + rightOperand->printPostfix() + this->character;
 }
 
-int BinaryOperator::addOperandFromLeft(Formula * operand)
+int BinaryOperator::addOperandRightwards(Formula * operand)
 {
     if (leftOperand == NULL)
     {
@@ -100,7 +123,7 @@ int BinaryOperator::addOperandFromLeft(Formula * operand)
     }
 }
 
-int BinaryOperator::addOperandFromRight(Formula * operand)
+int BinaryOperator::addOperandLeftwards(Formula * operand)
 {
     if (rightOperand == NULL)
     {
