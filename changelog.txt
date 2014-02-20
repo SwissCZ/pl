@@ -1,0 +1,26 @@
+#3 (2014/02)
+- Úprava struktury projektu
+- Vlastní Makefile
+- Podrobnìjší hlášení chyb
+
+#2 (2014/01)
+- Ètení ze vstupního proudu
+- Kontrola syntaxe formulí
+
+in	> pl 1 0
+in	> ((A+B)+((C+(-D))*E))
+out	> ++AB*+C-DE
+.
+.
+.
+in	>
+out	> <konec>
+
+#1 (2013/12)
+- Zpracování (pouze) validních formulí
+- Podpora všech tøí notací
+- Pøedávání formule jako argumentu
+
+in	> pl 1 0 ((A+B)+((C+(-D))*E))
+out	> ++AB*+C-DE
+out	> <konec>

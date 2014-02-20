@@ -3,7 +3,7 @@
 
 enum InfixState
 {
-    BLANK, FIRST, OPERATOR, SECOND
+    BLANK, FIRST_OPERAND, OPERATOR, LAST_OPERAND
 };
 
 #endif	/* INFIX_STATE_HPP */

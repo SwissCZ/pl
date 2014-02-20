@@ -24,18 +24,18 @@
       </nativedebugger>
       <runprofile version="9">
         <runcommandpicklist>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" 0 1 -+AB</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" 1 1 ((A+B)+(((C+(-D))*E)</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" 1 1 ((A+B)+((C+(-D))*E)</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}" 1 1 ((A+B)+((C+(-D))*E))</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" 1 2 ((A+B)+((C+(-D))*E))</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" 1 0 ((A+B)+((C+(-D))*E))</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" 1 0</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" 1 1</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" 0 1</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" 2 1</runcommandpicklistitem>
+          <runcommandpicklistitem>dist/pl.exe  2 1</runcommandpicklistitem>
+          <runcommandpicklistitem>pl.exe 2 1</runcommandpicklistitem>
+          <runcommandpicklistitem>dist/pl.exe 2 1</runcommandpicklistitem>
+          <runcommandpicklistitem>dist/pl.exe 0 1</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" 2 1</runcommand>
+        <runcommand>dist/pl.exe 0 1</runcommand>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <console-type>1</console-type>

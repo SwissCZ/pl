@@ -35,17 +35,18 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/formula.o \
-	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/parse.o
+	${OBJECTDIR}/src/formula.o \
+	${OBJECTDIR}/src/main.o \
+	${OBJECTDIR}/src/parse.o \
+	${OBJECTDIR}/src/syntax_exception.o
 
 
 # C Compiler Flags
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=-Wall -pedantic
-CXXFLAGS=-Wall -pedantic
+CCFLAGS=
+CXXFLAGS=
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -64,20 +65,25 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/pl.exe: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/pl ${OBJECTFILES} ${LDLIBSOPTIONS}
 
-${OBJECTDIR}/formula.o: formula.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/formula.o: src/formula.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/formula.o formula.cpp
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/formula.o src/formula.cpp
 
-${OBJECTDIR}/main.o: main.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/main.o: src/main.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/main.o src/main.cpp
 
-${OBJECTDIR}/parse.o: parse.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/parse.o: src/parse.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/parse.o parse.cpp
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/parse.o src/parse.cpp
+
+${OBJECTDIR}/src/syntax_exception.o: src/syntax_exception.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/syntax_exception.o src/syntax_exception.cpp
 
 # Subprojects
 .build-subprojects:

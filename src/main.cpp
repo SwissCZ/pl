@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <exception>
 #include <iostream>
 
 #include "formula.hpp"
@@ -53,9 +54,9 @@ int main(int argc, char** argv)
             }
 
             delete formula;
-        } catch (int i)
+        } catch (std::exception & ex)
         {
-            std::cerr << "Syntax corrupted at position " << i << '.' << std::endl;
+            std::cerr << ex.what() << std::endl;
         }
     }
 

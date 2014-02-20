@@ -4,12 +4,12 @@
 
 #include "infix_state.hpp"
 #include "parse.hpp"
-#include "language.hpp"
+#include "syntax_exception.hpp"
 
 Formula * parsePrefix(std::istream & input)
 {
     std::stack<Operator *> stack;
-    Formula * temp;
+    Formula * tmp;
     char buffer;
     int position = 1;
     bool run = true;
@@ -46,38 +46,32 @@ Formula * parsePrefix(std::istream & input)
             case 'Z':
                 if (stack.size())
                 {
-                    // Top operator operands were not all set yet
-                    temp = new Proposition(buffer);
-                    while (stack.size() && stack.top()->addOperandRightwards(temp) == 0)
+                    // Stack top operands are not all set
+                    tmp = new Proposition(buffer);
+                    while (stack.size() && stack.top()->addOperandRightwards(tmp) == 0)
                     {
-                        // Top operator operands were all set
-                        temp = stack.top();
+                        // Stack top operands are all set
+                        tmp = stack.top();
                         stack.pop();
                     }
                 } else
                 {
-                    if (position == 1 && input.peek() == '\n')
+                    if (position == 1)
                     {
-                        // Atomic input
-                        input.ignore();
-                        return new Proposition(buffer);
-                    } else if (position == 1 && input.peek() != '\n')
-                    {
-                        // Illegal position
-                        input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                        throw position + 1;
+                        // Trivial formula candidate
+                        tmp = new Proposition(buffer);
                     } else
                     {
                         // No more operands are needed
                         input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                        throw position;
+                        throw UnnecessaryElementException(buffer, position);
                     }
                 }
                 break;
-            case NEGATION_CHAR:
+            case '-':
                 if (stack.size())
                 {
-                    // Top operator operands were not all set yet
+                    // Stack top operands are not all set
                     stack.push(new UnaryOperator(buffer));
                 } else
                 {
@@ -89,17 +83,17 @@ Formula * parsePrefix(std::istream & input)
                     {
                         // No more operands are needed
                         input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                        throw position;
+                        throw UnnecessaryElementException(buffer, position);
                     }
                 }
                 break;
-            case CONJUNCTION_CHAR:
-            case DISJUNCTION_CHAR:
-            case IMPLICATION_CHAR:
-            case EQUIVALENCE_CHAR:
+            case '.':
+            case '+':
+            case '>':
+            case '=':
                 if (stack.size())
                 {
-                    // Top operator operands were not set yet
+                    // Stack top operands are not all set
                     stack.push(new BinaryOperator(buffer));
                 } else
                 {
@@ -111,40 +105,34 @@ Formula * parsePrefix(std::istream & input)
                     {
                         // No more operands are needed
                         input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                        throw position;
+                        throw UnnecessaryElementException(buffer, position);
                     }
                 }
                 break;
             case ' ':
             case '\t':
-                // Whitespace skipping
+                // Legal whitespace skipping
                 break;
             case '\n':
-                if (position == 1)
-                {
-                    // Formula sequence ending
-                    return NULL;
-                } else
-                {
-                    // Formula ending
-                    position--;
-                    run = false;
-                }
+                // Formula end
+                run = false;
                 break;
             case EOF:
                 if (position == 1)
                 {
-                    // Formula sequence ending
+                    // Formula sequence end
+                    run = false;
                     return NULL;
                 } else
                 {
-                    // Invalid position
-                    throw position;
+                    // Unexpected end of stream
+                    run = false;
+                    throw UnexpectedEOFException();
                 }
-                break;
             default:
+                // Unrecognized character
                 input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                throw position;
+                throw IllegalCharacterException(buffer, position);
                 break;
         }
         position++;
@@ -153,11 +141,11 @@ Formula * parsePrefix(std::istream & input)
     if (stack.empty())
     {
         // All operands were set
-        return temp;
+        return tmp;
     } else
     {
-        // Some operator operands were not set
-        throw position;
+        // Some operands were not set
+        throw IncompleteFormulaException();
     }
 }
 
@@ -166,7 +154,7 @@ Formula * parseInfix(std::istream & input)
     std::stack<Formula *> stack;
     std::stack<Operator *> operatorStack;
     std::stack<int> stateStack;
-    Formula * temp;
+    Formula * tmp;
     char buffer;
     int position = 1;
     bool run = true;
@@ -203,40 +191,35 @@ Formula * parseInfix(std::istream & input)
             case 'Z':
                 if (stateStack.empty())
                 {
-                    if (position == 1 && input.peek() == '\n')
+                    // First character case
+                    if (position == 1)
                     {
-                        // Atomic input
-                        input.ignore();
-                        return new Proposition(buffer);
-                    } else if (position == 1 && input.peek() != '\n')
-                    {
-                        // Illegal position
-                        input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                        throw position + 1;
+                        // Trivial formula candidate
+                        stack.push(new Proposition(buffer));
                     } else
                     {
-                        // Illegal position
+                        // Illegal element position
                         input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                        throw position;
+                        throw UnexpectedElementException(buffer, position);
                     }
                 } else if (stateStack.top() == BLANK || stateStack.top() == OPERATOR)
                 {
-                    // First or second operand
+                    // Before first or second operand
                     stateStack.top()++;
                     stack.push(new Proposition(buffer));
                 } else
                 {
-                    // Illegal position
+                    // Illegal element position
                     input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    throw position;
+                    throw UnexpectedElementException(buffer, position);
                 }
                 break;
-            case NEGATION_CHAR:
+            case '-':
                 if (stateStack.empty())
                 {
-                    // Invalid position
+                    // First character case
                     input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    throw position;
+                    throw UnexpectedElementException(buffer, position);
                 } else if (stateStack.top() == BLANK)
                 {
                     // Before operand
@@ -244,30 +227,30 @@ Formula * parseInfix(std::istream & input)
                     operatorStack.push(new UnaryOperator(buffer));
                 } else
                 {
-                    // Invalid position
+                    // Illegal element position
                     input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    throw position;
+                    throw UnexpectedElementException(buffer, position);
                 }
                 break;
-            case CONJUNCTION_CHAR:
-            case DISJUNCTION_CHAR:
-            case IMPLICATION_CHAR:
-            case EQUIVALENCE_CHAR:
+            case '.':
+            case '+':
+            case '>':
+            case '=':
                 if (stateStack.empty())
                 {
-                    // Invalid position
+                    // First character case
                     input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    throw position;
-                } else if (stateStack.top() == FIRST)
+                    throw UnexpectedElementException(buffer, position);
+                } else if (stateStack.top() == FIRST_OPERAND)
                 {
                     // Between operands
                     stateStack.top() = OPERATOR;
                     operatorStack.push(new BinaryOperator(buffer));
                 } else
                 {
-                    // Invalid position
+                    // Illegal element position
                     input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    throw position;
+                    throw UnexpectedElementException(buffer, position);
                 }
                 break;
             case '(':
@@ -279,19 +262,19 @@ Formula * parseInfix(std::istream & input)
                         stateStack.push(BLANK);
                     } else
                     {
-                        // Invalid position
+                        // Illegal position
                         input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                        throw position;
+                        throw UnnecessaryElementException(buffer, position);
                     }
                 } else if (stateStack.top() == BLANK || stateStack.top() == OPERATOR)
                 {
-                    // Minor formula openning
+                    // Subformula openning
                     stateStack.push(BLANK);
                 } else
                 {
-                    // Invalid position
+                    // Illegal position
                     input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    throw position;
+                    throw UnexpectedElementException(buffer, position);
                 }
                 break;
             case ')':
@@ -299,10 +282,10 @@ Formula * parseInfix(std::istream & input)
                 {
                     // Too much closing brackets
                     input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    throw position;
-                } else if (stateStack.top() == SECOND)
+                    throw UnnecessaryElementException(buffer, position);
+                } else if (stateStack.top() == LAST_OPERAND)
                 {
-                    // Minor formula closing
+                    // Subformula closing
                     stateStack.pop();
                     if (stateStack.size())
                     {
@@ -310,33 +293,25 @@ Formula * parseInfix(std::istream & input)
                     }
                     do
                     {
-                        temp = stack.top();
+                        tmp = stack.top();
                         stack.pop();
-                    } while (operatorStack.top()->addOperandLeftwards(temp) > 0);
+                    } while (operatorStack.top()->addOperandLeftwards(tmp) > 0);
                     stack.push(operatorStack.top());
                     operatorStack.pop();
                 } else
                 {
-                    // Invalid position
+                    // Illegal position
                     input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    throw position;
+                    throw UnexpectedElementException(buffer, position);
                 }
                 break;
             case ' ':
             case '\t':
-                // Whitespace skipping
+                // Legal whitespace skipping
                 break;
             case '\n':
-                if (position == 1)
-                {
-                    // Formula sequence ending
-                    return NULL;
-                } else
-                {
-                    // Formula ending
-                    position--;
-                    run = false;
-                }
+                // Formula ending
+                run = false;
                 break;
             case EOF:
                 if (position == 1)
@@ -345,14 +320,14 @@ Formula * parseInfix(std::istream & input)
                     return NULL;
                 } else
                 {
-                    // Invalid position
-                    throw position;
+                    // Unexpected end of stream
+                    throw UnexpectedEOFException();
                 }
                 break;
             default:
                 // Unrecognized character
                 input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                throw position;
+                throw IllegalCharacterException(buffer, position);
                 break;
         }
         position++;
@@ -364,15 +339,15 @@ Formula * parseInfix(std::istream & input)
         return stack.top();
     } else
     {
-        // Some brackets are still openned
-        throw position;
+        // Some brackets were not closed
+        throw IncompleteFormulaException();
     }
 }
 
 Formula * parsePostfix(std::istream & input)
 {
     std::stack<Formula *> stack;
-    Operator * temp;
+    Operator * tmp;
     char buffer;
     int position = 1;
     bool run = true;
@@ -409,73 +384,65 @@ Formula * parsePostfix(std::istream & input)
             case 'Z':
                 stack.push(new Proposition(buffer));
                 break;
-            case NEGATION_CHAR:
+            case '-':
                 if (stack.size() >= 1)
                 {
-                    // Operand available
-                    temp = new UnaryOperator(buffer);
-                    temp->addOperandLeftwards(stack.top());
+                    // Operand available on the stack
+                    tmp = new UnaryOperator(buffer);
+                    tmp->addOperandLeftwards(stack.top());
                     stack.pop();
-                    stack.push(temp);
+                    stack.push(tmp);
                 } else
                 {
-                    // Not enough operands
+                    // Not enough operands on the stack
                     input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    throw position;
+                    throw UnnecessaryElementException(buffer, position);
                 }
                 break;
-            case CONJUNCTION_CHAR:
-            case DISJUNCTION_CHAR:
-            case IMPLICATION_CHAR:
-            case EQUIVALENCE_CHAR:
+            case '.':
+            case '+':
+            case '>':
+            case '=':
                 if (stack.size() >= 2)
                 {
-                    // Pair of operands available
-                    temp = new BinaryOperator(buffer);
+                    // Two operands available on the stack
+                    tmp = new BinaryOperator(buffer);
                     for (int i = 0; i < 2; i++)
                     {
-                        temp->addOperandLeftwards(stack.top());
+                        tmp->addOperandLeftwards(stack.top());
                         stack.pop();
                     }
-                    stack.push(temp);
+                    stack.push(tmp);
                 } else
                 {
-                    // Not enough operands
+                    // Not enough operands on the stack
                     input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    throw position;
+                    throw UnnecessaryElementException(buffer, position);
                 }
                 break;
             case ' ':
             case '\t':
-                // Whitespace skipping
+                // Legal whitespace skipping
                 break;
             case '\n':
-                if (position == 1)
-                {
-                    // Formula sequence ending
-                    return NULL;
-                } else
-                {
-                    // Formula ending
-                    position--;
-                    run = false;
-                }
+                // Formula end
+                run = false;
                 break;
             case EOF:
                 if (position == 1)
                 {
-                    // Formula sequence ending
+                    // Formula sequence end
                     return NULL;
                 } else
                 {
-                    // Invalid EOF position
-                    throw position;
+                    // Unexpected end of stream
+                    throw UnexpectedEOFException();
                 }
                 break;
             default:
                 // Unrecognized character
                 input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                throw position;
+                throw IllegalCharacterException(buffer, position);
                 break;
         }
         position++;
@@ -483,11 +450,11 @@ Formula * parsePostfix(std::istream & input)
 
     if (stack.size() == 1)
     {
-        // All operands were used
+        // All operands were set
         return stack.top();
     } else
     {
-        // Some operands were not used
-        throw position;
+        // Some operands were not set
+        throw IncompleteFormulaException();
     }
 }
