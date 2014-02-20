@@ -64,7 +64,7 @@ std::string UnaryOperator::printPrefix() const
 
 std::string UnaryOperator::printInfix() const
 {
-    return std::string() + '(' + this->character + operand->printInfix() + ')';
+    return std::string() + this->character + operand->printInfix();
 }
 
 std::string UnaryOperator::printPostfix() const

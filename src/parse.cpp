@@ -207,6 +207,21 @@ Formula * parseInfix(std::istream & input)
                     // Before first or second operand
                     stateStack.top()++;
                     stack.push(new Proposition(buffer));
+                } else if (stateStack.top() == UNARY)
+                {
+                    tmp = new Proposition(buffer);
+                    do
+                    {
+                        operatorStack.top()->addOperandRightwards(tmp);
+                        tmp = operatorStack.top();
+                        operatorStack.pop();
+                        stateStack.pop();
+                    } while (stateStack.size() && stateStack.top() == UNARY);
+                    stack.push(tmp);
+                    if (stateStack.size())
+                    {
+                        stateStack.top()++;
+                    }
                 } else
                 {
                     // Illegal element position
@@ -215,15 +230,10 @@ Formula * parseInfix(std::istream & input)
                 }
                 break;
             case '-':
-                if (stateStack.empty())
+                if (stateStack.empty() || stateStack.top() == BLANK || stateStack.top() == OPERATOR || stateStack.top() == UNARY)
                 {
-                    // First character case
-                    input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    throw UnexpectedElementException(buffer, position);
-                } else if (stateStack.top() == BLANK)
-                {
-                    // Before operand
-                    stateStack.top() = OPERATOR;
+                    // Unary operation
+                    stateStack.push(UNARY);
                     operatorStack.push(new UnaryOperator(buffer));
                 } else
                 {
@@ -266,7 +276,7 @@ Formula * parseInfix(std::istream & input)
                         input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                         throw UnnecessaryElementException(buffer, position);
                     }
-                } else if (stateStack.top() == BLANK || stateStack.top() == OPERATOR)
+                } else if (stateStack.top() == BLANK || stateStack.top() == OPERATOR || stateStack.top() == UNARY)
                 {
                     // Subformula openning
                     stateStack.push(BLANK);
@@ -287,10 +297,6 @@ Formula * parseInfix(std::istream & input)
                 {
                     // Subformula closing
                     stateStack.pop();
-                    if (stateStack.size())
-                    {
-                        stateStack.top()++;
-                    }
                     do
                     {
                         tmp = stack.top();
@@ -298,6 +304,19 @@ Formula * parseInfix(std::istream & input)
                     } while (operatorStack.top()->addOperandLeftwards(tmp) > 0);
                     stack.push(operatorStack.top());
                     operatorStack.pop();
+
+                    while (stateStack.size() && stateStack.top() == UNARY)
+                    {
+                        operatorStack.top()->addOperandRightwards(stack.top());
+                        stack.pop();
+                        stack.push(operatorStack.top());
+                        operatorStack.pop();
+                        stateStack.pop();
+                    }
+                    if (stateStack.size())
+                    {
+                        stateStack.top()++;
+                    }
                 } else
                 {
                     // Illegal position
