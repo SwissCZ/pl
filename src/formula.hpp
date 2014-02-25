@@ -3,36 +3,41 @@
 
 #include <string>
 
+#include "connective.hpp"
+#include "language.hpp"
+
 class Formula
 {
-protected:
-    char character;
 public:
-    Formula(const char &);
+    Formula();
     virtual ~Formula();
-    virtual std::string printPrefix() const = 0;
-    virtual std::string printInfix() const = 0;
-    virtual std::string printPostfix() const = 0;
+    virtual std::string printPrefix(Language &) const = 0;
+    virtual std::string printInfix(Language &) const = 0;
+    virtual std::string printPostfix(Language &) const = 0;
 };
 
 class Proposition : public Formula
 {
+private:
+    char character;
 public:
-    Proposition(const char &);
+    Proposition(char &);
     virtual ~Proposition();
-    virtual std::string printPrefix() const;
-    virtual std::string printInfix() const;
-    virtual std::string printPostfix() const;
+    virtual std::string printPrefix(Language &) const;
+    virtual std::string printInfix(Language &) const;
+    virtual std::string printPostfix(Language &) const;
 };
 
 class Operator : public Formula
 {
+protected:
+    Connective connective;
 public:
-    Operator(const char &);
+    Operator(Connective);
     virtual ~Operator();
-    virtual std::string printPrefix() const = 0;
-    virtual std::string printInfix() const = 0;
-    virtual std::string printPostfix() const = 0;
+    virtual std::string printPrefix(Language &) const = 0;
+    virtual std::string printInfix(Language &) const = 0;
+    virtual std::string printPostfix(Language &) const = 0;
     virtual int addOperandRightwards(Formula *) = 0;
     virtual int addOperandLeftwards(Formula *) = 0;
 };
@@ -42,11 +47,11 @@ class UnaryOperator : public Operator
 private:
     Formula * operand = NULL;
 public:
-    UnaryOperator(const char &);
+    UnaryOperator(Connective);
     virtual ~UnaryOperator();
-    virtual std::string printPrefix() const;
-    virtual std::string printInfix() const;
-    virtual std::string printPostfix() const;
+    virtual std::string printPrefix(Language &) const;
+    virtual std::string printInfix(Language &) const;
+    virtual std::string printPostfix(Language &) const;
     virtual int addOperandRightwards(Formula *);
     virtual int addOperandLeftwards(Formula *);
 };
@@ -57,11 +62,11 @@ private:
     Formula * leftOperand = NULL;
     Formula * rightOperand = NULL;
 public:
-    BinaryOperator(const char &);
+    BinaryOperator(Connective);
     virtual ~BinaryOperator();
-    virtual std::string printPrefix() const;
-    virtual std::string printInfix() const;
-    virtual std::string printPostfix() const;
+    virtual std::string printPrefix(Language &) const;
+    virtual std::string printInfix(Language &) const;
+    virtual std::string printPostfix(Language &) const;
     virtual int addOperandRightwards(Formula *);
     virtual int addOperandLeftwards(Formula *);
 };

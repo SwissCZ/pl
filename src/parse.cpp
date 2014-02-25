@@ -4,7 +4,7 @@
 
 #include "infix_state.hpp"
 #include "parse.hpp"
-#include "syntax_exception.hpp"
+#include "parse_exception.hpp"
 
 Formula * parsePrefix(std::istream & input)
 {
@@ -72,13 +72,13 @@ Formula * parsePrefix(std::istream & input)
                 if (stack.size())
                 {
                     // Stack top operands are not all set
-                    stack.push(new UnaryOperator(buffer));
+                    stack.push(new UnaryOperator(NEGATION));
                 } else
                 {
                     if (position == 1)
                     {
                         // Initial operator
-                        stack.push(new UnaryOperator(buffer));
+                        stack.push(new UnaryOperator(NEGATION));
                     } else
                     {
                         // No more operands are needed
@@ -94,13 +94,13 @@ Formula * parsePrefix(std::istream & input)
                 if (stack.size())
                 {
                     // Stack top operands are not all set
-                    stack.push(new BinaryOperator(buffer));
+                    stack.push(new BinaryOperator(CONNECTIVES.at(buffer)));
                 } else
                 {
                     if (position == 1)
                     {
                         // Initial operator
-                        stack.push(new BinaryOperator(buffer));
+                        stack.push(new BinaryOperator(CONNECTIVES.at(buffer)));
                     } else
                     {
                         // No more operands are needed
@@ -234,7 +234,7 @@ Formula * parseInfix(std::istream & input)
                 {
                     // Unary operation
                     stateStack.push(UNARY);
-                    operatorStack.push(new UnaryOperator(buffer));
+                    operatorStack.push(new UnaryOperator(NEGATION));
                 } else
                 {
                     // Illegal element position
@@ -255,7 +255,7 @@ Formula * parseInfix(std::istream & input)
                 {
                     // Between operands
                     stateStack.top() = OPERATOR;
-                    operatorStack.push(new BinaryOperator(buffer));
+                    operatorStack.push(new BinaryOperator(CONNECTIVES.at(buffer)));
                 } else
                 {
                     // Illegal element position
@@ -407,7 +407,7 @@ Formula * parsePostfix(std::istream & input)
                 if (stack.size() >= 1)
                 {
                     // Operand available on the stack
-                    tmp = new UnaryOperator(buffer);
+                    tmp = new UnaryOperator(NEGATION);
                     tmp->addOperandLeftwards(stack.top());
                     stack.pop();
                     stack.push(tmp);
@@ -425,7 +425,7 @@ Formula * parsePostfix(std::istream & input)
                 if (stack.size() >= 2)
                 {
                     // Two operands available on the stack
-                    tmp = new BinaryOperator(buffer);
+                    tmp = new BinaryOperator(CONNECTIVES.at(buffer));
                     for (int i = 0; i < 2; i++)
                     {
                         tmp->addOperandLeftwards(stack.top());

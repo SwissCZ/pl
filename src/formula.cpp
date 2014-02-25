@@ -1,54 +1,48 @@
 #include "formula.hpp"
+#include "language_resource.hpp"
 
-// Formula
-
-Formula::Formula(const char & character)
+Formula::Formula()
 {
-    this->character = character;
 }
 
 Formula::~Formula()
 {
 }
 
-// Proposition
-
-Proposition::Proposition(const char & name) : Formula(name)
+Proposition::Proposition(char & character) : Formula()
 {
+    this->character = character;
 }
 
 Proposition::~Proposition()
 {
 }
 
-std::string Proposition::printPrefix() const
+std::string Proposition::printPrefix(Language & language) const
 {
     return std::string() + this->character;
 }
 
-std::string Proposition::printInfix() const
+std::string Proposition::printInfix(Language & language) const
 {
     return std::string() + this->character;
 }
 
-std::string Proposition::printPostfix() const
+std::string Proposition::printPostfix(Language & language) const
 {
     return std::string() + this->character;
 }
 
-// Operator
-
-Operator::Operator(const char & symbol) : Formula(symbol)
+Operator::Operator(Connective connective) : Formula()
 {
+    this->connective = connective;
 }
 
 Operator::~Operator()
 {
 }
 
-// UnaryOperator
-
-UnaryOperator::UnaryOperator(const char & symbol) : Operator(symbol)
+UnaryOperator::UnaryOperator(Connective connective) : Operator(connective)
 {
 }
 
@@ -57,19 +51,19 @@ UnaryOperator::~UnaryOperator()
     delete operand;
 }
 
-std::string UnaryOperator::printPrefix() const
+std::string UnaryOperator::printPrefix(Language & language) const
 {
-    return std::string() + this->character + operand->printPrefix();
+    return std::string() + RESOURCE.at(connective).at(language) + operand->printPrefix(language);
 }
 
-std::string UnaryOperator::printInfix() const
+std::string UnaryOperator::printInfix(Language & language) const
 {
-    return std::string() + this->character + operand->printInfix();
+    return std::string() + RESOURCE.at(connective).at(language) + operand->printInfix(language);
 }
 
-std::string UnaryOperator::printPostfix() const
+std::string UnaryOperator::printPostfix(Language & language) const
 {
-    return std::string() + operand->printPostfix() + this->character;
+    return std::string() + operand->printPostfix(language) + RESOURCE.at(connective).at(language);
 }
 
 int UnaryOperator::addOperandRightwards(Formula * operand)
@@ -83,9 +77,7 @@ int UnaryOperator::addOperandLeftwards(Formula * operand)
     return addOperandRightwards(operand);
 }
 
-// BinaryOperator
-
-BinaryOperator::BinaryOperator(const char & symbol) : Operator(symbol)
+BinaryOperator::BinaryOperator(Connective connective) : Operator(connective)
 {
 }
 
@@ -95,19 +87,19 @@ BinaryOperator::~BinaryOperator()
     delete rightOperand;
 }
 
-std::string BinaryOperator::printPrefix() const
+std::string BinaryOperator::printPrefix(Language & language) const
 {
-    return std::string() + this->character + leftOperand->printPrefix() + rightOperand->printPrefix();
+    return std::string() + RESOURCE.at(connective).at(language) + leftOperand->printPrefix(language) + rightOperand->printPrefix(language);
 }
 
-std::string BinaryOperator::printInfix() const
+std::string BinaryOperator::printInfix(Language & language) const
 {
-    return std::string() + '(' + leftOperand->printInfix() + this->character + rightOperand->printInfix() + ')';
+    return std::string() + '(' + leftOperand->printInfix(language) + RESOURCE.at(connective).at(language) + rightOperand->printInfix(language) + ')';
 }
 
-std::string BinaryOperator::printPostfix() const
+std::string BinaryOperator::printPostfix(Language & language) const
 {
-    return std::string() + leftOperand->printPostfix() + rightOperand->printPostfix() + this->character;
+    return std::string() + leftOperand->printPostfix(language) + rightOperand->printPostfix(language) + RESOURCE.at(connective).at(language);
 }
 
 int BinaryOperator::addOperandRightwards(Formula * operand)

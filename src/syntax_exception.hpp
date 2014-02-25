@@ -1,51 +1,24 @@
-#ifndef PARSE_EXCEPTION_HPP
-#define	PARSE_EXCEPTION_HPP
+#ifndef SYNTAX_EXCEPTION_HPP
+#define	SYNTAX_EXCEPTION_HPP
 
 #include <exception>
 
-class UnexpectedElementException : public std::exception
+class SyntaxException : public std::exception
 {
 protected:
-    char character;
-    int position;
+    const char * program;
 public:
-    UnexpectedElementException(const char &, const int &);
-    virtual const char * what() const throw ();
+    SyntaxException(const char *);
 };
 
-class UnnecessaryElementException : public std::exception
+class UnsupportedValueException : public SyntaxException
 {
-protected:
-    char character;
-    int position;
+private:
+    char parameter;
 public:
-    UnnecessaryElementException(const char &, const int &);
+    UnsupportedValueException(const char *, const char);
     virtual const char * what() const throw ();
 };
 
-class IllegalCharacterException : public std::exception
-{
-protected:
-    char character;
-    int position;
-public:
-    IllegalCharacterException(const char &, const int &);
-    virtual const char * what() const throw ();
-};
-
-class IncompleteFormulaException : public std::exception
-{
-public:
-    IncompleteFormulaException();
-    virtual const char * what() const throw ();
-};
-
-class UnexpectedEOFException : public std::exception
-{
-public:
-    UnexpectedEOFException();
-    virtual const char * what() const throw ();
-};
-
-#endif	/* PARSE_EXCEPTION_HPP */
+#endif	/* SYNTAX_EXCEPTION_HPP */
 

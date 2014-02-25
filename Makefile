@@ -4,7 +4,7 @@ NAME=pl
 BUILD=build
 DIST=dist
 SRC=src
-FILES=formula.o main.o parse.o syntax_exception.o
+FILES=formula.o main.o parse.o parse_exception.o settings.o syntax_exception.o
 
 # Toto je zde pouze kvůli NetBeans, které tento cíl volají.
 all: $(NAME)

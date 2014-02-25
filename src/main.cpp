@@ -1,65 +1,38 @@
-#include <cstdlib>
-#include <exception>
-#include <iostream>
-
-#include "formula.hpp"
+#include "settings.hpp"
+#include "syntax_exception.hpp"
 #include "parse.hpp"
 
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
-    Formula * formula;
+    // Variables definition
+    Settings * settings; //< Program settings structure
+    int exit_code = 0; //< Program exit status code
 
-    while (true)
+    // Command line arguments processing
+    try
     {
-        try
-        {
-            // Input
-            switch (atoi(argv[1]))
-            {
-                case 0:
-                    formula = parsePrefix(std::cin);
-                    break;
-                case 1:
-                    formula = parseInfix(std::cin);
-                    break;
-                case 2:
-                    formula = parsePostfix(std::cin);
-                    break;
-                default:
-                    std::cout << "Re-run with a valid syntax." << std::endl;
-                    break;
-            }
-
-            // EOF check
-            if (formula == NULL)
-            {
-                break;
-            };
-
-            // Output
-            switch (atoi(argv[2]))
-            {
-                case 0:
-                    std::cout << formula->printPrefix() << std::endl;
-                    break;
-                case 1:
-                    std::cout << formula->printInfix() << std::endl;
-                    break;
-                case 2:
-                    std::cout << formula->printPostfix() << std::endl;
-                    break;
-                default:
-                    std::cout << "Re-run with a valid syntax." << std::endl;
-                    break;
-            }
-
-            delete formula;
-        } catch (std::exception & ex)
-        {
-            std::cerr << ex.what() << std::endl;
-        }
+        settings = new Settings(argc, argv);
+    } catch (SyntaxException & ex)
+    {
+        std::cerr << ex.what() << std::endl;
+        exit_code = 1;
     }
 
-    return 0;
-}
+    // Input data parsing
+    //
+    // Todo...
+    
+    Formula * formula;
+    while((formula = parseInfix(*(settings->input_stream))) != NULL){
+        std::cout << formula->printInfix(settings->output_language);
+    }
 
+    // Program target execution
+    //
+    // Todo...
+
+    // Cleanup & exit
+    delete settings;
+
+    return exit_code;
+}
