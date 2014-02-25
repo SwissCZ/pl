@@ -5,12 +5,14 @@
 
 #include "language.hpp"
 #include "notation.hpp"
+#include "target.hpp"
 
 struct Settings
 {
     Language output_language = ASCII;
     Notation input_notation = INFIX;
     Notation output_notation = INFIX;
+    Target target = DEFAULT;
     std::istream * input_stream = &std::cin;
 
     Settings(int argc, char ** argv);
@@ -18,4 +20,3 @@ struct Settings
 };
 
 #endif	/* SETTINGS_HPP */
-

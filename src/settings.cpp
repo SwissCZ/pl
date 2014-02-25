@@ -64,7 +64,7 @@ Settings::Settings(int argc, char** argv)
 
                 if (input_stream->fail() && !std::string(optarg).empty())
                 {
-                    std::cout << "asdf";
+                    throw FileNotFoundException(argv[0], optopt);
                 }
                 break;
         }

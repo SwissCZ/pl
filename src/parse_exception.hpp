@@ -3,7 +3,13 @@
 
 #include <exception>
 
-class UnexpectedElementException : public std::exception
+using namespace std;
+
+class ParseException : public exception
+{
+};
+
+class UnexpectedElementException : public ParseException
 {
 protected:
     char character;
@@ -13,7 +19,7 @@ public:
     virtual const char * what() const throw ();
 };
 
-class UnnecessaryElementException : public std::exception
+class UnnecessaryElementException : public ParseException
 {
 protected:
     char character;
@@ -23,7 +29,7 @@ public:
     virtual const char * what() const throw ();
 };
 
-class IllegalCharacterException : public std::exception
+class IllegalCharacterException : public ParseException
 {
 protected:
     char character;
@@ -33,14 +39,14 @@ public:
     virtual const char * what() const throw ();
 };
 
-class IncompleteFormulaException : public std::exception
+class IncompleteFormulaException : public ParseException
 {
 public:
     IncompleteFormulaException();
     virtual const char * what() const throw ();
 };
 
-class UnexpectedEOFException : public std::exception
+class UnexpectedEOFException : public ParseException
 {
 public:
     UnexpectedEOFException();
@@ -48,4 +54,3 @@ public:
 };
 
 #endif	/* PARSE_EXCEPTION_HPP */
-

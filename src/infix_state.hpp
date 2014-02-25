@@ -7,4 +7,3 @@ enum InfixState
 };
 
 #endif	/* INFIX_STATE_HPP */
-

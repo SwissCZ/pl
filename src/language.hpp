@@ -7,4 +7,3 @@ enum Language
 };
 
 #endif	/* LANGUAGE_HPP */
-

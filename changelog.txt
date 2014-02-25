@@ -1,16 +1,14 @@
 #3 (2014/02)
-- Vlastní Makefile
-- Podrobnìjší hlášení chyb
-- Odstranìní explicitního závorkování negace
+- Sestavení s novým vlastním Makefile
+- Podrobnìjší hlášení chyb parseru
+- Odstranìní povinného závorkování negace
+- Podpora jazykù ASCII, angliètina a TeX
+- Konfigurace programu parametry
 
 #2 (2014/01)
-- Ètení ze vstupního proudu
-- Kontrola syntaxe formulí
-
-- Syntaxe: pl [0-2] [0-2]
+- Sekvenèní ètení ze vstupního proudu
+- Kontrola syntaxe a hlášení chyb
 
 #1 (2013/12)
-- Zpracování pouze validních formulí
-- Podpora všech tøí notací
-
-- Syntaxe: pl [0-2] [0-2] (formule)
+- Podpora pouze validních formulí
+- Podpora notací prefix, infix, postfix

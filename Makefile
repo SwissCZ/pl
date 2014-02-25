@@ -1,3 +1,4 @@
+# Variables definition
 GXX=g++
 OPTS=-Wall -pedantic -std=c++11
 NAME=pl
@@ -6,10 +7,10 @@ DIST=dist
 SRC=src
 FILES=formula.o main.o parse.o parse_exception.o settings.o syntax_exception.o
 
-# Toto je zde pouze kvůli NetBeans, které tento cíl volají.
+# NetBeans workaround
 all: $(NAME)
 
-# Vyčistí pomocné soubory potřebné k sestavení programu.
+# Unnecessary files cleanup
 clean:
 	rm -f $(DIST)/$(NAME) $(BUILD)/*.o $(BUILD)/*.o.d
 
@@ -17,10 +18,10 @@ prepare:
 	mkdir -p $(BUILD)
 	mkdir -p $(DIST)
 
-# Výchozí cíl pro spuštění 'make' bez cíle.
+# Default make target
 $(NAME): prepare $(FILES)
 	cd $(BUILD); $(GXX) $(FILES) -o ../$(DIST)/$(NAME) $(OPTS)
 
-# Univerzální pravidlo pro kompilaci kteréhokoliv zdrojového '*.cpp' souboru.
+# Universal *.cpp file compilation rule
 %.o: $(SRC)/%.cpp
-	$(GXX) $(OPTS) -c -MMD -MP -MF $(BUILD)/$@.d $< -o $(BUILD)/$@
+	$(GXX) $(OPTS) -c -g -MMD -MP -MF $(BUILD)/$@.d $< -o $(BUILD)/$@

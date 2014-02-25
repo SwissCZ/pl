@@ -1,12 +1,14 @@
-#ifndef LANGUAGE_RESOURCE_HPP
-#define	LANGUAGE_RESOURCE_HPP
+#ifndef LANGUAGE_DEFINITION_HPP
+#define	LANGUAGE_DEFINITION_HPP
 
 #include <map>
 
 #include "connective.hpp"
 #include "language.hpp"
 
-const std::map<Connective, std::map<Language, const char * >> RESOURCE = {
+using namespace std;
+
+const map<Connective, std::map<Language, const char * >> language_map = {
     {NEGATION,
         {
             {ASCII, "-"},
@@ -39,5 +41,4 @@ const std::map<Connective, std::map<Language, const char * >> RESOURCE = {
         }}
 };
 
-#endif	/* LANGUAGE_RESOURCE_HPP */
-
+#endif	/* LANGUAGE_DEFINITION_HPP */

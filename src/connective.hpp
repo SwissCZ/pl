@@ -7,4 +7,3 @@ enum Connective
 };
 
 #endif	/* CONNECTIVE_HPP */
-

@@ -3,10 +3,12 @@
 
 #include <exception>
 
-class SyntaxException : public std::exception
+using namespace std;
+
+class SyntaxException : public exception
 {
 protected:
-    const char * program;
+    const char * program_name;
 public:
     SyntaxException(const char *);
 };
@@ -20,5 +22,13 @@ public:
     virtual const char * what() const throw ();
 };
 
-#endif	/* SYNTAX_EXCEPTION_HPP */
+class FileNotFoundException : public SyntaxException
+{
+private:
+    char parameter;
+public:
+    FileNotFoundException(const char *, const char);
+    virtual const char * what() const throw ();
+};
 
+#endif	/* SYNTAX_EXCEPTION_HPP */

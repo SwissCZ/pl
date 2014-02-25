@@ -6,14 +6,16 @@
 #include "connective.hpp"
 #include "language.hpp"
 
+using namespace std;
+
 class Formula
 {
 public:
     Formula();
     virtual ~Formula();
-    virtual std::string printPrefix(Language &) const = 0;
-    virtual std::string printInfix(Language &) const = 0;
-    virtual std::string printPostfix(Language &) const = 0;
+    virtual string printPrefix(Language) const = 0;
+    virtual string printInfix(Language) const = 0;
+    virtual string printPostfix(Language) const = 0;
 };
 
 class Proposition : public Formula
@@ -23,9 +25,9 @@ private:
 public:
     Proposition(char &);
     virtual ~Proposition();
-    virtual std::string printPrefix(Language &) const;
-    virtual std::string printInfix(Language &) const;
-    virtual std::string printPostfix(Language &) const;
+    virtual string printPrefix(Language) const;
+    virtual string printInfix(Language) const;
+    virtual string printPostfix(Language) const;
 };
 
 class Operator : public Formula
@@ -35,11 +37,11 @@ protected:
 public:
     Operator(Connective);
     virtual ~Operator();
-    virtual std::string printPrefix(Language &) const = 0;
-    virtual std::string printInfix(Language &) const = 0;
-    virtual std::string printPostfix(Language &) const = 0;
-    virtual int addOperandRightwards(Formula *) = 0;
-    virtual int addOperandLeftwards(Formula *) = 0;
+    virtual string printPrefix(Language) const = 0;
+    virtual string printInfix(Language) const = 0;
+    virtual string printPostfix(Language) const = 0;
+    virtual int appendFirst(Formula *) = 0;
+    virtual int appendLast(Formula *) = 0;
 };
 
 class UnaryOperator : public Operator
@@ -49,27 +51,26 @@ private:
 public:
     UnaryOperator(Connective);
     virtual ~UnaryOperator();
-    virtual std::string printPrefix(Language &) const;
-    virtual std::string printInfix(Language &) const;
-    virtual std::string printPostfix(Language &) const;
-    virtual int addOperandRightwards(Formula *);
-    virtual int addOperandLeftwards(Formula *);
+    virtual string printPrefix(Language) const;
+    virtual string printInfix(Language) const;
+    virtual string printPostfix(Language) const;
+    virtual int appendFirst(Formula *);
+    virtual int appendLast(Formula *);
 };
 
 class BinaryOperator : public Operator
 {
 private:
-    Formula * leftOperand = NULL;
-    Formula * rightOperand = NULL;
+    Formula * left_operand = NULL;
+    Formula * right_operand = NULL;
 public:
     BinaryOperator(Connective);
     virtual ~BinaryOperator();
-    virtual std::string printPrefix(Language &) const;
-    virtual std::string printInfix(Language &) const;
-    virtual std::string printPostfix(Language &) const;
-    virtual int addOperandRightwards(Formula *);
-    virtual int addOperandLeftwards(Formula *);
+    virtual string printPrefix(Language) const;
+    virtual string printInfix(Language) const;
+    virtual string printPostfix(Language) const;
+    virtual int appendFirst(Formula *);
+    virtual int appendLast(Formula *);
 };
 
 #endif	/* FORMULA_HPP */
-

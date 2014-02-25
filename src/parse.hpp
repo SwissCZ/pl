@@ -7,7 +7,9 @@
 #include "connective.hpp"
 #include "formula.hpp"
 
-const std::map<const char, Connective> CONNECTIVES = {
+using namespace std;
+
+const map<const char, Connective> connective_map = {
     {'-', NEGATION},
     {'.', CONJUNCTION},
     {'+', DISJUNCTION},
@@ -15,9 +17,8 @@ const std::map<const char, Connective> CONNECTIVES = {
     {'=', EQUIVALENCE}
 };
 
-Formula * parsePrefix(std::istream &);
-Formula * parseInfix(std::istream &);
-Formula * parsePostfix(std::istream &);
+Formula * parsePrefix(istream &);
+Formula * parseInfix(istream &);
+Formula * parsePostfix(istream &);
 
 #endif	/* PARSE_HPP */
-

@@ -7,4 +7,3 @@ enum Notation
 };
 
 #endif	/* NOTATION_HPP */
-
