@@ -5,40 +5,58 @@
 
 using namespace std;
 
+/**
+ * Formula parse error.
+ */
 class ParseException : public exception
 {
 };
 
-class UnexpectedElementException : public ParseException
+/**
+ * Localized error. Parse error specified by character and its position.
+ */
+class LocalizedParseException : public ParseException
 {
 protected:
-    char character;
-    int position;
+    char character; ///< Character that caused the error
+    int position; ///< Error-causing character position
+public:
+    LocalizedParseException(const char &, const int &);
+};
+
+/**
+ * Unexpected element. Parsed element was not expected at current position.
+ */
+class UnexpectedElementException : public LocalizedParseException
+{
 public:
     UnexpectedElementException(const char &, const int &);
     virtual const char * what() const throw ();
 };
 
-class UnnecessaryElementException : public ParseException
+/**
+ * Unnecessary element. The formula has been finished before reading this character.
+ */
+class UnnecessaryElementException : public LocalizedParseException
 {
-protected:
-    char character;
-    int position;
 public:
     UnnecessaryElementException(const char &, const int &);
     virtual const char * what() const throw ();
 };
 
-class IllegalCharacterException : public ParseException
+/**
+ * Illegal character. Illegal character was read.
+ */
+class IllegalCharacterException : public LocalizedParseException
 {
-protected:
-    char character;
-    int position;
 public:
     IllegalCharacterException(const char &, const int &);
     virtual const char * what() const throw ();
 };
 
+/**
+ * Incomplete formula. The formula has not been finished yet.
+ */
 class IncompleteFormulaException : public ParseException
 {
 public:
@@ -46,6 +64,9 @@ public:
     virtual const char * what() const throw ();
 };
 
+/**
+ * Unexpected end of stream. The stream end was not expected yet.
+ */
 class UnexpectedEOFException : public ParseException
 {
 public:

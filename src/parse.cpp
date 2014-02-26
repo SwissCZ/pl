@@ -202,7 +202,7 @@ Formula * parseInfix(std::istream & input)
                         input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                         throw UnexpectedElementException(buffer, position);
                     }
-                } else if (stateStack.top() == BLANK || stateStack.top() == OPERATOR)
+                } else if (stateStack.top() == BLANK || stateStack.top() == BINARY)
                 {
                     // Before first or second operand
                     stateStack.top()++;
@@ -230,7 +230,7 @@ Formula * parseInfix(std::istream & input)
                 }
                 break;
             case '-':
-                if (stateStack.empty() || stateStack.top() == BLANK || stateStack.top() == OPERATOR || stateStack.top() == UNARY)
+                if (stateStack.empty() || stateStack.top() == BLANK || stateStack.top() == BINARY || stateStack.top() == UNARY)
                 {
                     // Unary operation
                     stateStack.push(UNARY);
@@ -254,7 +254,7 @@ Formula * parseInfix(std::istream & input)
                 } else if (stateStack.top() == FIRST_OPERAND)
                 {
                     // Between operands
-                    stateStack.top() = OPERATOR;
+                    stateStack.top() = BINARY;
                     operatorStack.push(new BinaryOperator(connective_map.at(buffer)));
                 } else
                 {
@@ -276,7 +276,7 @@ Formula * parseInfix(std::istream & input)
                         input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                         throw UnnecessaryElementException(buffer, position);
                     }
-                } else if (stateStack.top() == BLANK || stateStack.top() == OPERATOR || stateStack.top() == UNARY)
+                } else if (stateStack.top() == BLANK || stateStack.top() == BINARY || stateStack.top() == UNARY)
                 {
                     // Subformula openning
                     stateStack.push(BLANK);

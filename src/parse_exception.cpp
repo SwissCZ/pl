@@ -2,10 +2,14 @@
 
 #include "parse_exception.hpp"
 
-UnexpectedElementException::UnexpectedElementException(const char & character, const int & position)
+LocalizedParseException::LocalizedParseException(const char &, const int &)
 {
     this->character = character;
     this->position = position;
+}
+
+UnexpectedElementException::UnexpectedElementException(const char & character, const int & position) : LocalizedParseException(character, position)
+{
 }
 
 const char * UnexpectedElementException::what() const throw ()
@@ -15,10 +19,8 @@ const char * UnexpectedElementException::what() const throw ()
     return stream.str().c_str();
 }
 
-UnnecessaryElementException::UnnecessaryElementException(const char & character, const int & position)
+UnnecessaryElementException::UnnecessaryElementException(const char & character, const int & position) : LocalizedParseException(character, position)
 {
-    this->character = character;
-    this->position = position;
 }
 
 const char * UnnecessaryElementException::what() const throw ()
@@ -28,10 +30,8 @@ const char * UnnecessaryElementException::what() const throw ()
     return stream.str().c_str();
 }
 
-IllegalCharacterException::IllegalCharacterException(const char & character, const int & position)
+IllegalCharacterException::IllegalCharacterException(const char & character, const int & position) : LocalizedParseException(character, position)
 {
-    this->character = character;
-    this->position = position;
 }
 
 const char * IllegalCharacterException::what() const throw ()

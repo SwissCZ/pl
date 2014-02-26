@@ -26,13 +26,13 @@ using namespace std;
 int main(int argc, char ** argv)
 {
     // Variables definition
-    Settings * settings; //< Program settings structure
+    Configuration * settings; //< Program settings structure
     int exit_code = STATUS_OK; //< Program exit status code
 
     // Command line arguments processing
     try
     {
-        settings = new Settings(argc, argv);
+        settings = new Configuration(argc, argv);
     } catch (SyntaxException & ex)
     {
         cerr << ex.what() << endl;
@@ -50,7 +50,7 @@ int main(int argc, char ** argv)
                 {
                     try
                     {
-                        formula = parseInfix(*(settings->input_stream));
+                        formula = parseInfix(*(settings->inputStream));
                         delete formula;
                     } catch (ParseException & ex)
                     {

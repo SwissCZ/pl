@@ -4,6 +4,7 @@
 - Odstranìní povinného závorkování negace
 - Podpora jazykù ASCII, angliètina a TeX
 - Konfigurace programu parametry
+- Doxygen dokumentace zdrojového kódu
 
 #2 (2014/01)
 - Sekvenèní ètení ze vstupního proudu

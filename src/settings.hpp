@@ -7,16 +7,21 @@
 #include "notation.hpp"
 #include "target.hpp"
 
-struct Settings
-{
-    Language output_language = ASCII;
-    Notation input_notation = INFIX;
-    Notation output_notation = INFIX;
-    Target target = DEFAULT;
-    std::istream * input_stream = &std::cin;
+using namespace std;
 
-    Settings(int argc, char ** argv);
-    ~Settings();
+/**
+ * Program configuration structure.
+ */
+struct Configuration
+{
+    Notation inputNotation = INFIX; ///< Expected input notion
+    Notation outputNotation = INFIX; ///< Output formulas notation
+    Language outputLanguage = ASCII; ///< Output formulas language
+    Target target = DEFAULT; ///< Target to be performed
+    istream * inputStream = &cin; ///< Input stream to be read from
+
+    Configuration(int argc, char ** argv);
+    ~Configuration();
 };
 
 #endif	/* SETTINGS_HPP */

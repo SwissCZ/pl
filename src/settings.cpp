@@ -6,7 +6,7 @@
 #include "settings.hpp"
 #include "syntax_exception.hpp"
 
-Settings::Settings(int argc, char** argv)
+Configuration::Configuration(int argc, char** argv)
 {
     std::map<std::string, Notation> notationMap = {
         {"prefix", PREFIX},
@@ -26,7 +26,7 @@ Settings::Settings(int argc, char** argv)
             case 'i':
                 try
                 {
-                    input_notation = notationMap.at(optarg);
+                    inputNotation = notationMap.at(optarg);
                 } catch (std::out_of_range & ex)
                 {
                     if (!std::string(optarg).empty())
@@ -38,7 +38,7 @@ Settings::Settings(int argc, char** argv)
             case 'o':
                 try
                 {
-                    output_notation = notationMap.at(optarg);
+                    outputNotation = notationMap.at(optarg);
                 } catch (std::out_of_range & ex)
                 {
                     if (!std::string(optarg).empty())
@@ -50,7 +50,7 @@ Settings::Settings(int argc, char** argv)
             case 'l':
                 try
                 {
-                    output_language = languageMap.at(optarg);
+                    outputLanguage = languageMap.at(optarg);
                 } catch (std::out_of_range & ex)
                 {
                     if (!std::string(optarg).empty())
@@ -60,10 +60,11 @@ Settings::Settings(int argc, char** argv)
                 }
                 break;
             case 'f':
-                input_stream = new std::ifstream(optarg, std::ios::binary | std::ios::in);
+                inputStream = new std::ifstream(optarg, std::ios::binary | std::ios::in);
 
-                if (input_stream->fail() && !std::string(optarg).empty())
+                if (inputStream->fail() && !std::string(optarg).empty())
                 {
+                    std::cout << optarg << std::endl;
                     throw FileNotFoundException(argv[0], optopt);
                 }
                 break;
@@ -71,8 +72,8 @@ Settings::Settings(int argc, char** argv)
     }
 }
 
-Settings::~Settings()
+Configuration::~Configuration()
 {
-    delete input_stream;
+    delete inputStream;
 }
 

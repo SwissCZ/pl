@@ -5,27 +5,33 @@
 
 using namespace std;
 
+/**
+ * Program syntax error.
+ */
 class SyntaxException : public exception
 {
 protected:
-    const char * program_name;
+    const char * program_name; ///< This program's name
+    char parameter; ///< Parameter that caused the error
 public:
-    SyntaxException(const char *);
+    SyntaxException(const char *, const char);
 };
 
+/**
+ * Unsupported value error. Unsupported parameter value error was set.
+ */
 class UnsupportedValueException : public SyntaxException
 {
-private:
-    char parameter;
 public:
     UnsupportedValueException(const char *, const char);
     virtual const char * what() const throw ();
 };
 
+/**
+ * File not found error. Specified file was not found.
+ */
 class FileNotFoundException : public SyntaxException
 {
-private:
-    char parameter;
 public:
     FileNotFoundException(const char *, const char);
     virtual const char * what() const throw ();

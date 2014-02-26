@@ -1,9 +1,16 @@
 #ifndef INFIX_STATE_HPP
 #define	INFIX_STATE_HPP
 
+/**
+ * Infix-format-parsed formula state.
+ */
 enum InfixState
 {
-    BLANK, FIRST_OPERAND, OPERATOR, LAST_OPERAND, UNARY
+    BLANK, ///< New level was openned
+    UNARY, ///< Unary operator was set
+    FIRST_OPERAND, ///< First operand was set
+    BINARY, ///< Binary operator was set
+    LAST_OPERAND ///< Last operand was set
 };
 
 #endif	/* INFIX_STATE_HPP */
