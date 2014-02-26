@@ -64,7 +64,6 @@ Configuration::Configuration(int argc, char** argv)
 
                 if (inputStream->fail() && !std::string(optarg).empty())
                 {
-                    std::cout << optarg << std::endl;
                     throw FileNotFoundException(argv[0], optopt);
                 }
                 break;

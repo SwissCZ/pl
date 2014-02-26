@@ -45,19 +45,17 @@ int main(int argc, char ** argv)
         {
             case DEFAULT:
                 Formula * formula;
-                formula = NULL;
-                do
+                try
                 {
-                    try
+                    while ((formula = parseInfix(*(configuration->inputStream))) != NULL)
                     {
                         delete formula;
-                        formula = parseInfix(*(configuration->inputStream));
-                    } catch (ParseException & ex)
-                    {
-                        cerr << ex.what() << endl;
-                        exitCode = STATUS_ERROR;
                     }
-                } while (formula != NULL && exitCode == STATUS_OK);
+                } catch (ParseException & ex)
+                {
+                    cerr << ex.what() << endl;
+                    exitCode = STATUS_ERROR;
+                }
                 break;
             default:
                 cerr << "Unimplemented target." << endl;

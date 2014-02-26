@@ -9,7 +9,7 @@
 Formula * parsePrefix(std::istream & input)
 {
     std::stack<Operator *> stack;
-    Formula * tmp;
+    Formula * tmp = NULL;
     char buffer;
     int position = 1;
     bool run = true;
@@ -122,7 +122,6 @@ Formula * parsePrefix(std::istream & input)
                 {
                     // Formula sequence end
                     run = false;
-                    return NULL;
                 } else
                 {
                     // Unexpected end of stream
@@ -336,7 +335,7 @@ Formula * parseInfix(std::istream & input)
                 if (position == 1)
                 {
                     // Formula sequence ending
-                    return NULL;
+                    run = false;
                 } else
                 {
                     // Unexpected end of stream
@@ -354,8 +353,15 @@ Formula * parseInfix(std::istream & input)
 
     if (stateStack.empty())
     {
-        // All brackets were closed
-        return stack.top();
+        if (position == 2)
+        {
+            // Empty line was parsed
+            return NULL;
+        } else
+        {
+            // All brackets were closed
+            return stack.top();
+        }
     } else
     {
         // Some brackets were not closed
@@ -451,7 +457,7 @@ Formula * parsePostfix(std::istream & input)
                 if (position == 1)
                 {
                     // Formula sequence end
-                    return NULL;
+                    run = false;
                 } else
                 {
                     // Unexpected end of stream
@@ -467,7 +473,12 @@ Formula * parsePostfix(std::istream & input)
         position++;
     }
 
-    if (stack.size() == 1)
+    if (position == 2)
+    {
+        // Empty line was parsed
+        return NULL;
+    } else
+        if (stack.size() == 1)
     {
         // All operands were set
         return stack.top();
