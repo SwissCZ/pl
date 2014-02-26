@@ -18,7 +18,6 @@ using namespace std;
 
 /**
  * Main program function.
- * 
  * @param argc Command line arguments count
  * @param argv Command line arguments array
  * @return STATUS_OK on proper execution, STATUS_ERROR otherwise.
@@ -26,48 +25,49 @@ using namespace std;
 int main(int argc, char ** argv)
 {
     // Variables definition
-    Configuration * settings; //< Program settings structure
-    int exit_code = STATUS_OK; //< Program exit status code
+    Configuration * configuration = NULL;
+    int exitCode = STATUS_OK;
 
     // Command line arguments processing
     try
     {
-        settings = new Configuration(argc, argv);
+        configuration = new Configuration(argc, argv);
     } catch (SyntaxException & ex)
     {
         cerr << ex.what() << endl;
-        exit_code = STATUS_ERROR;
+        exitCode = STATUS_ERROR;
     }
 
     // Program execution
-    if (exit_code == STATUS_OK)
+    if (exitCode == STATUS_OK)
     {
-        switch (settings->target)
+        switch (configuration->target)
         {
             case DEFAULT:
                 Formula * formula;
+                formula = NULL;
                 do
                 {
                     try
                     {
-                        formula = parseInfix(*(settings->inputStream));
                         delete formula;
+                        formula = parseInfix(*(configuration->inputStream));
                     } catch (ParseException & ex)
                     {
                         cerr << ex.what() << endl;
-                        exit_code = STATUS_ERROR;
+                        exitCode = STATUS_ERROR;
                     }
-                } while (formula != NULL && exit_code == STATUS_OK);
+                } while (formula != NULL && exitCode == STATUS_OK);
                 break;
             default:
                 cerr << "Unimplemented target." << endl;
-                exit_code = STATUS_ERROR;
+                exitCode = STATUS_ERROR;
                 break;
         }
     }
 
     // Cleanup & exit
-    delete settings;
+    delete configuration;
 
-    return exit_code;
+    return exitCode;
 }

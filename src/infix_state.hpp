@@ -7,10 +7,10 @@
 enum InfixState
 {
     BLANK, ///< New level was openned
-    UNARY, ///< Unary operator was set
     FIRST_OPERAND, ///< First operand was set
     BINARY, ///< Binary operator was set
-    LAST_OPERAND ///< Last operand was set
+    LAST_OPERAND, ///< Last operand was set
+    UNARY ///< Unary operator was set
 };
 
 #endif	/* INFIX_STATE_HPP */
