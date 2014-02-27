@@ -2,7 +2,7 @@
 #define	OPERATION_HPP
 
 /**
- * Logical operations.
+ * Logical operations. Supported logical operators.
  */
 enum Operation
 {

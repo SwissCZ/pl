@@ -2,7 +2,7 @@
 #define	LANGUAGE_HPP
 
 /**
- * Output languages.
+ * Output languages. Supported connective formats for the output.
  */
 enum Language
 {

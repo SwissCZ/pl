@@ -2,7 +2,7 @@
 #define	INFIX_STATE_HPP
 
 /**
- * Infix-format-parsed formula state.
+ * Infix-format-parsed formula state. Indicates the level of completition of the current expression when parsing in infix.
  */
 enum InfixState
 {

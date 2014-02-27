@@ -6,25 +6,35 @@
 using namespace std;
 
 /**
- * Program syntax error.
+ * Syntax error. Used to signalize an invalid syntax on program usage.
  */
 class SyntaxException : public exception
 {
 protected:
-    const char * program_name; ///< This program's name
-    char parameter; ///< Parameter that caused the error
+    const char * programName; ///< Program name
+    const char * message; ///< Error message
+    char parameter; ///< Parameter causing the error
 public:
-    SyntaxException(const char *, const char);
+    SyntaxException(const char *, const char *, const char);
+    virtual const char * what() const throw ();
 };
 
 /**
- * Unsupported value error. Unsupported parameter value error was set.
+ * Multiple targets error. Multiple targets were set to be performed.
+ */
+class MultipleTargetsException : public SyntaxException
+{
+public:
+    MultipleTargetsException(const char *, const char);
+};
+
+/**
+ * Unsupported value error. Unsupported parameter value was set.
  */
 class UnsupportedValueException : public SyntaxException
 {
 public:
     UnsupportedValueException(const char *, const char);
-    virtual const char * what() const throw ();
 };
 
 /**
@@ -34,7 +44,6 @@ class FileNotFoundException : public SyntaxException
 {
 public:
     FileNotFoundException(const char *, const char);
-    virtual const char * what() const throw ();
 };
 
 #endif	/* SYNTAX_EXCEPTION_HPP */

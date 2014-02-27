@@ -94,13 +94,13 @@ Formula * parsePrefix(std::istream & input)
                 if (stack.size())
                 {
                     // Stack top operands are not all set
-                    stack.push(new BinaryOperator(connective_map.at(buffer)));
+                    stack.push(new BinaryOperator(connectiveMap.at(buffer)));
                 } else
                 {
                     if (position == 1)
                     {
                         // Initial operator
-                        stack.push(new BinaryOperator(connective_map.at(buffer)));
+                        stack.push(new BinaryOperator(connectiveMap.at(buffer)));
                     } else
                     {
                         // No more operands are needed
@@ -254,7 +254,7 @@ Formula * parseInfix(std::istream & input)
                 {
                     // Between operands
                     stateStack.top() = BINARY;
-                    operatorStack.push(new BinaryOperator(connective_map.at(buffer)));
+                    operatorStack.push(new BinaryOperator(connectiveMap.at(buffer)));
                 } else
                 {
                     // Illegal element position
@@ -431,7 +431,7 @@ Formula * parsePostfix(std::istream & input)
                 if (stack.size() >= 2)
                 {
                     // Two operands available on the stack
-                    tmp = new BinaryOperator(connective_map.at(buffer));
+                    tmp = new BinaryOperator(connectiveMap.at(buffer));
                     for (int i = 0; i < 2; i++)
                     {
                         tmp->appendLast(stack.top());

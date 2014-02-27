@@ -2,7 +2,7 @@
 #define	NOTATION_HPP
 
 /**
- * Output notation.
+ * Output notation. Supported notations for the output.
  */
 enum Notation
 {

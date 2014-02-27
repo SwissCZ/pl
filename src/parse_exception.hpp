@@ -6,19 +6,19 @@
 using namespace std;
 
 /**
- * Formula parse error.
+ * Formula parse error. Indicates invalid formula syntax.
  */
 class ParseException : public exception
 {
 };
 
 /**
- * Localized error. Parse error specified by character and its position.
+ * Localized error. Parse error specified by the character and position.
  */
 class LocalizedParseException : public ParseException
 {
 protected:
-    char character; ///< Character that caused the error
+    char character; ///< Character causing the error
     int position; ///< Error-causing character position
 public:
     LocalizedParseException(const char &, const int &);
@@ -35,7 +35,7 @@ public:
 };
 
 /**
- * Unnecessary element. The formula has been finished before reading this character.
+ * Unnecessary element. The formula has been already finished before parsing this element.
  */
 class UnnecessaryElementException : public LocalizedParseException
 {

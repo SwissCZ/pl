@@ -4,12 +4,12 @@
 #include <cstdio>
 #include <map>
 
-#include "operation.hpp"
 #include "formula.hpp"
+#include "operation.hpp"
 
 using namespace std;
 
-const map<const char, Operation> connective_map = {
+const map<const char, Operation> connectiveMap = {
     {'-', NEGATION},
     {'.', CONJUNCTION},
     {'+', DISJUNCTION},
@@ -19,21 +19,21 @@ const map<const char, Operation> connective_map = {
 
 /**
  * Parses a formula in prefix notation into an expression tree.
- * @param Input stream to read from
- * @return Expression tree root node
+ * @param input Input stream to be parsed
+ * @return Formula expression tree root node
  */
-Formula * parsePrefix(istream &);
+Formula * parsePrefix(istream & input);
 /**
- * The same as parsePrefix but infix notation is used.
- * @param Input stream to read from
- * @return Expression tree root node
+ * Parses a formula in infix notation into an expression tree.
+ * @param input Input stream to be parsed
+ * @return Formula expression tree root node
  */
-Formula * parseInfix(istream &);
+Formula * parseInfix(istream & input);
 /**
- * The same as parsePrefix but postfix notation is used.
- * @param Input stream to read from
- * @return Expression tree root node
+ * Parses a formula in postfix notation into an expression tree.
+ * @param input Input stream to be parsed
+ * @return Formula expression tree root node
  */
-Formula * parsePostfix(istream &);
+Formula * parsePostfix(istream & input);
 
 #endif	/* PARSE_HPP */

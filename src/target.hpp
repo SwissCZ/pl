@@ -2,11 +2,11 @@
 #define	TARGET_HPP
 
 /**
- * Program targets.
+ * Program targets. Indicates the available targets of the program.
  */
 enum Target
 {
-    DEFAULT ///< Parse input, report errors and exit
+    DEFAULT ///< Parse input & report errors
 };
 
 #endif	/* TARGET_HPP */

@@ -4,8 +4,8 @@
 #include <map>
 #include <string>
 
-#include "operation.hpp"
 #include "language.hpp"
+#include "operation.hpp"
 
 using namespace std;
 
@@ -49,27 +49,27 @@ class Formula
 {
 public:
     /**
-     * Destructor causes chained destruction of the whole expression tree.
+     * Causes chained destruction of the whole expression tree.
      */
     virtual ~Formula();
     /**
      * Creates a textual representation of this formula in the prefix notation and the specified language.
-     * @param Output language
+     * @param language Output language
      * @return String representation of this formula
      */
-    virtual string printPrefix(Language) const = 0;
+    virtual string printPrefix(Language language) const = 0;
     /**
-     * The same as printPrefix but infix notation is used.
-     * @param Language of connectives
+     * Creates a textual representation of this formula in the infix notation and the specified language.
+     * @param language Language of connectives
      * @return String representation of this formula
      */
-    virtual string printInfix(Language) const = 0;
+    virtual string printInfix(Language language) const = 0;
     /**
-     * The same as printPrefix but postfix notation is used.
-     * @param Language of connectives
+     * Creates a textual representation of this formula in the postfix notation and the specified language.
+     * @param language Language of connectives
      * @return String representation of this formula
      */
-    virtual string printPostfix(Language) const = 0;
+    virtual string printPostfix(Language language) const = 0;
 };
 
 /**
@@ -92,21 +92,21 @@ public:
 class Operator : public Formula
 {
 protected:
-    Operation operation; ///< Operation representing this operator
+    Operation operation; ///< Operation represented by this operator
 public:
     Operator(Operation);
     /**
      * Appends a formula as an operand to the first available position.
-     * @param Formula to be set as an operand
+     * @param formula Formula to be set as an operand
      * @return Unset operands count
      */
-    virtual int appendFirst(Formula *) = 0;
+    virtual int appendFirst(Formula * formula) = 0;
     /**
      * Appends a formula as an operand to the last available position.
-     * @param Formula to be set as an operand
+     * @param formula Formula to be set as an operand
      * @return Unset operands count
      */
-    virtual int appendLast(Formula *) = 0;
+    virtual int appendLast(Formula * formula) = 0;
 };
 
 /**

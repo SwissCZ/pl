@@ -115,4 +115,3 @@ int BinaryOperator::appendLast(Formula * operand)
         return 0;
     }
 }
-

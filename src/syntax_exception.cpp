@@ -2,26 +2,28 @@
 
 #include "syntax_exception.hpp"
 
-SyntaxException::SyntaxException(const char * program, const char parameter)
+using namespace std;
+
+SyntaxException::SyntaxException(const char * programName, const char * message, const char parameter)
 {
-    this->program_name = program;
+    this->programName = programName;
+    this->message = message;
     this->parameter = parameter;
 }
 
-UnsupportedValueException::UnsupportedValueException(const char * program, const char parameter) : SyntaxException(program, parameter)
+const char * SyntaxException::what() const throw ()
+{
+    return (string() + programName + ": " + message + " -- " + parameter).c_str();
+}
+
+MultipleTargetsException::MultipleTargetsException(const char * program, const char parameter) : SyntaxException(program, "too many targets", parameter)
 {
 }
 
-const char * UnsupportedValueException::what() const throw ()
-{
-    return (std::string() + program_name + ": " + "invalid option value -- " + parameter).c_str();
-}
-
-FileNotFoundException::FileNotFoundException(const char * program, const char parameter) : SyntaxException(program, parameter)
+UnsupportedValueException::UnsupportedValueException(const char * program, const char parameter) : SyntaxException(program, "invalid option value", parameter)
 {
 }
 
-const char * FileNotFoundException::what() const throw ()
+FileNotFoundException::FileNotFoundException(const char * program, const char parameter) : SyntaxException(program, "file not found", parameter)
 {
-    return (std::string() + program_name + ": " + "file not found -- " + parameter).c_str();
 }

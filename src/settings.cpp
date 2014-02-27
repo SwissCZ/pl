@@ -1,6 +1,6 @@
-#include <unistd.h>
-#include <map>
 #include <fstream>
+#include <getopt.h>
+#include <map>
 #include <streambuf>
 
 #include "settings.hpp"
