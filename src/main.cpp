@@ -1,7 +1,7 @@
 /**
- * @mainpage Propositional logic formulas handler
+ * @mainpage Handle formulas of propositional logic
  *
- * <h2>About</h2>
+ * <h1>About</h1>
  * 
  * Description here.
  */

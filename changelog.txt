@@ -1,15 +1,18 @@
 #3 (2014/02)
-- Sestavení s novım vlastním Makefile
-- Podrobnìjší hlášení chyb parseru
-- Odstranìní povinného závorkování negace
-- Podpora jazykù ASCII, angliètina a TeX
-- Konfigurace programu parametry
-- Doxygen dokumentace zdrojového kódu
+- SestavenÃ­ a instalace s vlastnÃ­m Makefile
+- PodrobnÄ›jÅ¡Ã­ hlÃ¡Å¡enÃ­ chyb parseru
+- OdstranÄ›nÃ­ povinnÃ©ho zÃ¡vorkovÃ¡nÃ­ negace
+- Podpora jazykÅ¯ ASCII, slovnÃ­ a TeX
+- Konfigurace programu parametry (pl -iolf)
+- Doxygen dokumentace zdrojovÃ©ho kÃ³du (cÃ­l doc)
+- Instalace/odinstalace software (cÃ­l install)
+- Manpage (zahrnuta v instalaci)
 
 #2 (2014/01)
-- Sekvenèní ètení ze vstupního proudu
-- Kontrola syntaxe a hlášení chyb
+- SekvenÄnÃ­ ÄtenÃ­ ze vstupnÃ­ho proudu
+- Kontrola syntaxe & hlÃ¡Å¡enÃ­ chyb
 
 #1 (2013/12)
-- Podpora pouze validních formulí
-- Podpora notací prefix, infix, postfix
+- ÄŒtenÃ­ z Å™Ã¡dkovÃ©ho bufferu
+- Podpora validnÃ­ch formulÃ­
+- Podpora vÅ¡ech notacÃ­
