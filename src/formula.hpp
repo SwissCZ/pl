@@ -5,11 +5,11 @@
 #include <string>
 
 #include "language.hpp"
-#include "operation.hpp"
+#include "connective.hpp"
 
 using namespace std;
 
-const map<Operation, std::map<Language, const char * >> languageMap = {
+const map<Connective, std::map<Language, const char * >> languageMap = {
     {NEGATION,
         {
             {ASCII, "-"},
@@ -37,13 +37,14 @@ const map<Operation, std::map<Language, const char * >> languageMap = {
     {EQUIVALENCE,
         {
             {ASCII, "="},
-            {COMMON, " is "},
+            {COMMON, " iff "},
             {TEX, "\\leftrightarrow"}
         }}
 }; ///< Output language definition
 
 /**
- * Propositional formula. Formulas could be trivial (A) or more sophisticated -(A+B).
+ * Propositional formula. Formulas could be trivial (A) or more sophisticated
+ * -(A+B).
  */
 class Formula
 {
@@ -53,19 +54,22 @@ public:
      */
     virtual ~Formula();
     /**
-     * Creates a textual representation of this formula in the prefix notation and the specified language.
+     * Creates a textual representation of this formula in the prefix notation
+     * and the specified language.
      * @param language Output language
      * @return String representation of this formula
      */
     virtual string printPrefix(Language language) const = 0;
     /**
-     * Creates a textual representation of this formula in the infix notation and the specified language.
+     * Creates a textual representation of this formula in the infix notation
+     * and the specified language.
      * @param language Language of connectives
      * @return String representation of this formula
      */
     virtual string printInfix(Language language) const = 0;
     /**
-     * Creates a textual representation of this formula in the postfix notation and the specified language.
+     * Creates a textual representation of this formula in the postfix notation
+     * and the specified language.
      * @param language Language of connectives
      * @return String representation of this formula
      */
@@ -92,9 +96,9 @@ public:
 class Operator : public Formula
 {
 protected:
-    Operation operation; ///< Operation represented by this operator
+    Connective operation; ///< Operation represented by this operator
 public:
-    Operator(Operation);
+    Operator(Connective);
     /**
      * Appends a formula as an operand to the first available position.
      * @param formula Formula to be set as an operand
@@ -117,7 +121,7 @@ class UnaryOperator : public Operator
 private:
     Formula * operand = NULL; ///< Operand
 public:
-    UnaryOperator(Operation);
+    UnaryOperator(Connective);
     virtual ~UnaryOperator();
     virtual string printPrefix(Language) const;
     virtual string printInfix(Language) const;
@@ -135,7 +139,7 @@ private:
     Formula * leftOperand = NULL; ///< Left operand
     Formula * rightOperand = NULL; ///< Right operand
 public:
-    BinaryOperator(Operation);
+    BinaryOperator(Connective);
     virtual ~BinaryOperator();
     virtual string printPrefix(Language) const;
     virtual string printInfix(Language) const;

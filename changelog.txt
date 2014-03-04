@@ -3,16 +3,17 @@
 - Podrobnější hlášení chyb parseru
 - Odstranění povinného závorkování negace
 - Podpora jazyků ASCII, slovní a TeX
-- Konfigurace programu parametry (pl -iolf)
-- Doxygen dokumentace zdrojového kódu (cíl doc)
-- Instalace/odinstalace software (cíl install)
-- Manpage (zahrnuta v instalaci)
+- Konfigurace programu parametry
+- Doxygen dokumentace zdrojového kódu
+- Instalace/odinstalace
+- Manpage
 
 #2 (2014/01)
 - Sekvenční čtení ze vstupního proudu
-- Kontrola syntaxe & hlášení chyb
+- Kontrola syntaxe a hlášení chyb
+- Podpora syntaxe infix
 
 #1 (2013/12)
 - Čtení z řádkového bufferu
 - Podpora validních formulí
-- Podpora všech notací
+- Podpora notací prefix, postfix

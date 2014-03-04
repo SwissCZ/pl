@@ -2,8 +2,11 @@
 # Variables definition #
 ########################
 
+PREFIX=/usr/local
+BINDIR=$(PREFIX)/bin
+MANDIR=$(PREFIX)/man/man1
 GXX=g++
-OPTS=-Wall -pedantic -g -std=c++11
+OPTS=-Wall -pedantic -std=c++11
 NAME=pl
 BUILD=build
 DIST=dist
@@ -36,7 +39,7 @@ install: build .site clean
 
 # Uninstall the program
 uninstall:
-	sudo sh -c "rm -f /bin/pl /usr/share/man/man1/$(NAME).1.gz"
+	rm -f $(BINDIR) $(MANDIR)/$(NAME).1.gz
 
 ######################
 # Supporting targets #
@@ -48,7 +51,7 @@ uninstall:
 
 # Site the installation files
 .site:
-	sudo sh -c "gzip $(NAME).1; mv $(DIST)/$(NAME) /bin; mv $(NAME).1.gz /usr/share/man/man1"
+	gzip $(NAME).1; mv $(DIST)/$(NAME) $(BINDIR); mv $(NAME).1.gz $(MANDIR)
 
 # Universal *.cpp file compilation rule
 %.o: $(SRC)/%.cpp

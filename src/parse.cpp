@@ -2,9 +2,20 @@
 #include <limits>
 #include <stack>
 
-#include "infix_state.hpp"
 #include "parse.hpp"
 #include "parse_exception.hpp"
+
+/**
+ * Infix parser state. Infix parser bracket content state.
+ */
+enum InfixState
+{
+    BLANK, ///< New level was openned
+    FIRST_OPERAND, ///< First operand was set
+    BINARY, ///< Binary operator was set
+    LAST_OPERAND, ///< Last operand was set
+    UNARY ///< Unary operator was set
+};
 
 Formula * parsePrefix(std::istream & input)
 {
@@ -63,7 +74,8 @@ Formula * parsePrefix(std::istream & input)
                     } else
                     {
                         // No more operands are needed
-                        input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        input.ignore(std::numeric_limits<std::streamsize>::max()
+                                , '\n');
                         throw UnnecessaryElementException(buffer, position);
                     }
                 }
@@ -82,7 +94,8 @@ Formula * parsePrefix(std::istream & input)
                     } else
                     {
                         // No more operands are needed
-                        input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        input.ignore(std::numeric_limits<std::streamsize>::max()
+                                , '\n');
                         throw UnnecessaryElementException(buffer, position);
                     }
                 }
@@ -100,11 +113,13 @@ Formula * parsePrefix(std::istream & input)
                     if (position == 1)
                     {
                         // Initial operator
-                        stack.push(new BinaryOperator(connectiveMap.at(buffer)));
+                        stack.push(new BinaryOperator(connectiveMap
+                                .at(buffer)));
                     } else
                     {
                         // No more operands are needed
-                        input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        input.ignore(std::numeric_limits<std::streamsize>::max()
+                                , '\n');
                         throw UnnecessaryElementException(buffer, position);
                     }
                 }
@@ -198,10 +213,12 @@ Formula * parseInfix(std::istream & input)
                     } else
                     {
                         // Illegal element position
-                        input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        input.ignore(std::numeric_limits<std::streamsize>::max()
+                                , '\n');
                         throw UnexpectedElementException(buffer, position);
                     }
-                } else if (stateStack.top() == BLANK || stateStack.top() == BINARY)
+                } else if (stateStack.top() == BLANK ||
+                        stateStack.top() == BINARY)
                 {
                     // Before first or second operand
                     stateStack.top()++;
@@ -224,12 +241,15 @@ Formula * parseInfix(std::istream & input)
                 } else
                 {
                     // Illegal element position
-                    input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    input.ignore(std::numeric_limits<std::streamsize>::max()
+                            , '\n');
                     throw UnexpectedElementException(buffer, position);
                 }
                 break;
             case '-':
-                if (stateStack.empty() || stateStack.top() == BLANK || stateStack.top() == BINARY || stateStack.top() == UNARY)
+                if (stateStack.empty() || stateStack.top() == BLANK
+                        || stateStack.top() == BINARY
+                        || stateStack.top() == UNARY)
                 {
                     // Unary operation
                     stateStack.push(UNARY);
@@ -237,7 +257,8 @@ Formula * parseInfix(std::istream & input)
                 } else
                 {
                     // Illegal element position
-                    input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    input.ignore(std::numeric_limits<std::streamsize>::max()
+                            , '\n');
                     throw UnexpectedElementException(buffer, position);
                 }
                 break;
@@ -247,18 +268,28 @@ Formula * parseInfix(std::istream & input)
             case '=':
                 if (stateStack.empty())
                 {
-                    // First character case
-                    input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    throw UnexpectedElementException(buffer, position);
+                    input.ignore(std::numeric_limits<std::streamsize>::max()
+                            , '\n');
+                    if (position == 1)
+                    {
+                        // First character case
+                        throw UnexpectedElementException(buffer, position);
+                    } else
+                    {
+                        // Finished formula case
+                        throw UnnecessaryElementException(buffer, position);
+                    }
                 } else if (stateStack.top() == FIRST_OPERAND)
                 {
                     // Between operands
                     stateStack.top() = BINARY;
-                    operatorStack.push(new BinaryOperator(connectiveMap.at(buffer)));
+                    operatorStack.push(new BinaryOperator(
+                            connectiveMap.at(buffer)));
                 } else
                 {
                     // Illegal element position
-                    input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    input.ignore(std::numeric_limits<std::streamsize>::max()
+                            , '\n');
                     throw UnexpectedElementException(buffer, position);
                 }
                 break;
@@ -272,17 +303,21 @@ Formula * parseInfix(std::istream & input)
                     } else
                     {
                         // Illegal position
-                        input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        input.ignore(std::numeric_limits<std::streamsize>::max()
+                                , '\n');
                         throw UnnecessaryElementException(buffer, position);
                     }
-                } else if (stateStack.top() == BLANK || stateStack.top() == BINARY || stateStack.top() == UNARY)
+                } else if (stateStack.top() == BLANK
+                        || stateStack.top() == BINARY
+                        || stateStack.top() == UNARY)
                 {
                     // Subformula openning
                     stateStack.push(BLANK);
                 } else
                 {
                     // Illegal position
-                    input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    input.ignore(std::numeric_limits<std::streamsize>::max()
+                            , '\n');
                     throw UnexpectedElementException(buffer, position);
                 }
                 break;
@@ -290,7 +325,8 @@ Formula * parseInfix(std::istream & input)
                 if (stateStack.empty())
                 {
                     // Too much closing brackets
-                    input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    input.ignore(std::numeric_limits<std::streamsize>::max()
+                            , '\n');
                     throw UnnecessaryElementException(buffer, position);
                 } else if (stateStack.top() == LAST_OPERAND)
                 {
@@ -319,7 +355,8 @@ Formula * parseInfix(std::istream & input)
                 } else
                 {
                     // Illegal position
-                    input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    input.ignore(std::numeric_limits<std::streamsize>::max()
+                            , '\n');
                     throw UnexpectedElementException(buffer, position);
                 }
                 break;
@@ -420,7 +457,8 @@ Formula * parsePostfix(std::istream & input)
                 } else
                 {
                     // Not enough operands on the stack
-                    input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    input.ignore(std::numeric_limits<std::streamsize>::max()
+                            , '\n');
                     throw UnnecessaryElementException(buffer, position);
                 }
                 break;
@@ -441,7 +479,8 @@ Formula * parsePostfix(std::istream & input)
                 } else
                 {
                     // Not enough operands on the stack
-                    input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    input.ignore(std::numeric_limits<std::streamsize>::max()
+                            , '\n');
                     throw UnnecessaryElementException(buffer, position);
                 }
                 break;
@@ -466,7 +505,8 @@ Formula * parsePostfix(std::istream & input)
                 break;
             default:
                 // Unrecognized character
-                input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                input.ignore(std::numeric_limits<std::streamsize>::max()
+                        , '\n');
                 throw IllegalCharacterException(buffer, position);
                 break;
         }

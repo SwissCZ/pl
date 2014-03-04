@@ -1,23 +1,55 @@
-.TH PL 1 "2014-02-27"
+.Dd March 1, 2014
+.Dt PL 1
+.Os Ubuntu 13.10
 
-.SH NAME
-pl - handle formulas of propositional logic
+.Sh NAME
+.Nm pl
+.Nd handle formulas of propositional logic
 
-.SH SYNOPSIS \" Todo: Unimplemented options synopsis.
-.B pl [\fB-io\fI notation] [\fB-l\fI language] [\fB-f\fI file]
+.Sh SYNOPSIS
+.Nm
+.Op Fl io Ar notation
+.Op Fl l Ar language
+.Op Fl f Ar file
 
-.SH DESCRIPTION \" Todo: Description
+.Sh DESCRIPTION
 Description here.
 
-.SH OPTIONS \" Todo: Unimplemented options description.
-.TP
-\fB-i\fI notation
-Expect specified input notation which can be\fI prefix, infix, postfix.\fR The\fI infix\fR is expected by default.
+.Ss Options
+.Bl -tag
+.It Fl i Ar notation
+Expect specified input
+.Ar notation . Can be infix, prefix or postfix.
+.It Fl o Ar notation
+Use specified output
+.Ar notation . Can be infix, prefix or postfix.
+.It Fl l Ar language
+Use specified output
+.Ar language . Can be ascii, words or tex.
+.It Fl f Ar file
+Read from the specified
+.Ar file instead of standard input.
+.El
 
-.SH EXAMPLE \" Todo: Unimplemented parameter examples.
-.TP
-echo "-(A+B)" | pl -o prefix
-Outputs "-+AB".
+.Ss Returns
+.Bl -tag
+.It 0
+Valid input.
+.It 1
+Invalid input.
 
-.SH AUTHOR
-Jan Švajcr (svajcjan@fit.cvut.cz)
+.Sh EXAMPLES
+Outputs "-+AB":
+.Dl echo \&"-(A+B)\&" | pl -o prefix
+
+.Sh STANDARDS
+Conforms to the
+.St ISO C++11
+standard.
+
+.Sh HISTORY
+Written for academic purposes in 2014.
+
+.Sh AUTHORS
+Written by
+.An Jan Švajcr Aq svajcjan@fit.cvut.cz

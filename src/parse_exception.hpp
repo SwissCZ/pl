@@ -35,7 +35,8 @@ public:
 };
 
 /**
- * Unnecessary element. The formula has been already finished before parsing this element.
+ * Unnecessary element. The formula has been already finished before parsing
+ * this element.
  */
 class UnnecessaryElementException : public LocalizedParseException
 {

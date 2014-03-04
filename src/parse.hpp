@@ -5,11 +5,11 @@
 #include <map>
 
 #include "formula.hpp"
-#include "operation.hpp"
+#include "connective.hpp"
 
 using namespace std;
 
-const map<const char, Operation> connectiveMap = {
+const map<const char, Connective> connectiveMap = {
     {'-', NEGATION},
     {'.', CONJUNCTION},
     {'+', DISJUNCTION},

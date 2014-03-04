@@ -60,7 +60,8 @@ Configuration::Configuration(int argc, char** argv)
                 }
                 break;
             case 'f':
-                inputStream = new std::ifstream(optarg, std::ios::binary | std::ios::in);
+                inputStream = new std::ifstream(optarg, std::ios::binary
+                        | std::ios::in);
 
                 if (inputStream->fail() && !std::string(optarg).empty())
                 {

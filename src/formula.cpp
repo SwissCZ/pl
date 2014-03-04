@@ -25,12 +25,12 @@ std::string Proposition::printPostfix(Language language) const
     return std::string() + this->character;
 }
 
-Operator::Operator(Operation operation) : Formula()
+Operator::Operator(Connective operation) : Formula()
 {
     this->operation = operation;
 }
 
-UnaryOperator::UnaryOperator(Operation operation) : Operator(operation)
+UnaryOperator::UnaryOperator(Connective operation) : Operator(operation)
 {
 }
 
@@ -41,17 +41,23 @@ UnaryOperator::~UnaryOperator()
 
 std::string UnaryOperator::printPrefix(Language language) const
 {
-    return std::string() + languageMap.at(operation).at(language) + operand->printPrefix(language);
+    return std::string()
+            + languageMap.at(operation).at(language)
+            + operand->printPrefix(language);
 }
 
 std::string UnaryOperator::printInfix(Language language) const
 {
-    return std::string() + languageMap.at(operation).at(language) + operand->printInfix(language);
+    return std::string()
+            + languageMap.at(operation).at(language)
+            + operand->printInfix(language);
 }
 
 std::string UnaryOperator::printPostfix(Language language) const
 {
-    return std::string() + operand->printPostfix(language) + languageMap.at(operation).at(language);
+    return std::string()
+            + operand->printPostfix(language)
+            + languageMap.at(operation).at(language);
 }
 
 int UnaryOperator::appendFirst(Formula * operand)
@@ -65,7 +71,7 @@ int UnaryOperator::appendLast(Formula * operand)
     return appendFirst(operand);
 }
 
-BinaryOperator::BinaryOperator(Operation operation) : Operator(operation)
+BinaryOperator::BinaryOperator(Connective operation) : Operator(operation)
 {
 }
 
@@ -77,17 +83,28 @@ BinaryOperator::~BinaryOperator()
 
 std::string BinaryOperator::printPrefix(Language language) const
 {
-    return std::string() + languageMap.at(operation).at(language) + leftOperand->printPrefix(language) + rightOperand->printPrefix(language);
+    return std::string()
+            + languageMap.at(operation).at(language)
+            + leftOperand->printPrefix(language)
+            + rightOperand->printPrefix(language);
 }
 
 std::string BinaryOperator::printInfix(Language language) const
 {
-    return std::string() + '(' + leftOperand->printInfix(language) + languageMap.at(operation).at(language) + rightOperand->printInfix(language) + ')';
+    return std::string()
+            + '('
+            + leftOperand->printInfix(language)
+            + languageMap.at(operation).at(language)
+            + rightOperand->printInfix(language)
+            + ')';
 }
 
 std::string BinaryOperator::printPostfix(Language language) const
 {
-    return std::string() + leftOperand->printPostfix(language) + rightOperand->printPostfix(language) + languageMap.at(operation).at(language);
+    return std::string()
+            + leftOperand->printPostfix(language)
+            + rightOperand->printPostfix(language)
+            + languageMap.at(operation).at(language);
 }
 
 int BinaryOperator::appendFirst(Formula * operand)

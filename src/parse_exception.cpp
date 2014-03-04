@@ -2,42 +2,61 @@
 
 #include "parse_exception.hpp"
 
-LocalizedParseException::LocalizedParseException(const char &, const int &)
+LocalizedParseException::LocalizedParseException
+(const char & character, const int & position)
 {
     this->character = character;
     this->position = position;
 }
 
-UnexpectedElementException::UnexpectedElementException(const char & character, const int & position) : LocalizedParseException(character, position)
+UnexpectedElementException::UnexpectedElementException
+(const char & character, const int & position)
+: LocalizedParseException(character, position)
 {
 }
 
 const char * UnexpectedElementException::what() const throw ()
 {
     std::stringstream stream;
-    stream << "Unexpected element '" << character << "' at position " << position << ".";
+    stream << "Unexpected element '"
+            << character
+            << "' at position "
+            << position
+            << ".";
     return stream.str().c_str();
 }
 
-UnnecessaryElementException::UnnecessaryElementException(const char & character, const int & position) : LocalizedParseException(character, position)
+UnnecessaryElementException::UnnecessaryElementException
+(const char & character, const int & position)
+: LocalizedParseException(character, position)
 {
 }
 
 const char * UnnecessaryElementException::what() const throw ()
 {
     std::stringstream stream;
-    stream << "Unnecesarry element '" << character << "' at position " << position << ".";
+    stream << "Unnecessary element '"
+            << character
+            << "' at position "
+            << position
+            << ".";
     return stream.str().c_str();
 }
 
-IllegalCharacterException::IllegalCharacterException(const char & character, const int & position) : LocalizedParseException(character, position)
+IllegalCharacterException::IllegalCharacterException
+(const char & character, const int & position)
+: LocalizedParseException(character, position)
 {
 }
 
 const char * IllegalCharacterException::what() const throw ()
 {
     std::stringstream stream;
-    stream << "Illegal character '" << character << "' at position " << position << ".";
+    stream << "Illegal character '"
+            << character
+            << "' at position "
+            << position
+            << ".";
     return stream.str().c_str();
 }
 

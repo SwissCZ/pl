@@ -31,23 +31,18 @@ int main(int argc, char ** argv)
     // Command line arguments processing
     try
     {
+        // Program configuration
         configuration = new Configuration(argc, argv);
-    } catch (SyntaxException & ex)
-    {
-        cerr << ex.what() << endl;
-        exitCode = STATUS_ERROR;
-    }
 
-    // Program execution
-    if (exitCode == STATUS_OK)
-    {
+        // Program execution
         switch (configuration->target)
         {
             case DEFAULT:
                 Formula * formula;
                 try
                 {
-                    while ((formula = parseInfix(*(configuration->inputStream))) != NULL)
+                    while ((formula = parseInfix(*(configuration->inputStream)))
+                            != NULL)
                     {
                         delete formula;
                     }
@@ -57,15 +52,17 @@ int main(int argc, char ** argv)
                     exitCode = STATUS_ERROR;
                 }
                 break;
-            default:
-                cerr << "Unimplemented target." << endl;
-                exitCode = STATUS_ERROR;
-                break;
         }
+
+        // Cleanup
+        delete configuration;
+    } catch (SyntaxException & ex)
+    {
+        // Syntax error
+        cerr << ex.what() << endl;
+        exitCode = STATUS_ERROR;
     }
 
-    // Cleanup & exit
-    delete configuration;
-
+    // Exit
     return exitCode;
 }

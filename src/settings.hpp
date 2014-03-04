@@ -4,13 +4,30 @@
 #include <iostream>
 
 #include "language.hpp"
-#include "notation.hpp"
-#include "target.hpp"
 
 using namespace std;
 
 /**
- * Program configuration. Structure containing default-initialized variables adjusting the program execution.
+ * Output notation. Supported notations for the output.
+ */
+enum Notation
+{
+    PREFIX, ///< Prefix notation
+    INFIX, ///< Infix notation
+    POSTFIX ///< Postfix notation
+};
+
+/**
+ * Program targets. Indicates the available targets of the program.
+ */
+enum Target
+{
+    DEFAULT ///< Parse input & report errors
+};
+
+/**
+ * Program configuration. Structure containing default-initialized variables
+ * adjusting the program execution.
  */
 struct Configuration
 {
