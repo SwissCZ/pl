@@ -6,7 +6,7 @@
  * Description here.
  */
 
-#include "settings.hpp"
+#include "configuration.hpp"
 #include "syntax_exception.hpp"
 #include "parse.hpp"
 #include "parse_exception.hpp"
@@ -38,11 +38,11 @@ int main(int argc, char ** argv)
         switch (configuration->target)
         {
             case DEFAULT:
-                Formula * formula;
+                Formula * formula = NULL;
                 try
                 {
-                    while ((formula = parseInfix(*(configuration->inputStream)))
-                            != NULL)
+                    while ((formula = configuration->parse
+                            (*(configuration->inputStream))) != NULL)
                     {
                         delete formula;
                     }

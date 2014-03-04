@@ -1,21 +1,13 @@
-#ifndef SETTINGS_HPP
-#define	SETTINGS_HPP
+#ifndef CONFIGURATION_HPP
+#define	CONFIGURATION_HPP
 
 #include <iostream>
 
+#include "formula.hpp"
 #include "language.hpp"
+#include "parse.hpp"
 
 using namespace std;
-
-/**
- * Output notation. Supported notations for the output.
- */
-enum Notation
-{
-    PREFIX, ///< Prefix notation
-    INFIX, ///< Infix notation
-    POSTFIX ///< Postfix notation
-};
 
 /**
  * Program targets. Indicates the available targets of the program.
@@ -31,8 +23,9 @@ enum Target
  */
 struct Configuration
 {
-    Notation inputNotation = INFIX; ///< Expected input notion
-    Notation outputNotation = INFIX; ///< Output formulas notation
+    Formula * (* parse)(istream &) = &parseInfix; ///< Expected input notation
+    string(Formula::* print) (Language) const = &Formula::printPrefix;
+    ///< Output formulas notation
     Language outputLanguage = ASCII; ///< Output formulas language
     Target target = DEFAULT; ///< Target to be performed
     istream * inputStream = &cin; ///< Input stream to be parsed
@@ -46,4 +39,4 @@ struct Configuration
     ~Configuration();
 };
 
-#endif	/* SETTINGS_HPP */
+#endif	/* CONFIGURATION_HPP */

@@ -13,31 +13,31 @@ const map<Connective, std::map<Language, const char * >> languageMap = {
     {NEGATION,
         {
             {ASCII, "-"},
-            {COMMON, " not "},
+            {WORDS, " not "},
             {TEX, "\\neg"}
         }},
     {CONJUNCTION,
         {
             {ASCII, "."},
-            {COMMON, " and "},
+            {WORDS, " and "},
             {TEX, "\\wedge"}
         }},
     {DISJUNCTION,
         {
             {ASCII, "+"},
-            {COMMON, " or "},
+            {WORDS, " or "},
             {TEX, "\\vee"}
         }},
     {IMPLICATION,
         {
             {ASCII, ">"},
-            {COMMON, " implies "},
+            {WORDS, " implies "},
             {TEX, "\\rightarrow"}
         }},
     {EQUIVALENCE,
         {
             {ASCII, "="},
-            {COMMON, " iff "},
+            {WORDS, " iff "},
             {TEX, "\\leftrightarrow"}
         }}
 }; ///< Output language definition

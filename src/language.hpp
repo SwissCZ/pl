@@ -7,7 +7,7 @@
 enum Language
 {
     ASCII, ///< Ascii character language
-    COMMON, ///< English words language
+    WORDS, ///< English words language
     TEX ///< LaTeX format language
 };
 

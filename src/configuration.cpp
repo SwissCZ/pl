@@ -3,19 +3,15 @@
 #include <map>
 #include <streambuf>
 
-#include "settings.hpp"
+#include "configuration.hpp"
 #include "syntax_exception.hpp"
 
 Configuration::Configuration(int argc, char** argv)
 {
-    std::map<std::string, Notation> notationMap = {
-        {"prefix", PREFIX},
-        {"infix", INFIX},
-        {"postfix", POSTFIX}
-    };
+    string temp;
     std::map<const char *, Language> languageMap = {
         {"ascii", ASCII},
-        {"common", COMMON},
+        {"words", WORDS},
         {"tex", TEX}
     };
 
@@ -24,27 +20,35 @@ Configuration::Configuration(int argc, char** argv)
         switch (optopt)
         {
             case 'i':
-                try
+                temp = optarg;
+                if (temp == "prefix")
                 {
-                    inputNotation = notationMap.at(optarg);
-                } catch (std::out_of_range & ex)
+                    parse = &parsePrefix;
+                } else if (temp == "infix")
                 {
-                    if (!std::string(optarg).empty())
-                    {
-                        throw UnsupportedValueException(argv[0], optopt);
-                    }
+                    parse = &parseInfix;
+                } else if (temp == "postfix")
+                {
+                    parse = &parsePostfix;
+                } else
+                {
+                    throw UnsupportedValueException(argv[0], optopt);
                 }
                 break;
             case 'o':
-                try
+                temp = optarg;
+                if (temp == "prefix")
                 {
-                    outputNotation = notationMap.at(optarg);
-                } catch (std::out_of_range & ex)
+                    print = &Formula::printPrefix;
+                } else if (temp == "infix")
                 {
-                    if (!std::string(optarg).empty())
-                    {
-                        throw UnsupportedValueException(argv[0], optopt);
-                    }
+                    print = &Formula::printInfix;
+                } else if (temp == "postfix")
+                {
+                    print = &Formula::printPostfix;
+                } else
+                {
+                    throw UnsupportedValueException(argv[0], optopt);
                 }
                 break;
             case 'l':

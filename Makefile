@@ -12,7 +12,7 @@ BUILD=build
 DIST=dist
 DOC=doc
 SRC=src
-FILES=formula.o main.o parse.o parse_exception.o settings.o syntax_exception.o
+FILES=configuration.o formula.o main.o parse.o parse_exception.o syntax_exception.o
 
 ################
 # User targets #
