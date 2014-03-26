@@ -49,6 +49,17 @@ public:
     IllegalOptionException(char);
 };
 
+//! Missing option value
+
+/**
+ * Required option value is missing.
+ */
+class MissingValueException : public SyntaxException
+{
+public:
+    MissingValueException(char);
+};
+
 //! Illegal option value
 
 /**

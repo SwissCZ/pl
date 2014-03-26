@@ -25,9 +25,10 @@ map<string, Language> Configuration::OUTPUT_LANGUAGE = {
 
 Configuration::Configuration(int argc, char ** argv)
 {
-    while (getopt(argc, argv, "Aef:i:l:o:P") != -1)
+    int option;
+    while ((option = getopt(argc, argv, "Aef:i:l:o:P")) != -1)
     {
-        switch (optopt)
+        switch (option)
         {
             case 'A':
                 if (target == NULL)
@@ -35,7 +36,7 @@ Configuration::Configuration(int argc, char ** argv)
                     target = new AxiomChecker();
                 } else
                 {
-                    throw MultipleTargetsException(optopt);
+                    throw MultipleTargetsException(option);
                 }
                 break;
             case 'e':
@@ -54,7 +55,7 @@ Configuration::Configuration(int argc, char ** argv)
                     parser = INPUT_NOTATION.at(optarg);
                 } catch (out_of_range & ex)
                 {
-                    throw IllegalValueException(optopt, optarg);
+                    throw IllegalValueException(option, optarg);
                 }
                 break;
             case 'l':
@@ -63,7 +64,7 @@ Configuration::Configuration(int argc, char ** argv)
                     language = OUTPUT_LANGUAGE.at(optarg);
                 } catch (out_of_range & ex)
                 {
-                    throw IllegalValueException(optopt, optarg);
+                    throw IllegalValueException(option, optarg);
                 }
                 break;
             case 'o':
@@ -72,7 +73,7 @@ Configuration::Configuration(int argc, char ** argv)
                     printer = OUTPUT_NOTATION.at(optarg);
                 } catch (out_of_range & ex)
                 {
-                    throw IllegalValueException(optopt, optarg);
+                    throw IllegalValueException(option, optarg);
                 }
                 break;
             case 'P':
@@ -81,11 +82,18 @@ Configuration::Configuration(int argc, char ** argv)
                     target = new ProofChecker();
                 } else
                 {
-                    throw MultipleTargetsException(optopt);
+                    throw MultipleTargetsException(option);
                 }
                 break;
             default:
-                throw IllegalOptionException(optopt);
+                if (optopt == 'f' || optopt == 'i' || optopt == 'l' ||
+                    optopt == 'o')
+                {
+                    throw MissingValueException(optopt);
+                } else
+                {
+                    throw IllegalOptionException(optopt);
+                }
                 break;
         }
     }

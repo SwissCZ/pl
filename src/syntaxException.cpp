@@ -27,6 +27,11 @@ IllegalOptionException::IllegalOptionException(char option)
 {
 }
 
+MissingValueException::MissingValueException(char option)
+: SyntaxException(option, "has no value")
+{
+}
+
 ValueException::ValueException(char option, string value, string message)
 : SyntaxException(option, message), value(value)
 {
