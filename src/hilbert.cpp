@@ -63,6 +63,7 @@ Provability * HilbertSystem::validateModusPonens(Formula * formula,
             }
             delete substitutions;
         }
+        implicationOrder = 0;
     }
     return new InprovableResult();
 }
