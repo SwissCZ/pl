@@ -1,151 +1,157 @@
 #ifndef FORMULA_HPP
 #define	FORMULA_HPP
 
-#include <map>
-#include <string>
-
 #include "language.hpp"
-#include "connective.hpp"
+
+#include <cstddef>
+#include <map>
 
 using namespace std;
 
-const map<Connective, std::map<Language, const char * >> languageMap = {
-    {NEGATION,
-        {
-            {ASCII, "-"},
-            {WORDS, " not "},
-            {TEX, "\\neg"}
-        }},
-    {CONJUNCTION,
-        {
-            {ASCII, "."},
-            {WORDS, " and "},
-            {TEX, "\\wedge"}
-        }},
-    {DISJUNCTION,
-        {
-            {ASCII, "+"},
-            {WORDS, " or "},
-            {TEX, "\\vee"}
-        }},
-    {IMPLICATION,
-        {
-            {ASCII, ">"},
-            {WORDS, " implies "},
-            {TEX, "\\rightarrow"}
-        }},
-    {EQUIVALENCE,
-        {
-            {ASCII, "="},
-            {WORDS, " iff "},
-            {TEX, "\\leftrightarrow"}
-        }}
-}; ///< Output language definition
+class Formula;
+
+typedef map<Language, string> LanguageMap;
+typedef map<char, Formula *> SubstituteMap;
+
+//! Propositional formula
 
 /**
- * Propositional formula. Formulas could be trivial (A) or more sophisticated
- * -(A+B).
+ * Formulas can be trivial (e.g. 'A') or composite (e.g. '-(A+B)').
  */
 class Formula
 {
+protected:
+    static map<char, LanguageMap> INPUT_LANGUAGE;
+
+    char character; ///< Identifying character
 public:
+    Formula(char);
     /**
-     * Causes chained destruction of the whole expression tree.
+     * Causes chained destruction of the expression tree.
      */
     virtual ~Formula();
     /**
-     * Creates a textual representation of this formula in the prefix notation
-     * and the specified language.
-     * @param language Output language
-     * @return String representation of this formula
+     * Identifying character getter.
+     * @return Identifying character
+     */
+    char getCharacter() const;
+    /**
+     * Returns a textual representation of this formula in the prefix notation.
+     * @param language Language of connectives
+     * @return Textual representation of this formula
      */
     virtual string printPrefix(Language language) const = 0;
     /**
-     * Creates a textual representation of this formula in the infix notation
-     * and the specified language.
+     * Returns a textual representation of this formula in the infix notation.
      * @param language Language of connectives
-     * @return String representation of this formula
+     * @return Textual representation of this formula
      */
     virtual string printInfix(Language language) const = 0;
     /**
-     * Creates a textual representation of this formula in the postfix notation
-     * and the specified language.
+     * Returns a textual representation of this formula in the postfix notation.
      * @param language Language of connectives
-     * @return String representation of this formula
+     * @return Textual representation of this formula
      */
     virtual string printPostfix(Language language) const = 0;
+    /**
+     * Checks whether given formula matches this one.
+     * @param formula Formula to be matched
+     * @return Whether the given formula matches this one
+     */
+    virtual bool matchesFormula(Formula * formula) const = 0;
+    /**
+     * Checks whether given formula matches this one.
+     * @param formula Formula to be matched
+     * @return Whether the given formula matches this one
+     */
+    virtual bool matchesSubstitutions(Formula * formula, SubstituteMap *
+                                   substitutions = new SubstituteMap())
+    const = 0;
 };
 
+//! Proposition
+
 /**
- * Proposition. Proposition is a trivial formula.
+ * Trivial formula consisting of one proposition.
  */
 class Proposition : public Formula
 {
-private:
-    char character; ///< Proposition identifier
 public:
     Proposition(char);
     virtual string printPrefix(Language) const;
     virtual string printInfix(Language) const;
     virtual string printPostfix(Language) const;
+    virtual bool matchesFormula(Formula * formula) const;
+    virtual bool matchesSubstitutions(Formula *, SubstituteMap * substitutions
+                                   = new SubstituteMap()) const;
 };
 
+//! Operator
+
 /**
- * Operator. Operator is a formula which consists of several formulas.
+ * Formula consisting of one connective and several formulas.
  */
 class Operator : public Formula
 {
-protected:
-    Connective operation; ///< Operation represented by this operator
 public:
-    Operator(Connective);
+    Operator(char);
     /**
-     * Appends a formula as an operand to the first available position.
+     * Assigns given formula to the first unset position from the beginning.
      * @param formula Formula to be set as an operand
-     * @return Unset operands count
+     * @return Unset operands count after this operation
      */
-    virtual int appendFirst(Formula * formula) = 0;
+    virtual int append(Formula * formula) = 0;
     /**
-     * Appends a formula as an operand to the last available position.
+     * Assigns given formula to the first unset position from the end.
      * @param formula Formula to be set as an operand
-     * @return Unset operands count
+     * @return Unset operands count after this operation
      */
-    virtual int appendLast(Formula * formula) = 0;
+    virtual int insert(Formula * formula) = 0;
 };
 
+//! Unary operator
+
 /**
- * Unary operator. Operator with arity of 1.
+ * Operator taking one operand.
  */
 class UnaryOperator : public Operator
 {
 private:
-    Formula * operand = NULL; ///< Operand
+    Formula * operand = NULL; ///< The operand
 public:
-    UnaryOperator(Connective);
+    UnaryOperator(char);
     virtual ~UnaryOperator();
     virtual string printPrefix(Language) const;
     virtual string printInfix(Language) const;
     virtual string printPostfix(Language) const;
-    virtual int appendFirst(Formula *);
-    virtual int appendLast(Formula *);
+    virtual bool matchesFormula(Formula *) const;
+    virtual bool matchesSubstitutions(Formula *, SubstituteMap * substitutions
+                                   = new SubstituteMap()) const;
+    virtual int append(Formula *);
+    virtual int insert(Formula *);
 };
 
+//! Binary operator
+
 /**
- * Binary operator. Operator with arity of 2.
+ * Operator taking two operands.
  */
 class BinaryOperator : public Operator
 {
 private:
-    Formula * leftOperand = NULL; ///< Left operand
-    Formula * rightOperand = NULL; ///< Right operand
+    Formula * leftOperand = NULL; ///< The left operand
+    Formula * rightOperand = NULL; ///< The right operand
 public:
-    BinaryOperator(Connective);
+    BinaryOperator(char);
     virtual ~BinaryOperator();
     virtual string printPrefix(Language) const;
     virtual string printInfix(Language) const;
     virtual string printPostfix(Language) const;
-    virtual int appendFirst(Formula *);
-    virtual int appendLast(Formula *);
+    virtual bool matchesFormula(Formula *) const;
+    virtual bool matchesSubstitutions(Formula *, SubstituteMap * substitutions
+                                   = new SubstituteMap()) const;
+    virtual int append(Formula *);
+    virtual int insert(Formula *);
 };
 
 #endif	/* FORMULA_HPP */

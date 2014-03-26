@@ -1,14 +1,16 @@
 #ifndef LANGUAGE_HPP
 #define	LANGUAGE_HPP
 
+//! Language of connectives
+
 /**
- * Output languages. Supported connective formats for the output.
+ * Language to output connectives in.
  */
 enum Language
 {
-    ASCII, ///< Ascii character language
-    WORDS, ///< English words language
-    TEX ///< LaTeX format language
+    ASCII, ///< ASCII characters
+    WORDS, ///< English words
+    TEX ///< LaTeX language
 };
 
 #endif	/* LANGUAGE_HPP */

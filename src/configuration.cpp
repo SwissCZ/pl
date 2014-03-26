@@ -1,83 +1,133 @@
-#include <fstream>
-#include <getopt.h>
-#include <map>
-#include <streambuf>
-
 #include "configuration.hpp"
-#include "syntax_exception.hpp"
+#include "parseException.hpp"
+#include "syntaxException.hpp"
 
-Configuration::Configuration(int argc, char** argv)
+#include <fstream>
+#include <unistd.h>
+
+using namespace std;
+
+map<string, parse> Configuration::INPUT_NOTATION = {
+    {"prefix", &parsePrefix},
+    {"infix", &parseInfix},
+    {"postfix", &parsePostfix}
+};
+map<string, print> Configuration::OUTPUT_NOTATION = {
+    {"prefix", &Formula::printPrefix},
+    {"infix", &Formula::printInfix},
+    {"postfix", &Formula::printPostfix}
+};
+map<string, Language> Configuration::OUTPUT_LANGUAGE = {
+    {"ascii", ASCII},
+    {"words", WORDS},
+    {"tex", TEX}
+};
+
+Configuration::Configuration(int argc, char ** argv)
 {
-    string temp;
-    std::map<const char *, Language> languageMap = {
-        {"ascii", ASCII},
-        {"words", WORDS},
-        {"tex", TEX}
-    };
-
-    while (getopt(argc, argv, "i:o:l:f:") != -1)
+    while (getopt(argc, argv, "Aef:i:l:o:P") != -1)
     {
         switch (optopt)
         {
-            case 'i':
-                temp = optarg;
-                if (temp == "prefix")
+            case 'A':
+                if (target == NULL)
                 {
-                    parse = &parsePrefix;
-                } else if (temp == "infix")
-                {
-                    parse = &parseInfix;
-                } else if (temp == "postfix")
-                {
-                    parse = &parsePostfix;
+                    target = new AxiomChecker();
                 } else
                 {
-                    throw UnsupportedValueException(argv[0], optopt);
+                    throw MultipleTargetsException(optopt);
                 }
                 break;
-            case 'o':
-                temp = optarg;
-                if (temp == "prefix")
+            case 'e':
+                echo = true;
+                break;
+            case 'f':
+                inputStream = new ifstream(optarg, ios::in);
+                if (inputStream->fail() || string(optarg).empty())
                 {
-                    print = &Formula::printPrefix;
-                } else if (temp == "infix")
+                    throw FileNotFoundException(optarg);
+                }
+                break;
+            case 'i':
+                try
                 {
-                    print = &Formula::printInfix;
-                } else if (temp == "postfix")
+                    parser = INPUT_NOTATION.at(optarg);
+                } catch (out_of_range & ex)
                 {
-                    print = &Formula::printPostfix;
-                } else
-                {
-                    throw UnsupportedValueException(argv[0], optopt);
+                    throw IllegalValueException(optopt, optarg);
                 }
                 break;
             case 'l':
                 try
                 {
-                    outputLanguage = languageMap.at(optarg);
-                } catch (std::out_of_range & ex)
+                    language = OUTPUT_LANGUAGE.at(optarg);
+                } catch (out_of_range & ex)
                 {
-                    if (!std::string(optarg).empty())
-                    {
-                        throw UnsupportedValueException(argv[0], optopt);
-                    }
+                    throw IllegalValueException(optopt, optarg);
                 }
                 break;
-            case 'f':
-                inputStream = new std::ifstream(optarg, std::ios::binary
-                        | std::ios::in);
-
-                if (inputStream->fail() && !std::string(optarg).empty())
+            case 'o':
+                try
                 {
-                    throw FileNotFoundException(argv[0], optopt);
+                    printer = OUTPUT_NOTATION.at(optarg);
+                } catch (out_of_range & ex)
+                {
+                    throw IllegalValueException(optopt, optarg);
                 }
+                break;
+            case 'P':
+                if (target == NULL)
+                {
+                    target = new ProofChecker();
+                } else
+                {
+                    throw MultipleTargetsException(optopt);
+                }
+                break;
+            default:
+                throw IllegalOptionException(optopt);
                 break;
         }
+    }
+
+    if (target == NULL)
+    {
+        target = new Target();
     }
 }
 
 Configuration::~Configuration()
 {
-    delete inputStream;
+    //delete inputStream;
+    delete target;
 }
 
+istream * Configuration::getInput() const
+{
+    return inputStream;
+}
+
+parse Configuration::getParser() const
+{
+    return parser;
+}
+
+print Configuration::getPrinter() const
+{
+    return printer;
+}
+
+Language Configuration::getLanguage() const
+{
+    return language;
+}
+
+Target * Configuration::getTarget() const
+{
+    return target;
+}
+
+bool Configuration::getEcho() const
+{
+    return echo;
+}

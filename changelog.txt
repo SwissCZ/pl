@@ -1,14 +1,19 @@
+#4 (2014/03)
+- Validátor axiomů [-A]
+- Validátor důkazů [-P]
+- Výpis parsovaných formulí [-e]
+
 #3 (2014/02)
-- Vlastní Makefile
-- Podrobnější hlášení chyb parseru
-- Odstranění povinného závorkování negace
-- Podpora jazyků ASCII, slovní a TeX
-- Spouštění programu s parametry
-- Doxygen dokumentace zdrojového kódu
+- Makefile
+- Podrobné hlášení chyb parseru
+- Odzávorkování unární operace
+- Spouštění s parametry [-f -i -l -o]
+- Výstupní jazyky [-l (ascii|words|tex)]
+- Doxygen dokumentace
 - Manuálová stránka
 
 #2 (2014/01)
-- Sekvenční čtení ze vstupního proudu
+- Čtení ze vstupního proudu
 - Kontrola syntaxe a hlášení chyb
 - Podpora notace infix
 

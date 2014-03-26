@@ -1,68 +1,49 @@
-/**
- * @mainpage Handle formulas of propositional logic
- *
- * <h1>About</h1>
- * 
- * Description here.
- */
-
 #include "configuration.hpp"
-#include "syntax_exception.hpp"
-#include "parse.hpp"
-#include "parse_exception.hpp"
+#include "syntaxException.hpp"
 
-#define STATUS_OK 0
-#define STATUS_ERROR 1
+#include <exception>
+#include <stdlib.h>
+#include <unistd.h>
 
 using namespace std;
 
-/**
- * Main program function.
- * @param argc Command line arguments count
- * @param argv Command line arguments array
- * @return STATUS_OK on proper execution, STATUS_ERROR otherwise.
- */
 int main(int argc, char ** argv)
 {
     // Variables definition
+    int exit = EXIT_SUCCESS;
     Configuration * configuration = NULL;
-    int exitCode = STATUS_OK;
+    Formula * formula = NULL;
 
-    // Command line arguments processing
+    opterr = 0; // Turn off getopt() error messages as we have our own
     try
     {
-        // Program configuration
+        // Options processing
         configuration = new Configuration(argc, argv);
 
         // Program execution
-        switch (configuration->target)
+        do
         {
-            case DEFAULT:
-                Formula * formula = NULL;
-                try
-                {
-                    while ((formula = configuration->parse
-                            (*(configuration->inputStream))) != NULL)
-                    {
-                        delete formula;
-                    }
-                } catch (ParseException & ex)
-                {
-                    cerr << ex.what() << endl;
-                    exitCode = STATUS_ERROR;
-                }
-                break;
-        }
+            // Formula parsing
+            formula = configuration->getParser()(*(configuration->getInput()));
+            if (formula == NULL) break;
 
-        // Cleanup
-        delete configuration;
-    } catch (SyntaxException & ex)
+            // Formula printing
+            if (configuration->getEcho())
+            {
+                cout << (formula->*configuration->getPrinter())
+                        (configuration->getLanguage()) << endl;
+            }
+
+            // Formula processing
+        } while (configuration->getTarget()->next(formula));
+    } catch (exception & ex)
     {
-        // Syntax error
+        // Syntax or parse error
         cerr << ex.what() << endl;
-        exitCode = STATUS_ERROR;
+        exit = EXIT_FAILURE;
     }
 
-    // Exit
-    return exitCode;
+    // Proper exit
+    delete configuration;
+    return exit;
 }

@@ -1,42 +1,78 @@
 #ifndef CONFIGURATION_HPP
 #define	CONFIGURATION_HPP
 
-#include <iostream>
-
 #include "formula.hpp"
 #include "language.hpp"
 #include "parse.hpp"
+#include "target.hpp"
+
+#include <iostream>
 
 using namespace std;
 
-/**
- * Program targets. Indicates the available targets of the program.
- */
-enum Target
-{
-    DEFAULT ///< Parse input & report errors
-};
+typedef Formula * (* parse)(istream &); ///< Parse function pointer
+typedef string(Formula::* print) (Language) const; ///< Print method pointer
+
+//! Program configuration
 
 /**
- * Program configuration. Structure containing default-initialized variables
- * adjusting the program execution.
+ * Contains default-initialized variables directing the program execution.
  */
-struct Configuration
+class Configuration
 {
-    Formula * (* parse)(istream &) = &parseInfix; ///< Expected input notation
-    string(Formula::* print) (Language) const = &Formula::printPrefix;
-    ///< Output formulas notation
-    Language outputLanguage = ASCII; ///< Output formulas language
-    Target target = DEFAULT; ///< Target to be performed
-    istream * inputStream = &cin; ///< Input stream to be parsed
+private:
+    static map<string, parse> INPUT_NOTATION;
+    //< Input notation optino values
+    static map<string, print> OUTPUT_NOTATION;
+    //< Output notation option values
+    static map<string, Language> OUTPUT_LANGUAGE;
+    //< Output language option values
+
+    istream * inputStream = &cin; ///< Input stream to parse
+    parse parser = &parseInfix; ///< Input parser to use
+    print printer = &Formula::printInfix; ///< Output printing method
+    Language language = ASCII; ///< Output language of connectives
+    Target * target = NULL; ///< Target to execute
+    bool echo = false; ///< Whether to echo parsed formulas or not
+public:
 
     /**
-     * Parses the command line parameters and configures the program.
+     * Parses the command line parameters and adjusts the configuration.
      * @param argc Command line parameters count
      * @param argv Command line parameters array
      */
     Configuration(int argc, char ** argv);
     ~Configuration();
+    /**
+     * Input stream getter.
+     * @return Input stream to parse
+     */
+    istream * getInput() const;
+    /**
+     * Parsing function getter.
+     * @return Input parser to use
+     */
+    parse getParser() const;
+    /**
+     * Printing mehod getter.
+     * @return Output printing method
+     */
+    print getPrinter() const;
+    /**
+     * Lanugage getter.
+     * @return Output language of connectives
+     */
+    Language getLanguage() const;
+    /**
+     * Target instance getter.
+     * @return Target to execute
+     */
+    Target * getTarget() const;
+    /**
+     * Echo flag getter.
+     * @return Whether to echo parsed formulas or not
+     */
+    bool getEcho() const;
 };
 
 #endif	/* CONFIGURATION_HPP */

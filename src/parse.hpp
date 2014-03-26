@@ -1,37 +1,27 @@
 #ifndef PARSE_HPP
 #define	PARSE_HPP
 
-#include <cstdio>
-#include <map>
-
 #include "formula.hpp"
-#include "connective.hpp"
+
+#include <istream>
 
 using namespace std;
 
-const map<const char, Connective> connectiveMap = {
-    {'-', NEGATION},
-    {'.', CONJUNCTION},
-    {'+', DISJUNCTION},
-    {'>', IMPLICATION},
-    {'=', EQUIVALENCE}
-}; ///< Input language definition
-
 /**
- * Parses a formula in prefix notation into an expression tree.
- * @param input Input stream to be parsed
+ * Parses formula in prefix notation.
+ * @param input Input stream to read from
  * @return Formula expression tree root node
  */
 Formula * parsePrefix(istream & input);
 /**
- * Parses a formula in infix notation into an expression tree.
- * @param input Input stream to be parsed
+ * Parses formula in infix notation.
+ * @param input Input stream to read from
  * @return Formula expression tree root node
  */
 Formula * parseInfix(istream & input);
 /**
- * Parses a formula in postfix notation into an expression tree.
- * @param input Input stream to be parsed
+ * Parses formula in postfix notation.
+ * @param input Input stream to read from
  * @return Formula expression tree root node
  */
 Formula * parsePostfix(istream & input);
