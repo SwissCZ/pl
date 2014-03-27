@@ -26,9 +26,6 @@ protected:
     char character; ///< Identifying character
 public:
     Formula(char);
-    /**
-     * Causes chained destruction of the expression tree.
-     */
     virtual ~Formula();
     /**
      * Identifying character getter.

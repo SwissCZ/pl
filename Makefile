@@ -1,8 +1,8 @@
-########################
-# Variables definition #
-########################
+#############
+# Variables #
+#############
 
-PREFIX	= /usr/local
+PREFIX	= /usr/share
 BINDIR	= $(PREFIX)/bin
 MANDIR	= $(PREFIX)/man/man1
 
@@ -13,9 +13,9 @@ NAME	= pl
 FILES	= configuration.o target.o formula.o hilbert.o main.o parseException.o parse.o provability.o syntaxException.o
 
 BUILD	= build
-DIST	= dist
-DOC		= doc
-SRC		= src
+DIST	= output
+DOC		= documentation
+SRC		= source
 
 ###################
 # Primary targets #
@@ -25,12 +25,9 @@ SRC		= src
 build: .folders $(FILES)
 	cd $(BUILD); $(GXX) $(FILES) -o ../$(DIST)/$(NAME) $(OPTS)
 
-# Compile the source files and create the documentation
-all: build doc
-
 # Remove all outputs
 clean:
-	rm -rf $(BUILD) $(DIST) $(DOC)
+	rm -fr $(BUILD) $(DIST) $(DOC)
 
 # Create the documentation
 doc:
@@ -43,17 +40,17 @@ install: build .binary .manpage
 uninstall:
 	rm -f $(BINDIR)/$(NAME) $(MANDIR)/$(NAME).1.gz
 
-######################
-# Supporting targets #
-######################
-
-# Create output directories
-.folders:
-	mkdir -p $(BUILD) $(DIST)
+#####################
+# Auxiliary targets #
+#####################
 
 # Install the binary
 .binary:
 	install -g 0 -o 0 -m 0755 $(DIST)/$(NAME) $(BINDIR);
+
+# Create output directories
+.folders:
+	mkdir -p $(BUILD) $(DIST)
 
 # Install the manual page
 .manpage:
@@ -63,4 +60,4 @@ uninstall:
 %.o: $(SRC)/%.cpp
 	$(GXX) $(OPTS) -c -MMD -MP -MF $(BUILD)/$@.d $< -o $(BUILD)/$@
 
-.PHONY: build all clean doc install uninstall .folders .binary .manpage
+.PHONY: build all clean doc install uninstall .binary .folders .manpage

@@ -8,8 +8,10 @@
 
 using namespace std;
 
+//! Hilbert's axiom system
+
 /**
- * Hilbert's axiom system
+ * Axioms and rules of Hilbert's axiom system.
  */
 class HilbertSystem
 {
@@ -18,6 +20,7 @@ private:
     Formula * modusPonens; ///< Modus ponens implication formula
 public:
     HilbertSystem();
+    ~HilbertSystem();
     /**
      * Checks whether given formula is an axiom.
      * @param formula Formula to be validated as an axiom

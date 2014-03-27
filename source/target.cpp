@@ -27,6 +27,8 @@ bool AxiomChecker::next(Formula * formula)
     {
         cout << "Not an axiom." << endl;
     }
+
+    delete formula;
     return true;
 }
 

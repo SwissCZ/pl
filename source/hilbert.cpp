@@ -21,6 +21,14 @@ HilbertSystem::HilbertSystem()
     modusPonens = parseInfix(stream);
 }
 
+HilbertSystem::~HilbertSystem()
+{
+    for(Formula * formula : axioms){
+        delete formula;
+    }
+    delete modusPonens;
+}
+
 int HilbertSystem::validateAxiom(Formula * formula) const
 {
     int type = 1;

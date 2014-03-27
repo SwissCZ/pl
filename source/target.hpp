@@ -17,8 +17,6 @@ class Target
 {
 protected:
     static HilbertSystem system; ///< The axiomatic system
-
-    Formula * formula; ///< Recently parsed formula
 public:
     virtual ~Target();
     /**

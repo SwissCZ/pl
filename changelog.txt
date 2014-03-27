@@ -1,14 +1,14 @@
 #4 (2014/03)
-- Validátor axiomů [-A]
-- Validátor důkazů [-P]
-- Výpis parsovaných formulí [-e]
+- Validátor axiomů -A
+- Validátor důkazů -P
+- Výpis formulí -e
 
 #3 (2014/02)
-- Makefile
-- Podrobné hlášení chyb parseru
-- Odzávorkování unární operace
-- Spouštění s parametry [-f -i -l -o]
-- Výstupní jazyky [-l (ascii|words|tex)]
+- Odzávorkování negace
+- Spouštění s parametry
+- Podpora parametrů -f -i -l -o
+- Výstupní jazyky -l (ascii|words|tex)
+- Vlastní implementace Makefile
 - Doxygen dokumentace
 - Manuálová stránka
 

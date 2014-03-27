@@ -43,10 +43,12 @@ Configuration::Configuration(int argc, char ** argv)
                 echo = true;
                 break;
             case 'f':
-                inputStream = new ifstream(optarg, ios::in);
-                if (inputStream->fail() || string(optarg).empty())
+                fileStream.open(optarg, ios::in);
+                if (fileStream.fail() || string(optarg).empty())
                 {
                     throw FileNotFoundException(optarg);
+                } else {
+                    inputStream = &fileStream;
                 }
                 break;
             case 'i':
@@ -106,7 +108,7 @@ Configuration::Configuration(int argc, char ** argv)
 
 Configuration::~Configuration()
 {
-    //delete inputStream;
+    fileStream.close();
     delete target;
 }
 

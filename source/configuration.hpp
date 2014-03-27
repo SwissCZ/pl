@@ -6,6 +6,7 @@
 #include "parse.hpp"
 #include "target.hpp"
 
+#include <fstream>
 #include <iostream>
 
 using namespace std;
@@ -29,6 +30,7 @@ private:
     //< Output language option values
 
     istream * inputStream = &cin; ///< Input stream to parse
+    ifstream fileStream;
     parse parser = &parseInfix; ///< Input parser to use
     print printer = &Formula::printInfix; ///< Output printing method
     Language language = ASCII; ///< Output language of connectives
