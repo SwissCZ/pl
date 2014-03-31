@@ -1,16 +1,16 @@
 #4 (2014/03)
+- Výpis hlášení -e
 - Validátor axiomů -A
 - Validátor důkazů -P
-- Výpis formulí -e
 
 #3 (2014/02)
 - Odzávorkování negace
 - Spouštění s parametry
 - Podpora parametrů -f -i -l -o
 - Výstupní jazyky -l (ascii|words|tex)
-- Vlastní implementace Makefile
-- Doxygen dokumentace
-- Manuálová stránka
+- Implementace Makefile
+- Implementace Manpage
+- Dokumentace Doxygen
 
 #2 (2014/01)
 - Čtení ze vstupního proudu

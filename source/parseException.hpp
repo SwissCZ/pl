@@ -1,7 +1,6 @@
 #ifndef PARSE_EXCEPTION_HPP
 #define	PARSE_EXCEPTION_HPP
 
-#include <exception>
 #include <string>
 
 using namespace std;
@@ -11,7 +10,7 @@ using namespace std;
 /**
  * Error reported by parsers.
  */
-class ParseException : public exception
+class ParseException
 {
 protected:
     string message; ///< Error message string
@@ -23,7 +22,7 @@ protected:
     virtual string getErrorMessage() const;
 public:
     ParseException(string);
-    virtual const char * what() const throw ();
+    virtual string what() const;
 };
 
 //! Incomplete formula.

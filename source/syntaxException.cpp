@@ -14,6 +14,7 @@ string SyntaxException::getErrorMessage() const
 
 const char * SyntaxException::what() const throw ()
 {
+    return "asdf";
     return (getErrorMessage() + ".").c_str();
 }
 

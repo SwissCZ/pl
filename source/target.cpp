@@ -1,6 +1,8 @@
 #include "target.hpp"
+#include "parseException.hpp"
 
 #include <iostream>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -10,48 +12,154 @@ Target::~Target()
 {
 }
 
-bool Target::next(Formula * formula)
+int Target::perform(Configuration * configuration)
 {
-    delete formula;
-    return true;
-}
+    Formula * formula = NULL;
+    int exit = EXIT_SUCCESS;
 
-bool AxiomChecker::next(Formula * formula)
-{
-    int type;
-
-    if ((type = system.validateAxiom(formula)))
+    while (true)
     {
-        cout << "Type " << type << " axiom." << endl;
-    } else
-    {
-        cout << "Not an axiom." << endl;
-    }
-
-    delete formula;
-    return true;
-}
-
-bool ProofChecker::next(Formula * formula)
-{
-    int type;
-    Provability * result;
-
-    if ((type = system.validateAxiom(formula)))
-    {
-        cout << "Provable being a type " << type << " axiom." << endl;
-    } else
-    {
-        result = system.validateModusPonens(formula, proof);
-        cout << result->getMessage() << endl;
-
-        if (!result->getProvability())
+        try
         {
+            // Formula parsing
+            formula = configuration->getParser()(*(configuration->getInput()));
+            if (formula == NULL)
+            {
+                break;
+            }
+
+            // Formula printing
+            if (configuration->getEcho())
+            {
+                cout << (formula->*configuration->getPrinter())
+                        (configuration->getLanguage()) << endl;
+            }
             delete formula;
-            return false;
+        } catch (ParseException & exception)
+        {
+            // Parse error
+            if (configuration->getEcho())
+            {
+                cerr << exception.what() << endl;
+            }
+            exit = EXIT_FAILURE;
         }
     }
+    return exit;
+}
 
-    proof.push_back(formula);
-    return true;
+int AxiomChecker::perform(Configuration * configuration)
+{
+    Formula * formula = NULL;
+    int exit = EXIT_SUCCESS;
+
+    while (true)
+    {
+        try
+        {
+            // Formula parsing
+            formula = configuration->getParser()(*(configuration->getInput()));
+            if (formula == NULL)
+            {
+                break;
+            }
+
+            // Axiom validating
+            int type;
+
+            if ((type = system.validateAxiom(formula)) > 0)
+            {
+                if (configuration->getEcho())
+                {
+                    cout << "Type " << type << " axiom." << endl;
+                }
+            } else
+            {
+                if (configuration->getEcho())
+                {
+                    cout << "Not an axiom." << endl;
+                }
+                exit = EXIT_FAILURE;
+            }
+            delete formula;
+        } catch (ParseException & exception)
+        {
+            // Parse error
+            if (configuration->getEcho())
+            {
+                cerr << exception.what() << endl;
+            }
+            exit = EXIT_FAILURE;
+        }
+    }
+    return exit;
+}
+
+ProofChecker::~ProofChecker()
+{
+    for (Formula * formula : proof)
+    {
+        delete formula;
+    }
+}
+
+int ProofChecker::perform(Configuration * configuration)
+{
+    Formula * formula;
+    int exit = EXIT_SUCCESS;
+
+    while (true)
+    {
+        try
+        {
+            // Formula parsing
+            formula = configuration->getParser()(*(configuration->getInput()));
+            if (formula == NULL)
+            {
+                break;
+            }
+
+            // Proof validating
+            int type;
+            Provability * provability;
+
+            if ((type = system.validateAxiom(formula)) > 0)
+            {
+                // Axiom validating
+                if (configuration->getEcho())
+                {
+                    cout << "Provable being a type " << type << " axiom." << endl;
+                }
+                proof.push_back(formula);
+            } else
+            {
+                // Modus ponens proving
+                provability = system.validateModusPonens(formula, proof);
+                if (configuration->getEcho())
+                {
+                    cout << provability->getMessage() << endl;
+                }
+
+                if (provability->getProvability())
+                {
+                    proof.push_back(formula);
+                } else
+                {
+                    delete formula;
+                    exit = EXIT_FAILURE;
+                    break;
+                }
+            }
+        } catch (ParseException & exception)
+        {
+            // Parse exception
+            if (configuration->getEcho())
+            {
+                cerr << exception.what() << endl;
+            }
+            exit = EXIT_FAILURE;
+            break;
+        }
+    }
+    return exit;
 }

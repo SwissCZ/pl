@@ -1,7 +1,7 @@
 #include "configuration.hpp"
 #include "syntaxException.hpp"
+#include "target.hpp"
 
-#include <exception>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -12,38 +12,24 @@ int main(int argc, char ** argv)
     // Variables definition
     int exit = EXIT_SUCCESS;
     Configuration * configuration = NULL;
-    Formula * formula = NULL;
 
-    opterr = 0; // Turn off getopt() error messages as we have our own
+    // Turn off getopt() error messages as we have our own
+    opterr = 0;
     try
     {
         // Options processing
         configuration = new Configuration(argc, argv);
 
-        // Program execution
-        do
-        {
-            // Formula parsing
-            formula = configuration->getParser()(*(configuration->getInput()));
-            if (formula == NULL) break;
-
-            // Formula printing
-            if (configuration->getEcho())
-            {
-                cout << (formula->*configuration->getPrinter())
-                        (configuration->getLanguage()) << endl;
-            }
-
-            // Formula processing
-        } while (configuration->getTarget()->next(formula));
-    } catch (exception & ex)
+        // Target execution
+        exit = configuration->getTarget()->perform(configuration);
+    } catch (SyntaxException & exception)
     {
-        // Syntax or parse error
-        cerr << ex.what() << endl;
+        // Print syntax error message
+        cerr << exception.what() << endl;
         exit = EXIT_FAILURE;
     }
 
-    // Proper exit
+    // Program exit
     delete configuration;
     return exit;
 }

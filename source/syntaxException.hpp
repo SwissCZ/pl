@@ -21,10 +21,11 @@ protected:
      * Composes a syntax error message.
      * @return Syntax error message
      */
-    virtual string getErrorMessage() const;
+    
 public:
     SyntaxException(char, string);
     virtual const char * what() const throw ();
+    virtual string getErrorMessage() const;
 };
 
 //! Multiple targets error
@@ -70,9 +71,10 @@ class ValueException : public SyntaxException
 private:
     string const value; ///< Error-causing option value
 
-    virtual string getErrorMessage() const;
+    
 public:
     ValueException(char, string, string);
+    virtual string getErrorMessage() const;
 };
 
 //! Illegal option value

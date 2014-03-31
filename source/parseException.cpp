@@ -13,9 +13,9 @@ string ParseException::getErrorMessage() const
     return string() + message;
 }
 
-const char * ParseException::what() const throw ()
+string ParseException::what() const
 {
-    return (getErrorMessage() + ".").c_str();
+    return getErrorMessage() + ".";
 }
 
 IncompleteFormulaException::IncompleteFormulaException()
@@ -38,7 +38,7 @@ string LocalizedParseException::getErrorMessage() const
 {
     stringstream stream;
     stream << message << " '" << character << "' at position " << position;
-    return stream.str().c_str();
+    return stream.str();
 }
 
 UnexpectedElementException::UnexpectedElementException(char character,

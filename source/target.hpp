@@ -1,6 +1,7 @@
 #ifndef TARGET_HPP
 #define	TARGET_HPP
 
+#include "configuration.hpp"
 #include "formula.hpp"
 #include "hilbert.hpp"
 
@@ -8,48 +9,49 @@
 
 using namespace std;
 
-//! Program execution target
+//! Default target
 
 /**
- * The target the program can be set to execute.
+ * Default program execution target the program execute.
  */
 class Target
 {
 protected:
-    static HilbertSystem system; ///< The axiomatic system
+    static HilbertSystem system; ///< Axiomatic system to work with
 public:
     virtual ~Target();
     /**
      * Perform next step of the program execution.
-     * @param formula Formula to be processed
-     * @return Whether to continue the program execution
+     * @param configuration Program configuration
+     * @return Program exit code
      */
-    virtual bool next(Formula * formula);
+    virtual int perform(Configuration * configuration);
 };
 
 //! Axiom checker
 
 /**
- * Check whether each formula is an axiom.
+ * Check whether a formula is an axiom.
  */
 class AxiomChecker : public Target
 {
 public:
-    virtual bool next(Formula *);
+    virtual int perform(Configuration *);
 };
 
 
 //! Proof checker
 
 /**
- * Check whether the sequence of formulas is a valid proof.
+ * Check whether a sequence of formulas is a valid proof.
  */
 class ProofChecker : public Target
 {
 private:
-    list<Formula *> proof; ///< The valid proof so far
+    list<Formula *> proof; ///< So-far-valid proof
 public:
-    virtual bool next(Formula *);
+    virtual ~ProofChecker();
+    virtual int perform(Configuration *);
 };
 
 #endif	/* TARGET_HPP */

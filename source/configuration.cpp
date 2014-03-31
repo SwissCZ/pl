@@ -1,6 +1,7 @@
 #include "configuration.hpp"
 #include "parseException.hpp"
 #include "syntaxException.hpp"
+#include "target.hpp"
 
 #include <fstream>
 #include <unistd.h>

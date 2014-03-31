@@ -18,7 +18,7 @@ HilbertSystem::HilbertSystem()
         axioms.push_back(parseInfix(stream));
     }
     stream << "(A>B)" << endl;
-    modusPonens = parseInfix(stream);
+    implication = parseInfix(stream);
 }
 
 HilbertSystem::~HilbertSystem()
@@ -26,15 +26,16 @@ HilbertSystem::~HilbertSystem()
     for(Formula * formula : axioms){
         delete formula;
     }
-    delete modusPonens;
+    delete implication;
 }
 
 int HilbertSystem::validateAxiom(Formula * formula) const
 {
     int type = 1;
+    SubstituteMap substitutions;
     for (Formula * axiom : axioms)
     {
-        if (axiom->matchesSubstitutions(formula))
+        if (axiom->matchesSubstitutions(formula, &substitutions))
         {
             return type;
         }
@@ -64,7 +65,7 @@ Provability * HilbertSystem::validateModusPonens(Formula * formula,
                 {'A', premise},
                 {'B', formula}
             };
-            if (modusPonens->matchesSubstitutions(implication, substitutions))
+            if (implication->matchesSubstitutions(implication, substitutions))
             {
                 delete substitutions;
                 return new ProvableResult(premiseOrder, implicationOrder);

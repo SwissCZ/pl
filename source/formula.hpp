@@ -1,12 +1,23 @@
 #ifndef FORMULA_HPP
 #define	FORMULA_HPP
 
-#include "language.hpp"
-
 #include <cstddef>
 #include <map>
 
 using namespace std;
+
+//! Language of connectives
+
+/**
+ * Language to output connectives in.
+ */
+enum Language
+{
+    ASCII, ///< ASCII characters
+    WORDS, ///< English words
+    TEX ///< LaTeX language
+};
+
 
 class Formula;
 
@@ -62,7 +73,7 @@ public:
      * @return Whether the given formula matches this one
      */
     virtual bool matchesSubstitutions(Formula * formula, SubstituteMap *
-                                   substitutions = new SubstituteMap())
+                                      substitutions)
     const = 0;
 };
 
@@ -80,7 +91,7 @@ public:
     virtual string printPostfix(Language) const;
     virtual bool matchesFormula(Formula * formula) const;
     virtual bool matchesSubstitutions(Formula *, SubstituteMap * substitutions
-                                   = new SubstituteMap()) const;
+                                      = new SubstituteMap()) const;
 };
 
 //! Operator
@@ -123,7 +134,7 @@ public:
     virtual string printPostfix(Language) const;
     virtual bool matchesFormula(Formula *) const;
     virtual bool matchesSubstitutions(Formula *, SubstituteMap * substitutions
-                                   = new SubstituteMap()) const;
+                                      = new SubstituteMap()) const;
     virtual int append(Formula *);
     virtual int insert(Formula *);
 };
@@ -146,7 +157,7 @@ public:
     virtual string printPostfix(Language) const;
     virtual bool matchesFormula(Formula *) const;
     virtual bool matchesSubstitutions(Formula *, SubstituteMap * substitutions
-                                   = new SubstituteMap()) const;
+                                      = new SubstituteMap()) const;
     virtual int append(Formula *);
     virtual int insert(Formula *);
 };

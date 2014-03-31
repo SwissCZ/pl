@@ -2,14 +2,16 @@
 #define	CONFIGURATION_HPP
 
 #include "formula.hpp"
-#include "language.hpp"
 #include "parse.hpp"
-#include "target.hpp"
+#include "configuration.hpp"
 
 #include <fstream>
 #include <iostream>
 
 using namespace std;
+
+// Forward declaration of Target class to solve circular dependency issue
+class Target;
 
 typedef Formula * (* parse)(istream &); ///< Parse function pointer
 typedef string(Formula::* print) (Language) const; ///< Print method pointer
@@ -30,7 +32,7 @@ private:
     //< Output language option values
 
     istream * inputStream = &cin; ///< Input stream to parse
-    ifstream fileStream;
+    ifstream fileStream; ///< File input
     parse parser = &parseInfix; ///< Input parser to use
     print printer = &Formula::printInfix; ///< Output printing method
     Language language = ASCII; ///< Output language of connectives
