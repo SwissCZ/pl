@@ -8,7 +8,7 @@
 
 using namespace std;
 
-//! Hilbert system
+//! Hilbert system.
 
 /**
  * Axioms and rules of Hilbert system.

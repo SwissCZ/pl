@@ -7,15 +7,14 @@ SyntaxException::SyntaxException(char option, string message)
 {
 }
 
-string SyntaxException::getErrorMessage() const
+string SyntaxException::composeMessage() const
 {
     return string() + "Option '-"  + option + "' " + message;
 }
 
-const char * SyntaxException::what() const throw ()
+string SyntaxException::what() const
 {
-    return "asdf";
-    return (getErrorMessage() + ".").c_str();
+    return composeMessage() + ".";
 }
 
 MultipleTargetsException::MultipleTargetsException(char option)
@@ -38,9 +37,9 @@ ValueException::ValueException(char option, string value, string message)
 {
 }
 
-string ValueException::getErrorMessage() const
+string ValueException::composeMessage() const
 {
-    return string() + SyntaxException::getErrorMessage() + " '" + value + "'";
+    return string() + SyntaxException::composeMessage() + " '" + value + "'";
 }
 
 IllegalValueException::IllegalValueException(char option, string value)

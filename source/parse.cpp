@@ -7,7 +7,7 @@
 
 using namespace std;
 
-//! Infix bracket state
+//! Infix bracket state.
 
 /**
  * Infix bracket completion state. The order must be preserved!
@@ -19,7 +19,7 @@ enum InfixState
     FIRST_OPERAND, ///< First operand set
     BINARY, ///< Binary operator set
     LAST_OPERAND ///< Last operand set
-} ;
+};
 
 Formula * parsePrefix(istream & input)
 {
@@ -523,7 +523,7 @@ Formula * parsePostfix(istream & input)
     } else if (formulaStack.size() == 1)
     {
         // Formula is complete
-        return temporaryOperator;
+        return formulaStack.top();
     } else
     {
         // Formula is incomplete

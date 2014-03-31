@@ -21,8 +21,8 @@ ProvableResult::ProvableResult(int premise, int implication)
 string ProvableResult::getMessage() const
 {
     stringstream stream;
-    stream << "Provable using the premise " << premise << " and the implication "
-            << implication << ".";
+    stream << "Provable using the premise " << premise <<
+            " and the implication " << implication << ".";
     return stream.str();
 }
 

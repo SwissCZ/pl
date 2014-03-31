@@ -8,17 +8,17 @@
 
 using namespace std;
 
-map<string, parse> Configuration::INPUT_NOTATION = {
+map<string, Parser> Configuration::inputNotation = {
     {"prefix", &parsePrefix},
     {"infix", &parseInfix},
     {"postfix", &parsePostfix}
 };
-map<string, print> Configuration::OUTPUT_NOTATION = {
+map<string, Printer> Configuration::outputNotation = {
     {"prefix", &Formula::printPrefix},
     {"infix", &Formula::printInfix},
     {"postfix", &Formula::printPostfix}
 };
-map<string, Language> Configuration::OUTPUT_LANGUAGE = {
+map<string, Language> Configuration::outputLanguage = {
     {"ascii", ASCII},
     {"words", WORDS},
     {"tex", TEX}
@@ -44,7 +44,7 @@ Configuration::Configuration(int argc, char ** argv)
                 echo = true;
                 break;
             case 'f':
-                fileStream.open(optarg, ios::in);
+                fileStream.open(optarg);
                 if (fileStream.fail() || string(optarg).empty())
                 {
                     throw FileNotFoundException(optarg);
@@ -55,7 +55,7 @@ Configuration::Configuration(int argc, char ** argv)
             case 'i':
                 try
                 {
-                    parser = INPUT_NOTATION.at(optarg);
+                    parser = inputNotation.at(optarg);
                 } catch (out_of_range & ex)
                 {
                     throw IllegalValueException(option, optarg);
@@ -64,7 +64,7 @@ Configuration::Configuration(int argc, char ** argv)
             case 'l':
                 try
                 {
-                    language = OUTPUT_LANGUAGE.at(optarg);
+                    language = outputLanguage.at(optarg);
                 } catch (out_of_range & ex)
                 {
                     throw IllegalValueException(option, optarg);
@@ -73,7 +73,7 @@ Configuration::Configuration(int argc, char ** argv)
             case 'o':
                 try
                 {
-                    printer = OUTPUT_NOTATION.at(optarg);
+                    printer = outputNotation.at(optarg);
                 } catch (out_of_range & ex)
                 {
                     throw IllegalValueException(option, optarg);
@@ -118,12 +118,12 @@ istream * Configuration::getInput() const
     return inputStream;
 }
 
-parse Configuration::getParser() const
+Parser Configuration::getParser() const
 {
     return parser;
 }
 
-print Configuration::getPrinter() const
+Printer Configuration::getPrinter() const
 {
     return printer;
 }

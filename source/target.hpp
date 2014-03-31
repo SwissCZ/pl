@@ -9,7 +9,7 @@
 
 using namespace std;
 
-//! Default target
+//! Default target.
 
 /**
  * Default program execution target the program execute.
@@ -17,18 +17,18 @@ using namespace std;
 class Target
 {
 protected:
-    static HilbertSystem system; ///< Axiomatic system to work with
+    static HilbertSystem system; ///< Axiomatic system to work within.
 public:
     virtual ~Target();
     /**
      * Perform next step of the program execution.
-     * @param configuration Program configuration
-     * @return Program exit code
+     * @param configuration Program configuration.
+     * @return Program exit code.
      */
     virtual int perform(Configuration * configuration);
 };
 
-//! Axiom checker
+//! Axiom checker.
 
 /**
  * Check whether a formula is an axiom.
@@ -40,7 +40,7 @@ public:
 };
 
 
-//! Proof checker
+//! Proof checker.
 
 /**
  * Check whether a sequence of formulas is a valid proof.
@@ -48,7 +48,7 @@ public:
 class ProofChecker : public Target
 {
 private:
-    list<Formula *> proof; ///< So-far-valid proof
+    list<Formula *> proof; ///< So-far-valid proof.
 public:
     virtual ~ProofChecker();
     virtual int perform(Configuration *);

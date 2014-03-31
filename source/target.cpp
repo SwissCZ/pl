@@ -66,7 +66,6 @@ int AxiomChecker::perform(Configuration * configuration)
 
             // Axiom validating
             int type;
-
             if ((type = system.validateAxiom(formula)) > 0)
             {
                 if (configuration->getEcho())
@@ -122,7 +121,6 @@ int ProofChecker::perform(Configuration * configuration)
             // Proof validating
             int type;
             Provability * provability;
-
             if ((type = system.validateAxiom(formula)) > 0)
             {
                 // Axiom validating

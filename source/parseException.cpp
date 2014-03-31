@@ -8,14 +8,14 @@ ParseException::ParseException(string message) : message(message)
 {
 }
 
-string ParseException::getErrorMessage() const
+string ParseException::composeMessage() const
 {
     return string() + message;
 }
 
 string ParseException::what() const
 {
-    return getErrorMessage() + ".";
+    return composeMessage() + ".";
 }
 
 IncompleteFormulaException::IncompleteFormulaException()
@@ -34,7 +34,7 @@ LocalizedParseException::LocalizedParseException(string message, char character,
 {
 }
 
-string LocalizedParseException::getErrorMessage() const
+string LocalizedParseException::composeMessage() const
 {
     stringstream stream;
     stream << message << " '" << character << "' at position " << position;

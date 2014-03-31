@@ -2,7 +2,7 @@
 
 using namespace std;
 
-map<char, LanguageMap> Formula::INPUT_LANGUAGE = {
+map<char, Dictionary> Formula::dictionary = {
     {'-',
         {
             {ASCII, "-"},
@@ -73,7 +73,7 @@ bool Proposition::matchesFormula(Formula * formula) const
 }
 
 bool Proposition::matchesSubstitutions(Formula * formula,
-                                       SubstituteMap * substitutions) const
+                                       Substitutions * substitutions) const
 {
     try
     {
@@ -101,14 +101,14 @@ UnaryOperator::~UnaryOperator()
 string UnaryOperator::printPrefix(Language language) const
 {
     return string()
-            + INPUT_LANGUAGE.at(character).at(language)
+            + dictionary.at(character).at(language)
             + operand->printPrefix(language);
 }
 
 string UnaryOperator::printInfix(Language language) const
 {
     return string()
-            + INPUT_LANGUAGE.at(character).at(language)
+            + dictionary.at(character).at(language)
             + operand->printInfix(language);
 }
 
@@ -116,7 +116,7 @@ string UnaryOperator::printPostfix(Language language) const
 {
     return string()
             + operand->printPostfix(language)
-            + INPUT_LANGUAGE.at(character).at(language);
+            + dictionary.at(character).at(language);
 }
 
 bool UnaryOperator::matchesFormula(Formula * formula) const
@@ -126,7 +126,7 @@ bool UnaryOperator::matchesFormula(Formula * formula) const
 }
 
 bool UnaryOperator::matchesSubstitutions(Formula * formula,
-                                         SubstituteMap * subsitutions) const
+                                         Substitutions * subsitutions) const
 {
     return character == formula->getCharacter() && operand->matchesSubstitutions
             (((UnaryOperator *) formula)->operand, subsitutions);
@@ -149,78 +149,78 @@ BinaryOperator::BinaryOperator(char character) : Operator(character)
 
 BinaryOperator::~BinaryOperator()
 {
-    delete leftOperand;
-    delete rightOperand;
+    delete left;
+    delete right;
 }
 
 string BinaryOperator::printPrefix(Language language) const
 {
     return string()
-            + INPUT_LANGUAGE.at(character).at(language)
-            + leftOperand->printPrefix(language)
-            + rightOperand->printPrefix(language);
+            + dictionary.at(character).at(language)
+            + left->printPrefix(language)
+            + right->printPrefix(language);
 }
 
 string BinaryOperator::printInfix(Language language) const
 {
     return string()
             + '('
-            + leftOperand->printInfix(language)
-            + INPUT_LANGUAGE.at(character).at(language)
-            + rightOperand->printInfix(language)
+            + left->printInfix(language)
+            + dictionary.at(character).at(language)
+            + right->printInfix(language)
             + ')';
 }
 
 string BinaryOperator::printPostfix(Language language) const
 {
     return string()
-            + leftOperand->printPostfix(language)
-            + rightOperand->printPostfix(language)
-            + INPUT_LANGUAGE.at(character).at(language);
+            + left->printPostfix(language)
+            + right->printPostfix(language)
+            + dictionary.at(character).at(language);
 }
 
 bool BinaryOperator::matchesFormula(Formula * formula) const
 {
     return character == formula->getCharacter()
-            && leftOperand->matchesFormula
-            (((BinaryOperator *) formula)->leftOperand)
-            && rightOperand->matchesFormula
-            (((BinaryOperator *) formula)->rightOperand);
+            && left->matchesFormula
+            (((BinaryOperator *) formula)->left)
+            && right->matchesFormula
+            (((BinaryOperator *) formula)->right);
 }
 
-bool BinaryOperator::matchesSubstitutions(Formula* formula,
-                                          SubstituteMap * substitutions)
+bool BinaryOperator::matchesSubstitutions(Formula * formula,
+                                          Substitutions * substitutions)
 const
 {
     return character == formula->getCharacter()
-            && leftOperand->matchesSubstitutions
-            (((BinaryOperator *) formula)->leftOperand, substitutions)
-            && rightOperand->matchesSubstitutions
-            (((BinaryOperator *) formula)->rightOperand, substitutions);
+            && left->matchesSubstitutions
+            (((BinaryOperator *) formula)->left, substitutions)
+            && right->matchesSubstitutions
+            (((BinaryOperator *) formula)->right, substitutions);
 }
 
 int BinaryOperator::append(Formula * operand)
 {
-    if (leftOperand == NULL)
+    if (left == NULL)
     {
-        leftOperand = operand;
+        left = operand;
         return 1;
     } else
     {
-        rightOperand = operand;
+        right = operand;
         return 0;
     }
 }
 
 int BinaryOperator::insert(Formula * operand)
 {
-    if (rightOperand == NULL)
+    if (right == NULL)
     {
-        rightOperand = operand;
+        right = operand;
         return 1;
     } else
     {
-        leftOperand = operand;
+        left = operand;
         return 0;
     }
 }

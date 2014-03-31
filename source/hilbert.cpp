@@ -23,7 +23,8 @@ HilbertSystem::HilbertSystem()
 
 HilbertSystem::~HilbertSystem()
 {
-    for(Formula * formula : axioms){
+    for (Formula * formula : axioms)
+    {
         delete formula;
     }
     delete implication;
@@ -32,13 +33,14 @@ HilbertSystem::~HilbertSystem()
 int HilbertSystem::validateAxiom(Formula * formula) const
 {
     int type = 1;
-    SubstituteMap substitutions;
+    Substitutions substitutions;
     for (Formula * axiom : axioms)
     {
         if (axiom->matchesSubstitutions(formula, &substitutions))
         {
             return type;
         }
+        substitutions.clear();
         type++;
     }
     return 0;
@@ -49,7 +51,7 @@ Provability * HilbertSystem::validateModusPonens(Formula * formula,
 {
     int premiseOrder = 0;
     int implicationOrder = 0;
-    SubstituteMap * substitutions = NULL;
+    Substitutions substitutions;
 
     for (Formula * premise : proof)
     {
@@ -61,16 +63,13 @@ Provability * HilbertSystem::validateModusPonens(Formula * formula,
             {
                 continue;
             }
-            substitutions = new SubstituteMap{
-                {'A', premise},
-                {'B', formula}
-            };
-            if (implication->matchesSubstitutions(implication, substitutions))
+            substitutions.emplace('A', premise);
+            substitutions.emplace('B', formula);
+            if (implication->matchesSubstitutions(implication, &substitutions))
             {
-                delete substitutions;
                 return new ProvableResult(premiseOrder, implicationOrder);
             }
-            delete substitutions;
+            substitutions.clear();
         }
         implicationOrder = 0;
     }

@@ -5,7 +5,7 @@
 
 using namespace std;
 
-//! Formula parse error
+//! Formula parse error.
 
 /**
  * Error reported by parsers.
@@ -13,15 +13,18 @@ using namespace std;
 class ParseException
 {
 protected:
-    string message; ///< Error message string
-
+    string message; ///< Error message string.
     /**
-     * Composes a parse error message.
-     * @return Parse error message
+     * Composes parse error message.
+     * @return Parse error message.
      */
-    virtual string getErrorMessage() const;
+    virtual string composeMessage() const;
 public:
     ParseException(string);
+    /**
+     * Composes error message.
+     * @return Error message.
+     */
     virtual string what() const;
 };
 
@@ -47,7 +50,7 @@ public:
     UnexpectedEOFException();
 };
 
-//! Localized error
+//! Localized error.
 
 /**
  * Parse error localized with error-causing character position.
@@ -55,15 +58,15 @@ public:
 class LocalizedParseException : public ParseException
 {
 protected:
-    char character; ///< Error-causing character
-    int position; ///< Error-causing character position
+    char character; ///< Error-causing character.
+    int position; ///< Error-causing character position.
 
-    virtual string getErrorMessage() const;
+    virtual string composeMessage() const;
 public:
     LocalizedParseException(string, char, int);
 };
 
-//! Unexpected element
+//! Unexpected element.
 
 /**
  * Parsed element was not expected at current position.

@@ -5,7 +5,7 @@
 
 using namespace std;
 
-//! Modus ponens provability
+//! Modus ponens provability.
 
 /**
  * Modus ponens formula provability validation result.
@@ -13,22 +13,22 @@ using namespace std;
 class Provability
 {
 private:
-    bool provability; ///< Modus ponens formula provability
+    bool provability; ///< Modus ponens formula provability.
 public:
     Provability(bool);
     /**
      * Modus ponens formula provability getter.
-     * @return Modus ponens formula provability
+     * @return Modus ponens formula provability.
      */
     bool getProvability() const;
     /**
      * Composes a formula provability validation message.
-     * @return Formula provability validation message
+     * @return Formula provability validation message.
      */
     virtual string getMessage() const = 0;
 };
 
-//! Modus-ponens-provable result
+//! Modus-ponens-provable result.
 
 /**
  * Formula is provable using modus ponens rule.
@@ -43,7 +43,7 @@ public:
     virtual string getMessage() const;
 };
 
-//! Modus-ponens-inprovable result
+//! Modus-ponens-inprovable result.
 
 /**
  * Formula is not provable using modus ponens rule.

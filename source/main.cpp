@@ -9,27 +9,27 @@ using namespace std;
 
 int main(int argc, char ** argv)
 {
-    // Variables definition
+    // Variables definition.
     int exit = EXIT_SUCCESS;
     Configuration * configuration = NULL;
 
-    // Turn off getopt() error messages as we have our own
+    // Turn off getopt() error messages as we have our own.
     opterr = 0;
     try
     {
-        // Options processing
+        // Options processing.
         configuration = new Configuration(argc, argv);
 
-        // Target execution
+        // Target execution.
         exit = configuration->getTarget()->perform(configuration);
     } catch (SyntaxException & exception)
     {
-        // Print syntax error message
+        // Print syntax error message.
         cerr << exception.what() << endl;
         exit = EXIT_FAILURE;
     }
 
-    // Program exit
+    // Program exit.
     delete configuration;
     return exit;
 }
