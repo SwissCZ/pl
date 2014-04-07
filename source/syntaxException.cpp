@@ -12,12 +12,12 @@ string SyntaxException::composeMessage() const
     return string() + "Option '-"  + option + "' " + message;
 }
 
-string SyntaxException::what() const
+string SyntaxException::getMessage() const
 {
     return composeMessage() + ".";
 }
 
-MultipleTargetsException::MultipleTargetsException(char option)
+ExclusiveTargetsException::ExclusiveTargetsException(char option)
 : SyntaxException(option, "is redundant")
 {
 }
@@ -47,7 +47,7 @@ IllegalValueException::IllegalValueException(char option, string value)
 {
 }
 
-FileNotFoundException::FileNotFoundException(string value)
-: ValueException('i', value, "can not take missing file")
+InvalidFileException::InvalidFileException(string value)
+: ValueException('i', value, "can not take file")
 {
 }

@@ -1,8 +1,8 @@
-#ifndef CONFIGURATION_HPP
-#define	CONFIGURATION_HPP
+#ifndef PROGRAM_CONFIGURATION_HPP
+#define	PROGRAM_CONFIGURATION_HPP
 
-#include "formula.hpp"
-#include "parse.hpp"
+#include "parseFunctions.hpp"
+#include "propositionalFormula.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -10,18 +10,18 @@
 using namespace std;
 
 // Forward declaration of Target class to prevent circular dependency issue.
-class Target;
+class ExecutionTarget;
 
 // Type definitions for simplification purposes.
-typedef Formula * (* Parser)(istream &); ///< Parse function pointer.
-typedef string(Formula::* Printer) (Language) const; ///< Print method pointer.
+typedef PropositionalFormula * (* Parser)(istream &); ///< Parse function pointer.
+typedef string(PropositionalFormula::* Printer) (Language) const; ///< Print method pointer.
 
-//! Program configuration.
+//! Program configuration structure.
 
 /**
  * Directs program execution.
  */
-class Configuration
+class ProgramConfiguration
 {
 private:
     static map<string, Parser> inputNotation;
@@ -33,13 +33,14 @@ private:
     istream * inputStream = &cin; ///< Input stream to read from.
     ifstream fileStream; ///< File input stream to read from.
     Parser parser = &parseInfix; ///< Input parser to use.
-    Printer printer = &Formula::printInfix; ///< Output print method to use.
+    Printer printer = &PropositionalFormula::printInfix;
+    ///< Output print method to use.
     Language language = ASCII; ///< Output language of connectives.
-    Target * target = NULL; ///< Program target to execute.
+    ExecutionTarget * target = NULL; ///< Program target to execute.
     bool echo = false; ///< To print textual reports or not.
 public:
-    Configuration(int argc, char ** argv);
-    ~Configuration();
+    ProgramConfiguration(int argc, char ** argv);
+    ~ProgramConfiguration();
     /**
      * Input stream getter.
      * @return Input stream to read from.
@@ -64,7 +65,7 @@ public:
      * Program target getter.
      * @return Program target to execute.
      */
-    Target * getTarget() const;
+    ExecutionTarget * getTarget() const;
     /**
      * Echo flag getter.
      * @return To print textual reports or not.
@@ -72,4 +73,4 @@ public:
     bool getEcho() const;
 };
 
-#endif	/* CONFIGURATION_HPP */
+#endif	/* PROGRAM_CONFIGURATION_HPP */

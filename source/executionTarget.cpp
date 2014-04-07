@@ -1,4 +1,4 @@
-#include "target.hpp"
+#include "executionTarget.hpp"
 #include "parseException.hpp"
 
 #include <iostream>
@@ -6,15 +6,13 @@
 
 using namespace std;
 
-HilbertSystem Target::system;
-
-Target::~Target()
+ExecutionTarget::~ExecutionTarget()
 {
 }
 
-int Target::perform(Configuration * configuration)
+int DefaultTarget::execute(ProgramConfiguration * configuration)
 {
-    Formula * formula = NULL;
+    PropositionalFormula * formula = NULL;
     int exit = EXIT_SUCCESS;
 
     while (true)
@@ -40,7 +38,7 @@ int Target::perform(Configuration * configuration)
             // Parse error
             if (configuration->getEcho())
             {
-                cerr << exception.what() << endl;
+                cerr << exception.getMessage() << endl;
             }
             exit = EXIT_FAILURE;
         }
@@ -48,9 +46,9 @@ int Target::perform(Configuration * configuration)
     return exit;
 }
 
-int AxiomChecker::perform(Configuration * configuration)
+int AxiomCheck::execute(ProgramConfiguration * configuration)
 {
-    Formula * formula = NULL;
+    PropositionalFormula * formula = NULL;
     int exit = EXIT_SUCCESS;
 
     while (true)
@@ -86,7 +84,7 @@ int AxiomChecker::perform(Configuration * configuration)
             // Parse error
             if (configuration->getEcho())
             {
-                cerr << exception.what() << endl;
+                cerr << exception.getMessage() << endl;
             }
             exit = EXIT_FAILURE;
         }
@@ -94,17 +92,17 @@ int AxiomChecker::perform(Configuration * configuration)
     return exit;
 }
 
-ProofChecker::~ProofChecker()
+ProofCheck::~ProofCheck()
 {
-    for (Formula * formula : proof)
+    for (PropositionalFormula * formula : validProof)
     {
         delete formula;
     }
 }
 
-int ProofChecker::perform(Configuration * configuration)
+int ProofCheck::execute(ProgramConfiguration * configuration)
 {
-    Formula * formula;
+    PropositionalFormula * formula;
     int exit = EXIT_SUCCESS;
 
     while (true)
@@ -120,7 +118,7 @@ int ProofChecker::perform(Configuration * configuration)
 
             // Proof validating
             int type;
-            Provability * provability;
+            string * message;
             if ((type = system.validateAxiom(formula)) > 0)
             {
                 // Axiom validating
@@ -128,21 +126,23 @@ int ProofChecker::perform(Configuration * configuration)
                 {
                     cout << "Provable being a type " << type << " axiom." << endl;
                 }
-                proof.push_back(formula);
+                validProof.push_back(formula);
             } else
             {
                 // Modus ponens proving
-                provability = system.validateModusPonens(formula, proof);
+                message = system.proveFormula(formula, validProof);
                 if (configuration->getEcho())
                 {
-                    cout << provability->getMessage() << endl;
+                    cout << message << endl;
                 }
 
-                if (provability->getProvability())
+                if (message != NULL)
                 {
-                    proof.push_back(formula);
+                    validProof.push_back(formula);
+                    delete message;
                 } else
                 {
+                    delete message;
                     delete formula;
                     exit = EXIT_FAILURE;
                     break;
@@ -153,7 +153,7 @@ int ProofChecker::perform(Configuration * configuration)
             // Parse exception
             if (configuration->getEcho())
             {
-                cerr << exception.what() << endl;
+                cerr << exception.getMessage() << endl;
             }
             exit = EXIT_FAILURE;
             break;

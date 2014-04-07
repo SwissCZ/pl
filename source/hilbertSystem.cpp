@@ -1,5 +1,5 @@
-#include "hilbert.hpp"
-#include "parse.hpp"
+#include "hilbertSystem.hpp"
+#include "parseFunctions.hpp"
 
 #include <sstream>
 
@@ -23,20 +23,20 @@ HilbertSystem::HilbertSystem()
 
 HilbertSystem::~HilbertSystem()
 {
-    for (Formula * formula : axioms)
+    for (PropositionalFormula * formula : axioms)
     {
         delete formula;
     }
     delete implication;
 }
 
-int HilbertSystem::validateAxiom(Formula * formula) const
+int HilbertSystem::validateAxiom(PropositionalFormula * formula) const
 {
     int type = 1;
     Substitutions substitutions;
-    for (Formula * axiom : axioms)
+    for (PropositionalFormula * axiom : axioms)
     {
-        if (axiom->matchesSubstitutions(formula, &substitutions))
+        if (axiom->matchesAxiom(formula, substitutions))
         {
             return type;
         }
@@ -46,17 +46,18 @@ int HilbertSystem::validateAxiom(Formula * formula) const
     return 0;
 }
 
-Provability * HilbertSystem::validateModusPonens(Formula * formula,
-                                                 list<Formula *> proof) const
+string * HilbertSystem::proveFormula(PropositionalFormula * formula,
+                                     list<PropositionalFormula *> proof) const
 {
     int premiseOrder = 0;
     int implicationOrder = 0;
     Substitutions substitutions;
+    stringstream stream;
 
-    for (Formula * premise : proof)
+    for (PropositionalFormula * premise : proof)
     {
         premiseOrder++;
-        for (Formula * implication : proof)
+        for (PropositionalFormula * implication : proof)
         {
             implicationOrder++;
             if (premise == implication)
@@ -65,13 +66,16 @@ Provability * HilbertSystem::validateModusPonens(Formula * formula,
             }
             substitutions.emplace('A', premise);
             substitutions.emplace('B', formula);
-            if (implication->matchesSubstitutions(implication, &substitutions))
+            if (implication->matchesAxiom(implication, substitutions))
             {
-                return new ProvableResult(premiseOrder, implicationOrder);
+                stream << "Provable via modus ponens using formulas " <<
+                        premiseOrder << " and " << implicationOrder << ".";
+                return new string(stream.str());
             }
             substitutions.clear();
         }
         implicationOrder = 0;
     }
-    return new InprovableResult();
+    stream << "Inprovable within this proof.";
+    return new string(stream.str());
 }

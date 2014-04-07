@@ -1,8 +1,8 @@
-#include "formula.hpp"
+#include "propositionalFormula.hpp"
 
 using namespace std;
 
-map<char, Dictionary> Formula::dictionary = {
+map<char, Dictionary> PropositionalFormula::dictionary = {
     {'-',
         {
             {ASCII, "-"},
@@ -35,20 +35,20 @@ map<char, Dictionary> Formula::dictionary = {
         }}
 };
 
-Formula::Formula(char character) : character(character)
+PropositionalFormula::PropositionalFormula(char character) : character(character)
 {
 }
 
-Formula::~Formula()
+PropositionalFormula::~PropositionalFormula()
 {
 }
 
-char Formula::getCharacter() const
+char PropositionalFormula::getCharacter() const
 {
     return character;
 }
 
-Proposition::Proposition(char character) : Formula(character)
+Proposition::Proposition(char character) : PropositionalFormula(character)
 {
 }
 
@@ -67,25 +67,25 @@ string Proposition::printPostfix(Language language) const
     return string() + this->character;
 }
 
-bool Proposition::matchesFormula(Formula * formula) const
+bool Proposition::matchesFormula(PropositionalFormula * formula) const
 {
     return this->character == formula->getCharacter();
 }
 
-bool Proposition::matchesSubstitutions(Formula * formula,
-                                       Substitutions * substitutions) const
+bool Proposition::matchesAxiom(PropositionalFormula * formula,
+                                       Substitutions & substitutions) const
 {
     try
     {
-        return substitutions->at(character)->matchesFormula(formula);
+        return substitutions.at(character)->matchesFormula(formula);
     } catch (out_of_range & ex)
     {
-        substitutions->emplace(character, formula);
+        substitutions.emplace(character, formula);
         return true;
     }
 }
 
-Operator::Operator(char character) : Formula(character)
+Operator::Operator(char character) : PropositionalFormula(character)
 {
 }
 
@@ -119,26 +119,26 @@ string UnaryOperator::printPostfix(Language language) const
             + dictionary.at(character).at(language);
 }
 
-bool UnaryOperator::matchesFormula(Formula * formula) const
+bool UnaryOperator::matchesFormula(PropositionalFormula * formula) const
 {
     return character == formula->getCharacter()
             && operand->matchesFormula(((UnaryOperator *) formula)->operand);
 }
 
-bool UnaryOperator::matchesSubstitutions(Formula * formula,
-                                         Substitutions * subsitutions) const
+bool UnaryOperator::matchesAxiom(PropositionalFormula * formula,
+                                         Substitutions & subsitutions) const
 {
-    return character == formula->getCharacter() && operand->matchesSubstitutions
+    return character == formula->getCharacter() && operand->matchesAxiom
             (((UnaryOperator *) formula)->operand, subsitutions);
 }
 
-int UnaryOperator::append(Formula * operand)
+int UnaryOperator::append(PropositionalFormula * operand)
 {
     this->operand = operand;
     return 0;
 }
 
-int UnaryOperator::insert(Formula * operand)
+int UnaryOperator::insert(PropositionalFormula * operand)
 {
     return append(operand);
 }
@@ -179,7 +179,7 @@ string BinaryOperator::printPostfix(Language language) const
             + dictionary.at(character).at(language);
 }
 
-bool BinaryOperator::matchesFormula(Formula * formula) const
+bool BinaryOperator::matchesFormula(PropositionalFormula * formula) const
 {
     return character == formula->getCharacter()
             && left->matchesFormula
@@ -188,18 +188,18 @@ bool BinaryOperator::matchesFormula(Formula * formula) const
             (((BinaryOperator *) formula)->right);
 }
 
-bool BinaryOperator::matchesSubstitutions(Formula * formula,
-                                          Substitutions * substitutions)
+bool BinaryOperator::matchesAxiom(PropositionalFormula * formula,
+                                          Substitutions & substitutions)
 const
 {
     return character == formula->getCharacter()
-            && left->matchesSubstitutions
+            && left->matchesAxiom
             (((BinaryOperator *) formula)->left, substitutions)
-            && right->matchesSubstitutions
+            && right->matchesAxiom
             (((BinaryOperator *) formula)->right, substitutions);
 }
 
-int BinaryOperator::append(Formula * operand)
+int BinaryOperator::append(PropositionalFormula * operand)
 {
     if (left == NULL)
     {
@@ -212,7 +212,7 @@ int BinaryOperator::append(Formula * operand)
     }
 }
 
-int BinaryOperator::insert(Formula * operand)
+int BinaryOperator::insert(PropositionalFormula * operand)
 {
     if (right == NULL)
     {

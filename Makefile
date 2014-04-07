@@ -10,12 +10,7 @@ GXX		= g++
 OPTS	= -Wall -pedantic -std=c++11
 
 NAME	= pl
-FILES	= configuration.o target.o formula.o hilbert.o main.o parseException.o parse.o provability.o syntaxException.o
-
-BUILD	= build
-DIST	= output
-DOC		= documentation
-SRC		= source
+FILES	= executionTarget.o hilbertSystem.o main.o parseException.o parseFunctions.o programConfiguration.o propositionalFormula.o syntaxException.o
 
 ###################
 # Primary targets #
@@ -23,11 +18,12 @@ SRC		= source
 
 # Compile the source files
 build: .folders $(FILES)
-	cd $(BUILD); $(GXX) $(FILES) -o ../$(DIST)/$(NAME) $(OPTS)
+	cd build; $(GXX) $(FILES) -o ../output/$(NAME) $(OPTS)
 
 # Remove all outputs
 clean:
-	rm -fr $(BUILD) $(DIST) $(DOC)
+	rm -fr build output documentation
+	rm -f test/*_test.txt
 
 # Create the documentation
 doc:
@@ -35,6 +31,9 @@ doc:
 
 # Install the program
 install: build .binary .manpage
+
+# Test the program
+test: build .test
 
 # Uninstall the program
 uninstall:
@@ -46,18 +45,22 @@ uninstall:
 
 # Install the binary
 .binary:
-	install -g 0 -o 0 -m 0755 $(DIST)/$(NAME) $(BINDIR);
+	install -g 0 -o 0 -m 0755 output/$(NAME) $(BINDIR);
 
 # Create output directories
 .folders:
-	mkdir -p $(BUILD) $(DIST)
+	mkdir -p build output
 
 # Install the manual page
 .manpage:
 	install -g 0 -o 0 -m 0644 $(NAME).1 $(MANDIR) && gzip -f $(MANDIR)/$(NAME).1
 
-# Universal *.cpp file compilation rule
-%.o: $(SRC)/%.cpp
-	$(GXX) $(OPTS) -c -MMD -MP -MF $(BUILD)/$@.d $< -o $(BUILD)/$@
+# Perform tests
+.test:
+	./test.sh
 
-.PHONY: build all clean doc install uninstall .binary .folders .manpage
+# Universal *.cpp file compilation rule
+%.o: source/%.cpp
+	$(GXX) $(OPTS) -c -MMD -MP -MF build/$@.d $< -o build/$@
+
+.PHONY: build all clean doc install test uninstall .binary .folders .manpage .test

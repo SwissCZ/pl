@@ -1,18 +1,21 @@
-#4 (2014/03)
-- Výpis hlášení -e
-- Validátor axiomů -A
-- Validátor důkazů -P
+#5 (2014/4)
+- Sebetestování
 
-#3 (2014/02)
+#4 (2014/3)
+- Výpis hlášení [pl -e]
+- Validátor axiomů [pl -A]
+- Validátor důkazů [pl -P]
+
+#3 (2014/2)
 - Odzávorkování negace
 - Spouštění s parametry
-- Podpora parametrů -f -i -l -o
-- Výstupní jazyky -l (ascii|words|tex)
+- Podpora parametrů [-f -i -l -o]
+- Podpora jazyků words, tex
 - Implementace Makefile
 - Implementace Manpage
 - Dokumentace Doxygen
 
-#2 (2014/01)
+#2 (2014/1)
 - Čtení ze vstupního proudu
 - Kontrola syntaxe a hlášení chyb
 - Podpora notace infix

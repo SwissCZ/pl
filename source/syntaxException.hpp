@@ -5,39 +5,39 @@
 
 using namespace std;
 
-//! Syntax error.
+//! Program syntax error.
 
 /**
- * Invalid program usage syntax error.
+ * Invalid program usage error.
  */
 class SyntaxException
 {
 protected:
     char option; ///< Error option character.
-    string message; ///< Error message.
+    string message; ///< Error message component.
     /**
-     * Composes syntax error message.
-     * @return Syntax error message.
+     * Composes a partial error message.
+     * @return Partial error message.
      */
     virtual string composeMessage() const;
 public:
     SyntaxException(char, string);
     /**
-     * Composes error message.
-     * @return Error message.
+     * Composes an error message.
+     * @return Syntax error message.
      */
-    virtual string what() const;
+    string getMessage() const;
 };
 
-//! Multiple targets error.
+//! Exclusive targets error.
 
 /**
- * Multiple targets were set to be performed.
+ * Exclusive targets were set to be performed.
  */
-class MultipleTargetsException : public SyntaxException
+class ExclusiveTargetsException : public SyntaxException
 {
 public:
-    MultipleTargetsException(char);
+    ExclusiveTargetsException(char);
 };
 
 //! Illegal option error.
@@ -51,10 +51,10 @@ public:
     IllegalOptionException(char);
 };
 
-//! Missing option value.
+//! Missing value error.
 
 /**
- * Required option value is missing.
+ * Required option value was not set.
  */
 class MissingValueException : public SyntaxException
 {
@@ -62,7 +62,7 @@ public:
     MissingValueException(char);
 };
 
-//! Illegal option value.
+//! Option value error.
 
 /**
  * Syntax error caused by invalid option value.
@@ -70,12 +70,10 @@ public:
 class ValueException : public SyntaxException
 {
 private:
-    string const value; ///< Error-causing option value.
-
-
+    string const value; ///< Error causing option value.
+    virtual string composeMessage() const;
 public:
     ValueException(char, string, string);
-    virtual string composeMessage() const;
 };
 
 //! Illegal option value.
@@ -94,10 +92,10 @@ public:
 /**
  * Given file was not found.
  */
-class FileNotFoundException : public ValueException
+class InvalidFileException : public ValueException
 {
 public:
-    FileNotFoundException(string);
+    InvalidFileException(string);
 };
 
 #endif	/* SYNTAX_EXCEPTION_HPP */

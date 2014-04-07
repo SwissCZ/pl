@@ -5,33 +5,33 @@
 
 using namespace std;
 
-//! Formula parse error.
+//! Formula parser error.
 
 /**
- * Error reported by parsers.
+ * Error reported by formula parser.
  */
 class ParseException
 {
 protected:
-    string message; ///< Error message string.
+    string message; ///< Error message component.
     /**
-     * Composes parse error message.
-     * @return Parse error message.
+     * Composes a partial error message.
+     * @return Partial error message.
      */
     virtual string composeMessage() const;
 public:
     ParseException(string);
     /**
-     * Composes error message.
-     * @return Error message.
+     * Composes an error message.
+     * @return Parse error message.
      */
-    virtual string what() const;
+    virtual string getMessage() const;
 };
 
-//! Incomplete formula.
+//! Incomplete formula parsed.
 
 /**
- * Parsed formula has not been finished.
+ * Formula was not finished.
  */
 class IncompleteFormulaException : public ParseException
 {
@@ -50,50 +50,49 @@ public:
     UnexpectedEOFException();
 };
 
-//! Localized error.
+//! Detailed parse error.
 
 /**
- * Parse error localized with error-causing character position.
+ * Parse error specified with error causing character and it's position.
  */
-class LocalizedParseException : public ParseException
+class DetailedParseException : public ParseException
 {
 protected:
-    char character; ///< Error-causing character.
-    int position; ///< Error-causing character position.
-
+    char character; ///< Error causing character.
+    int position; ///< Error causing character position.
     virtual string composeMessage() const;
 public:
-    LocalizedParseException(string, char, int);
+    DetailedParseException(string, char, int);
 };
 
-//! Unexpected element.
+//! Unexpected element parsed.
 
 /**
  * Parsed element was not expected at current position.
  */
-class UnexpectedElementException : public LocalizedParseException
+class UnexpectedElementException : public DetailedParseException
 {
 public:
     UnexpectedElementException(char, int);
 };
 
-//! Unnecessary element.
+//! Unnecessary element parsed.
 
 /**
  * Parsed formula has been already finished before parsing this element.
  */
-class UnnecessaryElementException : public LocalizedParseException
+class UnnecessaryElementException : public DetailedParseException
 {
 public:
     UnnecessaryElementException(char, int);
 };
 
-//! Illegal character.
+//! Illegal character read.
 
 /**
  * Illegal character was read.
  */
-class IllegalCharacterException : public LocalizedParseException
+class IllegalCharacterException : public DetailedParseException
 {
 public:
     IllegalCharacterException(char, int);

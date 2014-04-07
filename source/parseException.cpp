@@ -13,7 +13,7 @@ string ParseException::composeMessage() const
     return string() + message;
 }
 
-string ParseException::what() const
+string ParseException::getMessage() const
 {
     return composeMessage() + ".";
 }
@@ -28,13 +28,13 @@ UnexpectedEOFException::UnexpectedEOFException()
 {
 }
 
-LocalizedParseException::LocalizedParseException(string message, char character,
+DetailedParseException::DetailedParseException(string message, char character,
                                                  int position)
 : ParseException(message), character(character), position(position)
 {
 }
 
-string LocalizedParseException::composeMessage() const
+string DetailedParseException::composeMessage() const
 {
     stringstream stream;
     stream << message << " '" << character << "' at position " << position;
@@ -43,18 +43,18 @@ string LocalizedParseException::composeMessage() const
 
 UnexpectedElementException::UnexpectedElementException(char character,
                                                        int position)
-: LocalizedParseException("Unexpected element", character, position)
+: DetailedParseException("Unexpected element", character, position)
 {
 }
 
 UnnecessaryElementException::UnnecessaryElementException(char character,
                                                          int position)
-: LocalizedParseException("Unnecessary element", character, position)
+: DetailedParseException("Unnecessary element", character, position)
 {
 }
 
 IllegalCharacterException::IllegalCharacterException(char character,
                                                      int position)
-: LocalizedParseException("Illegal character", character, position)
+: DetailedParseException("Illegal character", character, position)
 {
 }

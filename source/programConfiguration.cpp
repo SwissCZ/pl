@@ -1,30 +1,30 @@
-#include "configuration.hpp"
+#include "programConfiguration.hpp"
 #include "parseException.hpp"
 #include "syntaxException.hpp"
-#include "target.hpp"
+#include "executionTarget.hpp"
 
 #include <fstream>
 #include <unistd.h>
 
 using namespace std;
 
-map<string, Parser> Configuration::inputNotation = {
+map<string, Parser> ProgramConfiguration::inputNotation = {
     {"prefix", &parsePrefix},
     {"infix", &parseInfix},
     {"postfix", &parsePostfix}
 };
-map<string, Printer> Configuration::outputNotation = {
-    {"prefix", &Formula::printPrefix},
-    {"infix", &Formula::printInfix},
-    {"postfix", &Formula::printPostfix}
+map<string, Printer> ProgramConfiguration::outputNotation = {
+    {"prefix", &PropositionalFormula::printPrefix},
+    {"infix", &PropositionalFormula::printInfix},
+    {"postfix", &PropositionalFormula::printPostfix}
 };
-map<string, Language> Configuration::outputLanguage = {
+map<string, Language> ProgramConfiguration::outputLanguage = {
     {"ascii", ASCII},
     {"words", WORDS},
     {"tex", TEX}
 };
 
-Configuration::Configuration(int argc, char ** argv)
+ProgramConfiguration::ProgramConfiguration(int argc, char ** argv)
 {
     int option;
     while ((option = getopt(argc, argv, "Aef:i:l:o:P")) != -1)
@@ -34,10 +34,10 @@ Configuration::Configuration(int argc, char ** argv)
             case 'A':
                 if (target == NULL)
                 {
-                    target = new AxiomChecker();
+                    target = new AxiomCheck();
                 } else
                 {
-                    throw MultipleTargetsException(option);
+                    throw ExclusiveTargetsException(option);
                 }
                 break;
             case 'e':
@@ -45,10 +45,11 @@ Configuration::Configuration(int argc, char ** argv)
                 break;
             case 'f':
                 fileStream.open(optarg);
-                if (fileStream.fail() || string(optarg).empty())
+                if (fileStream.fail())
                 {
-                    throw FileNotFoundException(optarg);
-                } else {
+                    throw InvalidFileException(optarg);
+                } else
+                {
                     inputStream = &fileStream;
                 }
                 break;
@@ -82,10 +83,10 @@ Configuration::Configuration(int argc, char ** argv)
             case 'P':
                 if (target == NULL)
                 {
-                    target = new ProofChecker();
+                    target = new ProofCheck();
                 } else
                 {
-                    throw MultipleTargetsException(option);
+                    throw ExclusiveTargetsException(option);
                 }
                 break;
             default:
@@ -103,42 +104,42 @@ Configuration::Configuration(int argc, char ** argv)
 
     if (target == NULL)
     {
-        target = new Target();
+        target = new DefaultTarget();
     }
 }
 
-Configuration::~Configuration()
+ProgramConfiguration::~ProgramConfiguration()
 {
     fileStream.close();
     delete target;
 }
 
-istream * Configuration::getInput() const
+istream * ProgramConfiguration::getInput() const
 {
     return inputStream;
 }
 
-Parser Configuration::getParser() const
+Parser ProgramConfiguration::getParser() const
 {
     return parser;
 }
 
-Printer Configuration::getPrinter() const
+Printer ProgramConfiguration::getPrinter() const
 {
     return printer;
 }
 
-Language Configuration::getLanguage() const
+Language ProgramConfiguration::getLanguage() const
 {
     return language;
 }
 
-Target * Configuration::getTarget() const
+ExecutionTarget * ProgramConfiguration::getTarget() const
 {
     return target;
 }
 
-bool Configuration::getEcho() const
+bool ProgramConfiguration::getEcho() const
 {
     return echo;
 }

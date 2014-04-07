@@ -1,5 +1,5 @@
-#ifndef FORMULA_HPP
-#define	FORMULA_HPP
+#ifndef PROPOSITIONAL_FORMULA_HPP
+#define	PROPOSITIONAL_FORMULA_HPP
 
 #include <map>
 
@@ -17,44 +17,45 @@ enum Language
     TEX ///< LaTeX language.
 };
 
-class Formula;
+// Forward declaration for type definition purposes.
+class PropositionalFormula;
 
 // Type definitions for simplification purposes.
-typedef map<Language, string> Dictionary; ///< Output language map.
-typedef map<char, Formula *> Substitutions; ///< Axiom formulas substitutions.
+typedef map<Language, string> Dictionary; ///< Output language dictionary.
+typedef map<char, PropositionalFormula *> Substitutions; ///< Axiom formulas substitutions.
 
 //! Propositional formula.
 
 /**
  * Formulas can be trivial (e.g. 'A') or composite (e.g. '-(A+B)').
  */
-class Formula
+class PropositionalFormula
 {
 protected:
-    static map<char, Dictionary> dictionary; ///< Output language.
+    static map<char, Dictionary> dictionary; ///< Output language dictionary.
     char character; ///< Characteristic character.
 public:
-    Formula(char);
-    virtual ~Formula();
+    PropositionalFormula(char);
+    virtual ~PropositionalFormula();
     /**
      * Characteristic character getter.
      * @return Characteristic character.
      */
     char getCharacter() const;
     /**
-     * Returns a textual representation of this formula in the prefix notation.
+     * Returns a textual representation of this formula in prefix.
      * @param language Language of connectives.
      * @return Textual representation of this formula.
      */
     virtual string printPrefix(Language language) const = 0;
     /**
-     * Returns a textual representation of this formula in the infix notation.
+     * Returns a textual representation of this formula in infix.
      * @param language Language of connectives.
      * @return Textual representation of this formula.
      */
     virtual string printInfix(Language language) const = 0;
     /**
-     * Returns a textual representation of this formula in the postfix notation.
+     * Returns a textual representation of this formula in postfix.
      * @param language Language of connectives.
      * @return Textual representation of this formula.
      */
@@ -64,14 +65,14 @@ public:
      * @param formula Formula to be matched.
      * @return Whether the given formula matches this one.
      */
-    virtual bool matchesFormula(Formula * formula) const = 0;
+    virtual bool matchesFormula(PropositionalFormula * formula) const = 0;
     /**
-     * Checks whether given formula matches this one.
+     * Checks whether given formula matches this axiom.
      * @param formula Formula to be matched.
-     * @return Whether the given formula matches this one.
+     * @return Whether the given formula matches this axiom.
      */
-    virtual bool matchesSubstitutions(Formula * formula,
-                                      Substitutions * substitutions) const = 0;
+    virtual bool matchesAxiom(PropositionalFormula * formula, Substitutions & substitutions)
+    const = 0;
 };
 
 //! Proposition.
@@ -79,16 +80,15 @@ public:
 /**
  * Trivial formula consisting of one proposition.
  */
-class Proposition : public Formula
+class Proposition : public PropositionalFormula
 {
 public:
     Proposition(char);
     virtual string printPrefix(Language) const;
     virtual string printInfix(Language) const;
     virtual string printPostfix(Language) const;
-    virtual bool matchesFormula(Formula * formula) const;
-    virtual bool matchesSubstitutions(Formula *, Substitutions * substitutions
-                                      = new Substitutions()) const;
+    virtual bool matchesFormula(PropositionalFormula * formula) const;
+    virtual bool matchesAxiom(PropositionalFormula *, Substitutions & substitutions) const;
 };
 
 //! Operator.
@@ -96,7 +96,7 @@ public:
 /**
  * Formula consisting of one connective and several formulas.
  */
-class Operator : public Formula
+class Operator : public PropositionalFormula
 {
 public:
     Operator(char);
@@ -105,13 +105,13 @@ public:
      * @param formula Formula to be set as an operand.
      * @return Unset operands count after this operation.
      */
-    virtual int append(Formula * formula) = 0;
+    virtual int append(PropositionalFormula * formula) = 0;
     /**
      * Assigns given formula as a first unset operand from the end.
      * @param formula Formula to be set as an operand.
      * @return Unset operands count after this operation.
      */
-    virtual int insert(Formula * formula) = 0;
+    virtual int insert(PropositionalFormula * formula) = 0;
 };
 
 //! Unary operator.
@@ -122,18 +122,17 @@ public:
 class UnaryOperator : public Operator
 {
 private:
-    Formula * operand = NULL; ///< Operand
+    PropositionalFormula * operand = NULL; ///< Operand
 public:
     UnaryOperator(char);
     virtual ~UnaryOperator();
     virtual string printPrefix(Language) const;
     virtual string printInfix(Language) const;
     virtual string printPostfix(Language) const;
-    virtual bool matchesFormula(Formula *) const;
-    virtual bool matchesSubstitutions(Formula *, Substitutions * substitutions
-                                      = new Substitutions()) const;
-    virtual int append(Formula *);
-    virtual int insert(Formula *);
+    virtual bool matchesFormula(PropositionalFormula *) const;
+    virtual bool matchesAxiom(PropositionalFormula *, Substitutions & substitutions) const;
+    virtual int append(PropositionalFormula *);
+    virtual int insert(PropositionalFormula *);
 };
 
 //! Binary operator.
@@ -144,19 +143,18 @@ public:
 class BinaryOperator : public Operator
 {
 private:
-    Formula * left = NULL; ///< Left operand
-    Formula * right = NULL; ///< Right operand
+    PropositionalFormula * left = NULL; ///< Left operand
+    PropositionalFormula * right = NULL; ///< Right operand
 public:
     BinaryOperator(char);
     virtual ~BinaryOperator();
     virtual string printPrefix(Language) const;
     virtual string printInfix(Language) const;
     virtual string printPostfix(Language) const;
-    virtual bool matchesFormula(Formula *) const;
-    virtual bool matchesSubstitutions(Formula *, Substitutions * substitutions
-                                      = new Substitutions()) const;
-    virtual int append(Formula *);
-    virtual int insert(Formula *);
+    virtual bool matchesFormula(PropositionalFormula *) const;
+    virtual bool matchesAxiom(PropositionalFormula *, Substitutions & substitutions) const;
+    virtual int append(PropositionalFormula *);
+    virtual int insert(PropositionalFormula *);
 };
 
-#endif	/* FORMULA_HPP */
+#endif	/* PROPOSITIONAL_FORMULA_HPP */

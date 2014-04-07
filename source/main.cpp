@@ -1,6 +1,6 @@
-#include "configuration.hpp"
+#include "programConfiguration.hpp"
 #include "syntaxException.hpp"
-#include "target.hpp"
+#include "ExecutionTarget.hpp"
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -11,21 +11,21 @@ int main(int argc, char ** argv)
 {
     // Variables definition.
     int exit = EXIT_SUCCESS;
-    Configuration * configuration = NULL;
+    ProgramConfiguration * configuration = NULL;
 
     // Turn off getopt() error messages as we have our own.
     opterr = 0;
     try
     {
         // Options processing.
-        configuration = new Configuration(argc, argv);
+        configuration = new ProgramConfiguration(argc, argv);
 
         // Target execution.
-        exit = configuration->getTarget()->perform(configuration);
+        exit = configuration->getTarget()->execute(configuration);
     } catch (SyntaxException & exception)
     {
         // Print syntax error message.
-        cerr << exception.what() << endl;
+        cerr << exception.getMessage() << endl;
         exit = EXIT_FAILURE;
     }
 

@@ -1,4 +1,4 @@
-#include "parse.hpp"
+#include "parseFunctions.hpp"
 #include "parseException.hpp"
 
 #include <cstdio>
@@ -19,16 +19,16 @@ enum InfixState
     FIRST_OPERAND, ///< First operand set
     BINARY, ///< Binary operator set
     LAST_OPERAND ///< Last operand set
-};
+} ;
 
-Formula * parsePrefix(istream & input)
+PropositionalFormula * parsePrefix(istream & input)
 {
     char buffer;
     int position = 1;
     bool run = true;
 
     stack<Operator *> operatorStack;
-    Formula * temporaryFormula = NULL;
+    PropositionalFormula * temporaryFormula = NULL;
 
     while (run)
     {
@@ -81,6 +81,12 @@ Formula * parsePrefix(istream & input)
                     {
                         // No more operands are needed
                         input.ignore(numeric_limits<streamsize>::max(), '\n');
+                        while (!operatorStack.empty())
+                        {
+                            delete operatorStack.top();
+                            operatorStack.pop();
+                        }
+                        delete temporaryFormula;
                         throw UnnecessaryElementException(buffer, position);
                     }
                 }
@@ -100,6 +106,12 @@ Formula * parsePrefix(istream & input)
                     {
                         // No more operands are needed
                         input.ignore(numeric_limits<streamsize>::max(), '\n');
+                        while (!operatorStack.empty())
+                        {
+                            delete operatorStack.top();
+                            operatorStack.pop();
+                        }
+                        delete temporaryFormula;
                         throw UnnecessaryElementException(buffer, position);
                     }
                 }
@@ -122,6 +134,12 @@ Formula * parsePrefix(istream & input)
                     {
                         // No more operands are needed
                         input.ignore(numeric_limits<streamsize>::max(), '\n');
+                        while (!operatorStack.empty())
+                        {
+                            delete operatorStack.top();
+                            operatorStack.pop();
+                        }
+                        delete temporaryFormula;
                         throw UnnecessaryElementException(buffer, position);
                     }
                 }
@@ -143,11 +161,22 @@ Formula * parsePrefix(istream & input)
                 } else
                 {
                     // Unexpected stream end
+                    while (!operatorStack.empty())
+                    {
+                        delete operatorStack.top();
+                        operatorStack.pop();
+                    }
                     throw UnexpectedEOFException();
                 }
+                break;
             default:
                 // Illegal character
                 input.ignore(numeric_limits<streamsize>::max(), '\n');
+                while (!operatorStack.empty())
+                {
+                    delete operatorStack.top();
+                    operatorStack.pop();
+                }
                 throw IllegalCharacterException(buffer, position);
                 break;
         }
@@ -161,20 +190,25 @@ Formula * parsePrefix(istream & input)
     } else
     {
         // Formula is incomplete
+        while (!operatorStack.empty())
+        {
+            delete operatorStack.top();
+            operatorStack.pop();
+        }
         throw IncompleteFormulaException();
     }
 }
 
-Formula * parseInfix(istream & input)
+PropositionalFormula * parseInfix(istream & input)
 {
     char buffer;
     int position = 1;
     bool run = true;
 
-    stack<Formula *> formulaStack;
+    stack<PropositionalFormula *> formulaStack;
     stack<Operator *> operatorStack;
     stack<int> stateStack;
-    Formula * temporaryFormula;
+    PropositionalFormula * temporaryFormula;
 
     while (run)
     {
@@ -216,6 +250,16 @@ Formula * parseInfix(istream & input)
                     {
                         // Unexpected element location
                         input.ignore(numeric_limits<streamsize>::max(), '\n');
+                        while (!formulaStack.empty())
+                        {
+                            delete formulaStack.top();
+                            formulaStack.pop();
+                        }
+                        while (!operatorStack.empty())
+                        {
+                            delete operatorStack.top();
+                            operatorStack.pop();
+                        }
                         throw UnexpectedElementException(buffer, position);
                     }
                 } else if (stateStack.top() == BLANK ||
@@ -247,6 +291,16 @@ Formula * parseInfix(istream & input)
                 {
                     // Unexpected element location
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
+                    while (!formulaStack.empty())
+                    {
+                        delete formulaStack.top();
+                        formulaStack.pop();
+                    }
+                    while (!operatorStack.empty())
+                    {
+                        delete operatorStack.top();
+                        operatorStack.pop();
+                    }
                     throw UnexpectedElementException(buffer, position);
                 }
                 break;
@@ -255,6 +309,16 @@ Formula * parseInfix(istream & input)
                 {
                     // No more elements are needed
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
+                    while (!formulaStack.empty())
+                    {
+                        delete formulaStack.top();
+                        formulaStack.pop();
+                    }
+                    while (!operatorStack.empty())
+                    {
+                        delete operatorStack.top();
+                        operatorStack.pop();
+                    }
                     throw UnnecessaryElementException(buffer, position);
                 } else if ((stateStack.empty() && position == 1)
                            || stateStack.top() == BLANK
@@ -268,6 +332,16 @@ Formula * parseInfix(istream & input)
                 {
                     // Unexpected element location
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
+                    while (!formulaStack.empty())
+                    {
+                        delete formulaStack.top();
+                        formulaStack.pop();
+                    }
+                    while (!operatorStack.empty())
+                    {
+                        delete operatorStack.top();
+                        operatorStack.pop();
+                    }
                     throw UnexpectedElementException(buffer, position);
                 }
                 break;
@@ -281,10 +355,30 @@ Formula * parseInfix(istream & input)
                     if (position == 1)
                     {
                         // Unexpected element location
+                        while (!formulaStack.empty())
+                        {
+                            delete formulaStack.top();
+                            formulaStack.pop();
+                        }
+                        while (!operatorStack.empty())
+                        {
+                            delete operatorStack.top();
+                            operatorStack.pop();
+                        }
                         throw UnexpectedElementException(buffer, position);
                     } else
                     {
                         // No more elements are needed
+                        while (!formulaStack.empty())
+                        {
+                            delete formulaStack.top();
+                            formulaStack.pop();
+                        }
+                        while (!operatorStack.empty())
+                        {
+                            delete operatorStack.top();
+                            operatorStack.pop();
+                        }
                         throw UnnecessaryElementException(buffer, position);
                     }
                 } else if (stateStack.top() == FIRST_OPERAND)
@@ -296,6 +390,16 @@ Formula * parseInfix(istream & input)
                 {
                     // Unexpected element location
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
+                    while (!formulaStack.empty())
+                    {
+                        delete formulaStack.top();
+                        formulaStack.pop();
+                    }
+                    while (!operatorStack.empty())
+                    {
+                        delete operatorStack.top();
+                        operatorStack.pop();
+                    }
                     throw UnexpectedElementException(buffer, position);
                 }
                 break;
@@ -310,6 +414,16 @@ Formula * parseInfix(istream & input)
                     {
                         // No more elements are needed
                         input.ignore(numeric_limits<streamsize>::max(), '\n');
+                        while (!formulaStack.empty())
+                        {
+                            delete formulaStack.top();
+                            formulaStack.pop();
+                        }
+                        while (!operatorStack.empty())
+                        {
+                            delete operatorStack.top();
+                            operatorStack.pop();
+                        }
                         throw UnnecessaryElementException(buffer, position);
                     }
                 } else if (stateStack.top() == BLANK
@@ -322,6 +436,16 @@ Formula * parseInfix(istream & input)
                 {
                     // Unexpected element location
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
+                    while (!formulaStack.empty())
+                    {
+                        delete formulaStack.top();
+                        formulaStack.pop();
+                    }
+                    while (!operatorStack.empty())
+                    {
+                        delete operatorStack.top();
+                        operatorStack.pop();
+                    }
                     throw UnexpectedElementException(buffer, position);
                 }
                 break;
@@ -330,6 +454,16 @@ Formula * parseInfix(istream & input)
                 {
                     // Too much closing brackets
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
+                    while (!formulaStack.empty())
+                    {
+                        delete formulaStack.top();
+                        formulaStack.pop();
+                    }
+                    while (!operatorStack.empty())
+                    {
+                        delete operatorStack.top();
+                        operatorStack.pop();
+                    }
                     throw UnnecessaryElementException(buffer, position);
                 } else if (stateStack.top() == LAST_OPERAND)
                 {
@@ -361,6 +495,16 @@ Formula * parseInfix(istream & input)
                 {
                     // Unexpected element location
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
+                    while (!formulaStack.empty())
+                    {
+                        delete formulaStack.top();
+                        formulaStack.pop();
+                    }
+                    while (!operatorStack.empty())
+                    {
+                        delete operatorStack.top();
+                        operatorStack.pop();
+                    }
                     throw UnexpectedElementException(buffer, position);
                 }
                 break;
@@ -381,12 +525,32 @@ Formula * parseInfix(istream & input)
                 } else
                 {
                     // Unexpected stream end
+                    while (!formulaStack.empty())
+                    {
+                        delete formulaStack.top();
+                        formulaStack.pop();
+                    }
+                    while (!operatorStack.empty())
+                    {
+                        delete operatorStack.top();
+                        operatorStack.pop();
+                    }
                     throw UnexpectedEOFException();
                 }
                 break;
             default:
                 // Illegal character
                 input.ignore(numeric_limits<streamsize>::max(), '\n');
+                while (!formulaStack.empty())
+                {
+                    delete formulaStack.top();
+                    formulaStack.pop();
+                }
+                while (!operatorStack.empty())
+                {
+                    delete operatorStack.top();
+                    operatorStack.pop();
+                }
                 throw IllegalCharacterException(buffer, position);
                 break;
         }
@@ -407,17 +571,27 @@ Formula * parseInfix(istream & input)
     } else
     {
         // Formula is incomplete
+        while (!formulaStack.empty())
+        {
+            delete formulaStack.top();
+            formulaStack.pop();
+        }
+        while (!operatorStack.empty())
+        {
+            delete operatorStack.top();
+            operatorStack.pop();
+        }
         throw IncompleteFormulaException();
     }
 }
 
-Formula * parsePostfix(istream & input)
+PropositionalFormula * parsePostfix(istream & input)
 {
     char buffer;
     int position = 1;
     bool run = true;
 
-    stack<Formula *> formulaStack;
+    stack<PropositionalFormula *> formulaStack;
     Operator * temporaryOperator;
 
     while (run)
@@ -464,6 +638,11 @@ Formula * parsePostfix(istream & input)
                 {
                     // Not enough stack operands
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
+                    while (!formulaStack.empty())
+                    {
+                        delete formulaStack.top();
+                        formulaStack.pop();
+                    }
                     throw UnnecessaryElementException(buffer, position);
                 }
                 break;
@@ -484,6 +663,11 @@ Formula * parsePostfix(istream & input)
                 {
                     // Not enough stack operands
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
+                    while (!formulaStack.empty())
+                    {
+                        delete formulaStack.top();
+                        formulaStack.pop();
+                    }
                     throw UnnecessaryElementException(buffer, position);
                 }
                 break;
@@ -504,12 +688,22 @@ Formula * parsePostfix(istream & input)
                 } else
                 {
                     // Unexpected stream end
+                    while (!formulaStack.empty())
+                    {
+                        delete formulaStack.top();
+                        formulaStack.pop();
+                    }
                     throw UnexpectedEOFException();
                 }
                 break;
             default:
                 // Illegal character
                 input.ignore(numeric_limits<streamsize>::max(), '\n');
+                while (!formulaStack.empty())
+                {
+                    delete formulaStack.top();
+                    formulaStack.pop();
+                }
                 throw IllegalCharacterException(buffer, position);
                 break;
         }
@@ -527,6 +721,11 @@ Formula * parsePostfix(istream & input)
     } else
     {
         // Formula is incomplete
+        while (!formulaStack.empty())
+        {
+            delete formulaStack.top();
+            formulaStack.pop();
+        }
         throw IncompleteFormulaException();
     }
 }
