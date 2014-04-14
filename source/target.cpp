@@ -1,4 +1,4 @@
-#include "executionTarget.hpp"
+#include "target.hpp"
 #include "parseException.hpp"
 
 #include <iostream>
@@ -6,13 +6,13 @@
 
 using namespace std;
 
-ExecutionTarget::~ExecutionTarget()
+Target::~Target()
 {
 }
 
-int DefaultTarget::execute(ProgramConfiguration * configuration)
+int DefaultTarget::execute(Configuration * configuration)
 {
-    PropositionalFormula * formula = NULL;
+    Formula * formula = NULL;
     int exit = EXIT_SUCCESS;
 
     while (true)
@@ -41,14 +41,24 @@ int DefaultTarget::execute(ProgramConfiguration * configuration)
                 cerr << exception.getMessage() << endl;
             }
             exit = EXIT_FAILURE;
+            if (configuration->getStrict())
+            {
+                break;
+            }
         }
     }
     return exit;
 }
 
-int AxiomCheck::execute(ProgramConfiguration * configuration)
+int ProofSimplify::execute(Configuration * configuration)
 {
-    PropositionalFormula * formula = NULL;
+    // Todo: Proof simplification.
+    return EXIT_SUCCESS;
+}
+
+int AxiomCheck::execute(Configuration * configuration)
+{
+    Formula * formula = NULL;
     int exit = EXIT_SUCCESS;
 
     while (true)
@@ -77,6 +87,10 @@ int AxiomCheck::execute(ProgramConfiguration * configuration)
                     cout << "Not an axiom." << endl;
                 }
                 exit = EXIT_FAILURE;
+                if (configuration->getStrict())
+                {
+                    break;
+                }
             }
             delete formula;
         } catch (ParseException & exception)
@@ -87,6 +101,10 @@ int AxiomCheck::execute(ProgramConfiguration * configuration)
                 cerr << exception.getMessage() << endl;
             }
             exit = EXIT_FAILURE;
+            if (configuration->getStrict())
+            {
+                break;
+            }
         }
     }
     return exit;
@@ -94,15 +112,15 @@ int AxiomCheck::execute(ProgramConfiguration * configuration)
 
 ProofCheck::~ProofCheck()
 {
-    for (PropositionalFormula * formula : validProof)
+    for (Formula * formula : validProof)
     {
         delete formula;
     }
 }
 
-int ProofCheck::execute(ProgramConfiguration * configuration)
+int ProofCheck::execute(Configuration * configuration)
 {
-    PropositionalFormula * formula;
+    Formula * formula;
     int exit = EXIT_SUCCESS;
 
     while (true)
@@ -118,7 +136,7 @@ int ProofCheck::execute(ProgramConfiguration * configuration)
 
             // Proof validating
             int type;
-            string * message;
+            string * message = NULL;
             if ((type = system.validateAxiom(formula)) > 0)
             {
                 // Axiom validating
@@ -133,9 +151,14 @@ int ProofCheck::execute(ProgramConfiguration * configuration)
                 message = system.proveFormula(formula, validProof);
                 if (configuration->getEcho())
                 {
-                    cout << message << endl;
+                    if (message != NULL)
+                    {
+                        cout << *message << endl;
+                    } else
+                    {
+                        cout << "Inprovable within this proof." << endl;
+                    }
                 }
-
                 if (message != NULL)
                 {
                     validProof.push_back(formula);

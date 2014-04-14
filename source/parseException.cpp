@@ -4,18 +4,18 @@
 
 using namespace std;
 
-ParseException::ParseException(string message) : message(message)
+ParseException::ParseException(string message) : reason(message)
 {
 }
 
-string ParseException::composeMessage() const
+string ParseException::preMessage() const
 {
-    return string() + message;
+    return reason;
 }
 
 string ParseException::getMessage() const
 {
-    return composeMessage() + ".";
+    return preMessage() + ".";
 }
 
 IncompleteFormulaException::IncompleteFormulaException()
@@ -29,15 +29,16 @@ UnexpectedEOFException::UnexpectedEOFException()
 }
 
 DetailedParseException::DetailedParseException(string message, char character,
-                                                 int position)
+                                               int position)
 : ParseException(message), character(character), position(position)
 {
 }
 
-string DetailedParseException::composeMessage() const
+string DetailedParseException::preMessage() const
 {
     stringstream stream;
-    stream << message << " '" << character << "' at position " << position;
+
+    stream << reason << " '" << character << "' at position " << position;
     return stream.str();
 }
 

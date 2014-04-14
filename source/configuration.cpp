@@ -1,33 +1,34 @@
-#include "programConfiguration.hpp"
+#include "configuration.hpp"
 #include "parseException.hpp"
 #include "syntaxException.hpp"
-#include "executionTarget.hpp"
+#include "target.hpp"
 
 #include <fstream>
 #include <unistd.h>
 
 using namespace std;
 
-map<string, Parser> ProgramConfiguration::inputNotation = {
+map<string, Parser> Configuration::inputSyntax = {
     {"prefix", &parsePrefix},
     {"infix", &parseInfix},
     {"postfix", &parsePostfix}
 };
-map<string, Printer> ProgramConfiguration::outputNotation = {
-    {"prefix", &PropositionalFormula::printPrefix},
-    {"infix", &PropositionalFormula::printInfix},
-    {"postfix", &PropositionalFormula::printPostfix}
+map<string, Printer> Configuration::outputSyntax = {
+    {"prefix", &Formula::printPrefix},
+    {"infix", &Formula::printInfix},
+    {"postfix", &Formula::printPostfix}
 };
-map<string, Language> ProgramConfiguration::outputLanguage = {
+map<string, Language> Configuration::outputLanguage = {
     {"ascii", ASCII},
     {"words", WORDS},
     {"tex", TEX}
 };
 
-ProgramConfiguration::ProgramConfiguration(int argc, char ** argv)
+Configuration::Configuration(int argc, char ** argv)
 {
     int option;
-    while ((option = getopt(argc, argv, "Aef:i:l:o:P")) != -1)
+
+    while ((option = getopt(argc, argv, "ADef:i:l:o:Ps")) != -1)
     {
         switch (option)
         {
@@ -40,23 +41,32 @@ ProgramConfiguration::ProgramConfiguration(int argc, char ** argv)
                     throw ExclusiveTargetsException(option);
                 }
                 break;
+            case 'D':
+                if (target == NULL)
+                {
+                    target = new ProofSimplify();
+                } else
+                {
+                    throw ExclusiveTargetsException(option);
+                }
+                break;
             case 'e':
                 echo = true;
                 break;
             case 'f':
-                fileStream.open(optarg);
-                if (fileStream.fail())
+                file.open(optarg);
+                if (file.good())
                 {
-                    throw InvalidFileException(optarg);
+                    input = &file;
                 } else
                 {
-                    inputStream = &fileStream;
+                    throw InvalidFileException(optarg);
                 }
                 break;
             case 'i':
                 try
                 {
-                    parser = inputNotation.at(optarg);
+                    parser = inputSyntax.at(optarg);
                 } catch (out_of_range & ex)
                 {
                     throw IllegalValueException(option, optarg);
@@ -74,7 +84,7 @@ ProgramConfiguration::ProgramConfiguration(int argc, char ** argv)
             case 'o':
                 try
                 {
-                    printer = outputNotation.at(optarg);
+                    printer = outputSyntax.at(optarg);
                 } catch (out_of_range & ex)
                 {
                     throw IllegalValueException(option, optarg);
@@ -89,6 +99,9 @@ ProgramConfiguration::ProgramConfiguration(int argc, char ** argv)
                     throw ExclusiveTargetsException(option);
                 }
                 break;
+            case 's':
+                strict = true;
+                break;
             default:
                 if (optopt == 'f' || optopt == 'i' || optopt == 'l' ||
                     optopt == 'o')
@@ -101,45 +114,49 @@ ProgramConfiguration::ProgramConfiguration(int argc, char ** argv)
                 break;
         }
     }
-
     if (target == NULL)
     {
         target = new DefaultTarget();
     }
 }
 
-ProgramConfiguration::~ProgramConfiguration()
+Configuration::~Configuration()
 {
-    fileStream.close();
+    if (file.is_open()) file.close();
     delete target;
 }
 
-istream * ProgramConfiguration::getInput() const
+istream * Configuration::getInput() const
 {
-    return inputStream;
+    return input;
 }
 
-Parser ProgramConfiguration::getParser() const
+Parser Configuration::getParser() const
 {
     return parser;
 }
 
-Printer ProgramConfiguration::getPrinter() const
+Printer Configuration::getPrinter() const
 {
     return printer;
 }
 
-Language ProgramConfiguration::getLanguage() const
+Language Configuration::getLanguage() const
 {
     return language;
 }
 
-ExecutionTarget * ProgramConfiguration::getTarget() const
+Target * Configuration::getTarget() const
 {
     return target;
 }
 
-bool ProgramConfiguration::getEcho() const
+bool Configuration::getEcho() const
 {
     return echo;
+}
+
+bool Configuration::getStrict() const
+{
+    return strict;
 }

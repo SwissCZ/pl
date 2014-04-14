@@ -5,20 +5,21 @@
 
 using namespace std;
 
-//! Formula parser error.
+//! Formula parse error.
 
 /**
- * Error reported by formula parser.
+ * Error occured during formula parsing.
  */
 class ParseException
 {
 protected:
-    string message; ///< Error message component.
+    string reason; ///< Error reason.
+
     /**
      * Composes a partial error message.
      * @return Partial error message.
      */
-    virtual string composeMessage() const;
+    virtual string preMessage() const;
 public:
     ParseException(string);
     /**
@@ -28,7 +29,7 @@ public:
     virtual string getMessage() const;
 };
 
-//! Incomplete formula parsed.
+//! Incomplete formula error.
 
 /**
  * Formula was not finished.
@@ -39,7 +40,7 @@ public:
     IncompleteFormulaException();
 };
 
-//! Unexpected end of stream.
+//! Unexpected end of stream error.
 
 /**
  * The end of input stream was not expected.
@@ -60,15 +61,15 @@ class DetailedParseException : public ParseException
 protected:
     char character; ///< Error causing character.
     int position; ///< Error causing character position.
-    virtual string composeMessage() const;
+    virtual string preMessage() const;
 public:
     DetailedParseException(string, char, int);
 };
 
-//! Unexpected element parsed.
+//! Unexpected element error.
 
 /**
- * Parsed element was not expected at current position.
+ * Parsed element was not expected.
  */
 class UnexpectedElementException : public DetailedParseException
 {
@@ -76,10 +77,10 @@ public:
     UnexpectedElementException(char, int);
 };
 
-//! Unnecessary element parsed.
+//! Unnecessary element error.
 
 /**
- * Parsed formula has been already finished before parsing this element.
+ * Parsed formula has been already finished.
  */
 class UnnecessaryElementException : public DetailedParseException
 {
@@ -87,7 +88,7 @@ public:
     UnnecessaryElementException(char, int);
 };
 
-//! Illegal character read.
+//! Illegal character error.
 
 /**
  * Illegal character was read.
@@ -98,4 +99,4 @@ public:
     IllegalCharacterException(char, int);
 };
 
-#endif	/* PARSE_EXCEPTION_HPP */
+#endif

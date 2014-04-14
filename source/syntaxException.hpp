@@ -5,21 +5,22 @@
 
 using namespace std;
 
-//! Program syntax error.
+//! Program usage syntax error.
 
 /**
- * Invalid program usage error.
+ * Invalid program usage syntax.
  */
 class SyntaxException
 {
 protected:
     char option; ///< Error option character.
-    string message; ///< Error message component.
+    string reason; ///< Error reason.
+
     /**
      * Composes a partial error message.
      * @return Partial error message.
      */
-    virtual string composeMessage() const;
+    virtual string preMessage() const;
 public:
     SyntaxException(char, string);
     /**
@@ -29,10 +30,10 @@ public:
     string getMessage() const;
 };
 
-//! Exclusive targets error.
+//! Multiple exclusive targets error.
 
 /**
- * Exclusive targets were set to be performed.
+ * Multiple exclusive targets were set to be performed.
  */
 class ExclusiveTargetsException : public SyntaxException
 {
@@ -43,7 +44,7 @@ public:
 //! Illegal option error.
 
 /**
- * Illegal option was used.
+ * Illegal option was set.
  */
 class IllegalOptionException : public SyntaxException
 {
@@ -51,7 +52,7 @@ public:
     IllegalOptionException(char);
 };
 
-//! Missing value error.
+//! Missing option value error.
 
 /**
  * Required option value was not set.
@@ -70,16 +71,17 @@ public:
 class ValueException : public SyntaxException
 {
 private:
-    string const value; ///< Error causing option value.
-    virtual string composeMessage() const;
+    string value; ///< Error causing option value.
+
+    virtual string preMessage() const;
 public:
     ValueException(char, string, string);
 };
 
-//! Illegal option value.
+//! Illegal option value error.
 
 /**
- * Illegal option value was used.
+ * Illegal option value was set.
  */
 class IllegalValueException : public ValueException
 {
@@ -87,10 +89,10 @@ public:
     IllegalValueException(char, string);
 };
 
-//! File not found.
+//! File not found error.
 
 /**
- * Given file was not found.
+ * Given file can not be openned.
  */
 class InvalidFileException : public ValueException
 {
@@ -98,4 +100,4 @@ public:
     InvalidFileException(string);
 };
 
-#endif	/* SYNTAX_EXCEPTION_HPP */
+#endif

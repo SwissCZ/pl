@@ -1,6 +1,6 @@
-#############
-# Variables #
-#############
+########################
+# Variables definition #
+########################
 
 PREFIX	= /usr/local
 BINDIR	= $(PREFIX)/bin
@@ -10,7 +10,7 @@ GXX		= g++
 OPTS	= -Wall -pedantic -std=c++11
 
 NAME	= pl
-FILES	= executionTarget.o hilbertSystem.o main.o parseException.o parseFunctions.o programConfiguration.o propositionalFormula.o syntaxException.o
+FILES	= configuration.o formula.o hilbert.o main.o parse.o parseException.o syntaxException.o target.o
 
 ###################
 # Primary targets #
@@ -25,14 +25,14 @@ clean:
 	rm -fr build output documentation
 	rm -f test/*_test.txt
 
-# Create the documentation
+# Create documentation
 doc:
 	doxygen
 
-# Install the program
+# Install the binary and manual page
 install: build .binary .manpage
 
-# Test the program
+# Build and test the program
 test: build .test
 
 # Uninstall the program
@@ -43,7 +43,7 @@ uninstall:
 # Auxiliary targets #
 #####################
 
-# Install the binary
+# Install the binary file
 .binary:
 	install -g 0 -o 0 -m 0755 output/$(NAME) $(BINDIR);
 

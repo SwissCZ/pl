@@ -1,13 +1,14 @@
-#include "hilbertSystem.hpp"
-#include "parseFunctions.hpp"
+#include "hilbert.hpp"
+#include "parse.hpp"
 
 #include <sstream>
 
 using namespace std;
 
-HilbertSystem::HilbertSystem()
+Hilbert::Hilbert()
 {
     stringstream stream;
+
     list<string> strings = {"(A>(B>A))",
                             "((A>(B>C))>((A>B)>(A>C)))",
                             "((-A>-B)>(B>A))"};
@@ -18,25 +19,26 @@ HilbertSystem::HilbertSystem()
         axioms.push_back(parseInfix(stream));
     }
     stream << "(A>B)" << endl;
-    implication = parseInfix(stream);
+    modusPonens = parseInfix(stream);
 }
 
-HilbertSystem::~HilbertSystem()
+Hilbert::~Hilbert()
 {
-    for (PropositionalFormula * formula : axioms)
+    for (Formula * formula : axioms)
     {
         delete formula;
     }
-    delete implication;
+    delete modusPonens;
 }
 
-int HilbertSystem::validateAxiom(PropositionalFormula * formula) const
+int Hilbert::validateAxiom(Formula * formula) const
 {
     int type = 1;
     Substitutions substitutions;
-    for (PropositionalFormula * axiom : axioms)
+
+    for (Formula * axiom : axioms)
     {
-        if (axiom->matchesAxiom(formula, substitutions))
+        if (axiom->matches(formula, substitutions))
         {
             return type;
         }
@@ -46,18 +48,18 @@ int HilbertSystem::validateAxiom(PropositionalFormula * formula) const
     return 0;
 }
 
-string * HilbertSystem::proveFormula(PropositionalFormula * formula,
-                                     list<PropositionalFormula *> proof) const
+string * Hilbert::proveFormula(Formula * formula,
+                               vector<Formula *> & proof) const
 {
     int premiseOrder = 0;
     int implicationOrder = 0;
     Substitutions substitutions;
     stringstream stream;
 
-    for (PropositionalFormula * premise : proof)
+    for (Formula * premise : proof)
     {
         premiseOrder++;
-        for (PropositionalFormula * implication : proof)
+        for (Formula * implication : proof)
         {
             implicationOrder++;
             if (premise == implication)
@@ -66,7 +68,7 @@ string * HilbertSystem::proveFormula(PropositionalFormula * formula,
             }
             substitutions.emplace('A', premise);
             substitutions.emplace('B', formula);
-            if (implication->matchesAxiom(implication, substitutions))
+            if (modusPonens->matches(implication, substitutions))
             {
                 stream << "Provable via modus ponens using formulas " <<
                         premiseOrder << " and " << implicationOrder << ".";
@@ -76,6 +78,5 @@ string * HilbertSystem::proveFormula(PropositionalFormula * formula,
         }
         implicationOrder = 0;
     }
-    stream << "Inprovable within this proof.";
-    return new string(stream.str());
+    return NULL;
 }

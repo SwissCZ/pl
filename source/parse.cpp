@@ -1,4 +1,4 @@
-#include "parseFunctions.hpp"
+#include "parse.hpp"
 #include "parseException.hpp"
 
 #include <cstdio>
@@ -21,14 +21,14 @@ enum InfixState
     LAST_OPERAND ///< Last operand set
 } ;
 
-PropositionalFormula * parsePrefix(istream & input)
+Formula * parsePrefix(istream & input)
 {
     char buffer;
     int position = 1;
     bool run = true;
 
     stack<Operator *> operatorStack;
-    PropositionalFormula * temporaryFormula = NULL;
+    Formula * temporaryFormula = NULL;
 
     while (run)
     {
@@ -199,16 +199,16 @@ PropositionalFormula * parsePrefix(istream & input)
     }
 }
 
-PropositionalFormula * parseInfix(istream & input)
+Formula * parseInfix(istream & input)
 {
     char buffer;
     int position = 1;
     bool run = true;
 
-    stack<PropositionalFormula *> formulaStack;
+    stack<Formula *> formulaStack;
     stack<Operator *> operatorStack;
     stack<int> stateStack;
-    PropositionalFormula * temporaryFormula;
+    Formula * temporaryFormula;
 
     while (run)
     {
@@ -585,13 +585,13 @@ PropositionalFormula * parseInfix(istream & input)
     }
 }
 
-PropositionalFormula * parsePostfix(istream & input)
+Formula * parsePostfix(istream & input)
 {
     char buffer;
     int position = 1;
     bool run = true;
 
-    stack<PropositionalFormula *> formulaStack;
+    stack<Formula *> formulaStack;
     Operator * temporaryOperator;
 
     while (run)

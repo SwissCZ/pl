@@ -1,8 +1,8 @@
-#include "propositionalFormula.hpp"
+#include "formula.hpp"
 
 using namespace std;
 
-map<char, Dictionary> PropositionalFormula::dictionary = {
+map<char, Dictionary> Formula::dictionary = {
     {'-',
         {
             {ASCII, "-"},
@@ -35,20 +35,20 @@ map<char, Dictionary> PropositionalFormula::dictionary = {
         }}
 };
 
-PropositionalFormula::PropositionalFormula(char character) : character(character)
+Formula::Formula(char character) : character(character)
 {
 }
 
-PropositionalFormula::~PropositionalFormula()
+Formula::~Formula()
 {
 }
 
-char PropositionalFormula::getCharacter() const
+char Formula::getCharacter() const
 {
     return character;
 }
 
-Proposition::Proposition(char character) : PropositionalFormula(character)
+Proposition::Proposition(char character) : Formula(character)
 {
 }
 
@@ -67,17 +67,17 @@ string Proposition::printPostfix(Language language) const
     return string() + this->character;
 }
 
-bool Proposition::matchesFormula(PropositionalFormula * formula) const
+bool Proposition::equals(Formula * formula) const
 {
     return this->character == formula->getCharacter();
 }
 
-bool Proposition::matchesAxiom(PropositionalFormula * formula,
-                                       Substitutions & substitutions) const
+bool Proposition::matches(Formula * formula, Substitutions & substitutions)
+const
 {
     try
     {
-        return substitutions.at(character)->matchesFormula(formula);
+        return substitutions.at(character)->equals(formula);
     } catch (out_of_range & ex)
     {
         substitutions.emplace(character, formula);
@@ -85,7 +85,7 @@ bool Proposition::matchesAxiom(PropositionalFormula * formula,
     }
 }
 
-Operator::Operator(char character) : PropositionalFormula(character)
+Operator::Operator(char character) : Formula(character)
 {
 }
 
@@ -100,45 +100,42 @@ UnaryOperator::~UnaryOperator()
 
 string UnaryOperator::printPrefix(Language language) const
 {
-    return string()
-            + dictionary.at(character).at(language)
+    return dictionary.at(character).at(language)
             + operand->printPrefix(language);
 }
 
 string UnaryOperator::printInfix(Language language) const
 {
-    return string()
-            + dictionary.at(character).at(language)
+    return dictionary.at(character).at(language)
             + operand->printInfix(language);
 }
 
 string UnaryOperator::printPostfix(Language language) const
 {
-    return string()
-            + operand->printPostfix(language)
+    return operand->printPostfix(language)
             + dictionary.at(character).at(language);
 }
 
-bool UnaryOperator::matchesFormula(PropositionalFormula * formula) const
+bool UnaryOperator::equals(Formula * formula) const
 {
     return character == formula->getCharacter()
-            && operand->matchesFormula(((UnaryOperator *) formula)->operand);
+            && operand->equals(((UnaryOperator *) formula)->operand);
 }
 
-bool UnaryOperator::matchesAxiom(PropositionalFormula * formula,
-                                         Substitutions & subsitutions) const
+bool UnaryOperator::matches(Formula * formula, Substitutions & subsitutions)
+const
 {
-    return character == formula->getCharacter() && operand->matchesAxiom
+    return character == formula->getCharacter() && operand->matches
             (((UnaryOperator *) formula)->operand, subsitutions);
 }
 
-int UnaryOperator::append(PropositionalFormula * operand)
+int UnaryOperator::append(Formula * operand)
 {
     this->operand = operand;
     return 0;
 }
 
-int UnaryOperator::insert(PropositionalFormula * operand)
+int UnaryOperator::insert(Formula * operand)
 {
     return append(operand);
 }
@@ -155,8 +152,7 @@ BinaryOperator::~BinaryOperator()
 
 string BinaryOperator::printPrefix(Language language) const
 {
-    return string()
-            + dictionary.at(character).at(language)
+    return dictionary.at(character).at(language)
             + left->printPrefix(language)
             + right->printPrefix(language);
 }
@@ -173,33 +169,30 @@ string BinaryOperator::printInfix(Language language) const
 
 string BinaryOperator::printPostfix(Language language) const
 {
-    return string()
-            + left->printPostfix(language)
+    return left->printPostfix(language)
             + right->printPostfix(language)
             + dictionary.at(character).at(language);
 }
 
-bool BinaryOperator::matchesFormula(PropositionalFormula * formula) const
+bool BinaryOperator::equals(Formula * formula) const
 {
     return character == formula->getCharacter()
-            && left->matchesFormula
-            (((BinaryOperator *) formula)->left)
-            && right->matchesFormula
-            (((BinaryOperator *) formula)->right);
+            && left->equals(((BinaryOperator *) formula)->left)
+            && right->equals(((BinaryOperator *) formula)->right);
 }
 
-bool BinaryOperator::matchesAxiom(PropositionalFormula * formula,
-                                          Substitutions & substitutions)
+bool BinaryOperator::matches(Formula * formula,
+                             Substitutions & substitutions)
 const
 {
     return character == formula->getCharacter()
-            && left->matchesAxiom
-            (((BinaryOperator *) formula)->left, substitutions)
-            && right->matchesAxiom
-            (((BinaryOperator *) formula)->right, substitutions);
+            && left->matches(((BinaryOperator *) formula)->left,
+                             substitutions)
+            && right->matches(((BinaryOperator *) formula)->right,
+                              substitutions);
 }
 
-int BinaryOperator::append(PropositionalFormula * operand)
+int BinaryOperator::append(Formula * operand)
 {
     if (left == NULL)
     {
@@ -212,7 +205,7 @@ int BinaryOperator::append(PropositionalFormula * operand)
     }
 }
 
-int BinaryOperator::insert(PropositionalFormula * operand)
+int BinaryOperator::insert(Formula * operand)
 {
     if (right == NULL)
     {

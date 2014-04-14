@@ -3,18 +3,18 @@
 using namespace std;
 
 SyntaxException::SyntaxException(char option, string message)
-: option(option), message(message)
+: option(option), reason(message)
 {
 }
 
-string SyntaxException::composeMessage() const
+string SyntaxException::preMessage() const
 {
-    return string() + "Option '-"  + option + "' " + message;
+    return string() + "Option '-"  + option + "' " + reason;
 }
 
 string SyntaxException::getMessage() const
 {
-    return composeMessage() + ".";
+    return preMessage() + ".";
 }
 
 ExclusiveTargetsException::ExclusiveTargetsException(char option)
@@ -37,9 +37,9 @@ ValueException::ValueException(char option, string value, string message)
 {
 }
 
-string ValueException::composeMessage() const
+string ValueException::preMessage() const
 {
-    return string() + SyntaxException::composeMessage() + " '" + value + "'";
+    return string() + SyntaxException::preMessage() + " '" + value + "'";
 }
 
 IllegalValueException::IllegalValueException(char option, string value)
