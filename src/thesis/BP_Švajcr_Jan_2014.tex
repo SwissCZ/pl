@@ -1,0 +1,110 @@
+% options:
+% thesis=B bachelor's thesis
+% thesis=M master's thesis
+% czech thesis in Czech language
+% slovak thesis in Slovak language
+% english thesis in English language
+% hidelinks remove colour boxes around hyperlinks
+
+\documentclass[thesis=B,czech]{FITthesis}[2012/06/26]
+
+\usepackage[utf8]{inputenc} % LaTeX source encoded as Windows-1250
+
+\usepackage{graphicx} %graphics files inclusion
+% \usepackage{amsmath} %advanced maths
+% \usepackage{amssymb} %additional math symbols
+
+\usepackage{dirtree} %directory tree visualisation
+
+% % list of acronyms
+% \usepackage[acronym,nonumberlist,toc,numberedsection=autolabel]{glossaries}
+% \iflanguage{czech}{\renewcommand*{\acronymname}{Seznam pou{\v z}it{\' y}ch zkratek}}{}
+% \makeglossaries
+
+\newcommand{\tg}{\mathop{\mathrm{tg}}} %cesky tangens
+\newcommand{\cotg}{\mathop{\mathrm{cotg}}} %cesky cotangens
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+% ODTUD DAL VSE ZMENTE
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+\department{Katedra softwarového inženýrství}
+\title{Implementace důkazového systému pro výrokovou logiku}
+\authorGN{Jan} %(křestní) jméno (jména) autora
+\authorFN{Švajcr} %příjmení autora
+\authorWithDegrees{Jan Švajcr} %jméno autora včetně současných akademických titulů
+\supervisor{Mgr. Jan Starý}
+\acknowledgements{Děkuji svému vedoucímu práce Mgr. Janu Starému za přívětivost a zájem, své rodině za podporu a zázemí a své milované za lásku a věrnost.}
+\abstractCS{Cílem této práce je vypracovat konzolový program implementující prostředí důkazového systému výrokové logiky. Jeho základní funkcionalitou je syntaktická analýza textového vstupu v podobě posloupnosti výrokových formulí a ověřování, zdali je tato posloupnost korektním výrokovým důkazem. Software je podporován prostředím UNIX a implementován v jazyce C. Součástí práce jsou náležitosti jako dokumentace zdrojového kódu a vytvoření uživatelské příručky v podobě standardní manuálové stránky.}
+\abstractEN{The goal of this thesis is creation of a console program implementing the environment of the proof system of propositional logic. The basic functionality contains parsing of the input represented as a sequence of propositional formulas and validation of this sequence as a proof. The software is implemented in the C language and supported in UNIX systems. This thesis also requires a code documentation and a standard manual page as a user manual.}
+\placeForDeclarationOfAuthenticity{V~Praze}
+\declarationOfAuthenticityOption{2} %volba Prohlášení (číslo 1-6)
+\keywordsCS{Výroková logika, Dokazatelnost, Syntaktická analýza, C/C++.}
+\keywordsEN{Propositional logic, Proofs, Parsing, C/C++.}
+
+\begin{document}
+
+% \newacronym{CVUT}{{\v C}VUT}{{\v C}esk{\' e} vysok{\' e} u{\v c}en{\' i} technick{\' e} v Praze}
+% \newacronym{FIT}{FIT}{Fakulta informa{\v c}n{\' i}ch technologi{\' i}}
+
+\begin{introduction}
+Logika je formální věda zkoumající část lidského myšlení. Jejím předmětem je správné vyvozování důsledků z předpokladů, jejichž volbu, pravdivost nebo snad smysl blíže nezkoumáme. Činíme tak nejen proto, že naše vyvození je správné i v případě, kdy předpoklady nejsou, ale i proto, že to této disciplíně ani nepřísluší. Matematická logika toto usuzování formalizuje, čímž nás oprošťuje od psychologického aspektu. Dává tak vzniku postupům, které lze kdykoliv opakovaně aplikovat. Příkladem takového postupu je ověřování korektnosti našeho usuzování, takzvaného \emph{důkazu}. To je dokonce natolik mechanické, že jej můžeme svěřit strojovému zpracování \cite{kml}. Právě tohoto aspektu výrokové logiky využívá tato práce, která její formalismus přenáší do oblasti informačních technologií implementací některých principů výrokového počtu počítačovým programem. Již z názvu této práce vyplývá, že implementuje principy důkazového systému.
+\end{introduction}
+
+\chapter{Formální kontext}
+Definice (formule, důkaz), zefektivnění důkazu (duplicity)
+
+\chapter{Vymezení požadavků}
+
+\chapter{Analýza a návrh}
+
+\chapter{Implementace}
+
+\chapter{Testování}
+
+\chapter{Rozšířitelnost}
+Důkaz z předpokladů, další pravidla (Gentzen,...) namísto MP / vzájemný převod
+
+\begin{conclusion}
+	%sem napište závěr Vaší práce
+\end{conclusion}
+
+\bibliographystyle{csn690}
+\bibliography{bibliography}
+
+\appendix
+
+%\chapter{Seznam použitých zkratek}
+%% \printglossaries
+%\begin{description}
+%	\item[GUI] Graphical user interface
+%	\item[XML] Extensible markup language
+%\end{description}
+
+\chapter{Obsah přiloženého CD}
+
+%upravte podle skutecnosti
+
+\begin{figure}
+	\dirtree{%
+		.1 exe\DTcomment{adresář se spustitelnou formou}.
+		.2 pl\DTcomment{implementace ve spustitelné podobě}.
+		.1 src\DTcomment{adresář se zdrojovou formou}.
+		.2 impl\DTcomment{adresář se zdrojovou formou implementace}.
+		.3 doc\DTcomment{adresář se soubory programátorské dokumentace}.
+		.3 src\DTcomment{adresář se soubory zdrojového kódu}.
+		.3 test\DTcomment{adresář se soubory testování}.
+		.3 Doxyfile\DTcomment{soubor konfigurace dokumentace Doxygen}.
+		.3 mainpage.dox\DTcomment{soubor hlavní stránky programátorské dokumentace}.
+		.3 Makefile\DTcomment{soubor konfigurace sestavení programu}.
+		.3 pl.1\DTcomment{soubor zdrojové kódu manuálové stránky}.
+		.3 test.sh\DTcomment{soubor testovacího skriptu pro shell}.
+		.2 thesis\DTcomment{adresář se zdrojovou formou textu práce}.
+		.3 bibliography.bib\DTcomment{soubor bibliografických zdrojů}.
+		.1 text\DTcomment{adresář s textem práce ve formátu PDF}.
+	}
+\end{figure}
+
+\chapter{Instalační příručka}
+
+\end{document}
