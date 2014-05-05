@@ -7,18 +7,18 @@ SyntaxException::SyntaxException(char option, string message)
 {
 }
 
-string SyntaxException::preMessage() const
+string SyntaxException::prepareMessage() const
 {
-    return string() + "Option '-"  + option + "' " + reason;
+    return string() + "Option '-" + option + "' " + reason;
 }
 
 string SyntaxException::getMessage() const
 {
-    return preMessage() + ".";
+    return prepareMessage() + ".";
 }
 
-ExclusiveTargetsException::ExclusiveTargetsException(char option)
-: SyntaxException(option, "is redundant")
+MultipleTargetsException::MultipleTargetsException(char option)
+: SyntaxException(option, "is irrelevant")
 {
 }
 
@@ -28,7 +28,7 @@ IllegalOptionException::IllegalOptionException(char option)
 }
 
 MissingValueException::MissingValueException(char option)
-: SyntaxException(option, "has no value")
+: SyntaxException(option, "requires a value")
 {
 }
 
@@ -37,17 +37,17 @@ ValueException::ValueException(char option, string value, string message)
 {
 }
 
-string ValueException::preMessage() const
+string ValueException::prepareMessage() const
 {
-    return string() + SyntaxException::preMessage() + " '" + value + "'";
+    return SyntaxException::prepareMessage() + " '" + value + "'";
 }
 
 IllegalValueException::IllegalValueException(char option, string value)
-: ValueException(option, value, "can not take value of")
+: ValueException(option, value, "value is illegal")
 {
 }
 
 InvalidFileException::InvalidFileException(string value)
-: ValueException('i', value, "can not take file")
+: ValueException('i', value, "file is illegal")
 {
 }

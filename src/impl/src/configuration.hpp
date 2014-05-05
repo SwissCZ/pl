@@ -9,9 +9,10 @@
 
 using namespace std;
 
-class Target;
+class Configuration;
 
 typedef Formula * (* Parser)(istream &); ///< Parse function pointer.
+typedef int (* Target)(Configuration *); ///< Execution target function pointer.
 typedef string(Formula::* Printer) (Language) const; ///< Print method pointer.
 
 //! Program configuration structure.
@@ -22,48 +23,39 @@ typedef string(Formula::* Printer) (Language) const; ///< Print method pointer.
 class Configuration
 {
 private:
-    static map<string, Parser> inputSyntax; ///< Input syntax values.
-    static map<string, Printer> outputSyntax; ///< Output syntax values.
-    static map<string, Language> outputLanguage; ///< Output language values.
+    static const map<string, Parser> inputSyntax; ///< Input syntax values.
+    static const map<string, Printer> outputSyntax; ///< Output syntax values.
+    static const map<string, Language> outputLanguage; ///< Output language values.
 
     istream * input = &cin; ///< Input stream to read from.
-    Parser parser = &parseInfix; ///< Input parser to use.
+    Parser parser = &parseInfix; ///< Formula parser to use.
     Printer printer = &Formula::printInfix; ///< Output printer to use.
+    Target target = NULL; ///< Execution target to peform.
     Language language = ASCII; ///< Output language of connectives.
-    Target * target = NULL; ///< Execution target to peform.
     bool echo = false; ///< Echo flag.
     bool strict = false; ///< Strict behavior flag.
+    bool simplify = false; ///< Proof simplification flag.
 
     ifstream file; ///< File input stream to read from.
-    bool simplify; ///< Proof simplification flag.
 public:
     Configuration(int, char **);
     ~Configuration();
     /**
-     * Input stream getter.
-     * @return Input stream to read from.
+     * Parses formula in set syntax.
+     * @return Formula expression tree root node.
      */
-    istream * getInput() const;
+    Formula * parse() const;
     /**
-     * Parse function getter.
-     * @return Input parser to use.
+     * Returns a textual representation of given formula in set syntax.
+     * @param formula Formula to be printed.
+     * @return Textual representation of given formula.
      */
-    Parser getParser() const;
-    /**
-     * Output printer getter.
-     * @return Output printer to use.
-     */
-    Printer getPrinter() const;
-    /**
-     * Output lanugage getter.
-     * @return Output language of connectives.
-     */
-    Language getLanguage() const;
+    string print(Formula * formula) const;
     /**
      * Execution target getter.
      * @return Execution target to perform.
      */
-    Target * getTarget() const;
+    Target getTarget() const;
     /**
      * Echo flag getter.
      * @return Echo flag.

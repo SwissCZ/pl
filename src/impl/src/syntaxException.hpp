@@ -20,7 +20,7 @@ protected:
      * Composes a partial error message.
      * @return Partial error message.
      */
-    virtual string preMessage() const;
+    virtual string prepareMessage() const;
 public:
     SyntaxException(char, string);
     /**
@@ -35,10 +35,10 @@ public:
 /**
  * Multiple exclusive targets were set to be performed.
  */
-class ExclusiveTargetsException : public SyntaxException
+class MultipleTargetsException : public SyntaxException
 {
 public:
-    ExclusiveTargetsException(char);
+    MultipleTargetsException(char);
 };
 
 //! Illegal option error.
@@ -73,7 +73,7 @@ class ValueException : public SyntaxException
 private:
     string value; ///< Error causing option value.
 
-    virtual string preMessage() const;
+    virtual string prepareMessage() const;
 public:
     ValueException(char, string, string);
 };

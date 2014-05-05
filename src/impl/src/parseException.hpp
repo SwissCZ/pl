@@ -19,7 +19,7 @@ protected:
      * Composes a partial error message.
      * @return Partial error message.
      */
-    virtual string preMessage() const;
+    virtual string prepareMessage() const;
 public:
     ParseException(string);
     /**
@@ -61,7 +61,8 @@ class DetailedParseException : public ParseException
 protected:
     char character; ///< Error causing character.
     int position; ///< Error causing character position.
-    virtual string preMessage() const;
+
+    virtual string prepareMessage() const;
 public:
     DetailedParseException(string, char, int);
 };

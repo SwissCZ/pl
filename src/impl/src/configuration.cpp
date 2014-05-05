@@ -1,24 +1,23 @@
 #include "configuration.hpp"
-#include "parseException.hpp"
 #include "syntaxException.hpp"
 #include "target.hpp"
 
-#include <fstream>
+#include <stdexcept>
 #include <unistd.h>
 
 using namespace std;
 
-map<string, Parser> Configuration::inputSyntax = {
+const map<string, Parser> Configuration::inputSyntax = {
     {"prefix", &parsePrefix},
     {"infix", &parseInfix},
     {"postfix", &parsePostfix}
 };
-map<string, Printer> Configuration::outputSyntax = {
+const map<string, Printer> Configuration::outputSyntax = {
     {"prefix", &Formula::printPrefix},
     {"infix", &Formula::printInfix},
     {"postfix", &Formula::printPostfix}
 };
-map<string, Language> Configuration::outputLanguage = {
+const map<string, Language> Configuration::outputLanguage = {
     {"ascii", ASCII},
     {"words", WORDS},
     {"tex", TEX}
@@ -28,27 +27,27 @@ Configuration::Configuration(int argc, char ** argv)
 {
     int option;
 
-    while ((option = getopt(argc, argv, "ADef:i:l:o:Ps")) != -1)
+    while ((option = getopt(argc, argv, ":ADef:i:l:o:Ps")) != -1)
     {
         switch (option)
         {
             case 'A':
                 if (target == NULL)
                 {
-                    target = new AxiomCheck();
+                    target = &executeAxiomCheck;
                 } else
                 {
-                    throw ExclusiveTargetsException(option);
+                    throw MultipleTargetsException(option);
                 }
                 break;
             case 'D':
                 if (target == NULL)
                 {
-                    target = new ProofCheck();
+                    target = &executeProofCheck;
                     simplify = true;
                 } else
                 {
-                    throw ExclusiveTargetsException(option);
+                    throw MultipleTargetsException(option);
                 }
                 break;
             case 'e':
@@ -94,57 +93,48 @@ Configuration::Configuration(int argc, char ** argv)
             case 'P':
                 if (target == NULL)
                 {
-                    target = new ProofCheck();
+                    target = &executeProofCheck;
                 } else
                 {
-                    throw ExclusiveTargetsException(option);
+                    throw MultipleTargetsException(option);
                 }
                 break;
             case 's':
                 strict = true;
                 break;
-            default:
-                if (optopt == 'f' || optopt == 'i' || optopt == 'l' ||
-                    optopt == 'o')
-                {
-                    throw MissingValueException(optopt);
-                } else
-                {
-                    throw IllegalOptionException(optopt);
-                }
+            case '?':
+                throw IllegalOptionException(optopt);
+                break;
+            case ':':
+                throw MissingValueException(optopt);
                 break;
         }
     }
-    if (target == NULL) target = new DefaultTarget();
+    if (target == NULL)
+    {
+        target = &executeDefault;
+    }
 }
 
 Configuration::~Configuration()
 {
-    if (file.is_open()) file.close();
-    delete target;
+    if (file.is_open())
+    {
+        file.close();
+    }
 }
 
-istream * Configuration::getInput() const
+Formula * Configuration::parse() const
 {
-    return input;
+    return parser(*input);
 }
 
-Parser Configuration::getParser() const
+string Configuration::print(Formula * formula) const
 {
-    return parser;
+    return (formula->*printer)(language);
 }
 
-Printer Configuration::getPrinter() const
-{
-    return printer;
-}
-
-Language Configuration::getLanguage() const
-{
-    return language;
-}
-
-Target * Configuration::getTarget() const
+Target Configuration::getTarget() const
 {
     return target;
 }

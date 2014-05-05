@@ -8,14 +8,14 @@ ParseException::ParseException(string message) : reason(message)
 {
 }
 
-string ParseException::preMessage() const
+string ParseException::prepareMessage() const
 {
     return reason;
 }
 
 string ParseException::getMessage() const
 {
-    return preMessage() + ".";
+    return prepareMessage() + ".";
 }
 
 IncompleteFormulaException::IncompleteFormulaException()
@@ -28,13 +28,12 @@ UnexpectedEOFException::UnexpectedEOFException()
 {
 }
 
-DetailedParseException::DetailedParseException(string message, char character,
-                                               int position)
+DetailedParseException::DetailedParseException(string message, char character, int position)
 : ParseException(message), character(character), position(position)
 {
 }
 
-string DetailedParseException::preMessage() const
+string DetailedParseException::prepareMessage() const
 {
     stringstream stream;
 
@@ -42,20 +41,17 @@ string DetailedParseException::preMessage() const
     return stream.str();
 }
 
-UnexpectedElementException::UnexpectedElementException(char character,
-                                                       int position)
+UnexpectedElementException::UnexpectedElementException(char character, int position)
 : DetailedParseException("Unexpected element", character, position)
 {
 }
 
-UnnecessaryElementException::UnnecessaryElementException(char character,
-                                                         int position)
+UnnecessaryElementException::UnnecessaryElementException(char character, int position)
 : DetailedParseException("Unnecessary element", character, position)
 {
 }
 
-IllegalCharacterException::IllegalCharacterException(char character,
-                                                     int position)
+IllegalCharacterException::IllegalCharacterException(char character, int position)
 : DetailedParseException("Illegal character", character, position)
 {
 }

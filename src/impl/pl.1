@@ -6,14 +6,12 @@
 .Nd handle formulas of propositional logic
 .Sh SYNOPSIS
 .Nm
-.Op Fl A
-.Op Fl D
+.Op Fl A | D | P
 .Op Fl e
 .Op Fl f Ar file
 .Op Fl i Ar syntax
 .Op Fl l Ar language
 .Op Fl o Ar syntax
-.Op Fl P
 .Op Fl s
 .Sh DESCRIPTION
 The
@@ -44,11 +42,11 @@ Check whether each formula is a Hilbert axiom.
 .It Fl D
 Simplify the proof by ommitting redundant axioms and proofs.
 .It Fl e
-Print the output. The
+Allow printing an output. The
 .Nm
-utility does not print any output by default.
+utility does not print either standard or error output by default.
 .It Fl f Ar file
-Read formulas from the file instead of standard input.
+Read formulas from the specified file instead of standard input.
 .It Fl i Ar syntax
 Expect specified input syntax. Can be 'infix', 'prefix' or 'postfix'. By default, 'infix' is expected.
 .It Fl l Ar language
@@ -58,29 +56,49 @@ Use specified output syntax. Can be 'infix', 'prefix' or 'postfix'. By default, 
 .It Fl P
 Check whether a sequence of formulas is a valid Hilbert proof.
 .It Fl s
-Terminates the execution immediately when an error occurs. This strict behavior is obvious and enabled automatically when using the
+Terminates the execution immediately after an error occurs. This strict behaviour is obvious and enabled automatically when using either
 .Fl P
+or
+.Fl D
 option.
 .El
 .Sh EXIT STATUS
 .Bl -tag -width Fl
 .It 0
-.Bl -tag -width Fl
-.It "No target"
+.Bl -item
+.It
 Valid formula syntax.
-.It Fl A
-Each formula is an axiom.
-.It Fl P
-Valid Hilbert proof.
+.It
+Each formula is an axiom (
+.Fl A
+).
+.It
+Valid Hilbert proof (
+.Fl P
+).
+.It
+Proof was simplified (
+.Fl D
+).
 .El
 .It 1
-.Bl -tag -width Fl
-.It "No target"
+.Bl -item
+.It
 Invalid formula syntax.
-.It Fl A
-Non-axiom found.
-.It Fl P
-Invalid Hilbert proof.
+.It
+Non-axiom found (
+.Fl A
+).
+.It
+Invalid Hilbert proof (
+.Fl P
+|
+.Fl D
+).
+.It
+Proof cannot be simplified more (
+.Fl D
+).
 .El
 .El
 .Sh EXAMPLES

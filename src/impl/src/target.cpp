@@ -1,26 +1,25 @@
-#include "target.hpp"
+#include "formula.hpp"
+#include "hilbert.hpp"
 #include "parseException.hpp"
+#include "proof.hpp"
+#include "target.hpp"
 
 #include <iostream>
-#include <stdlib.h>
+#include <list>
 
 using namespace std;
 
-Target::~Target()
-{
-}
-
-int DefaultTarget::execute(Configuration * configuration)
+int executeDefault(Configuration * configuration)
 {
     Formula * formula = NULL;
-    int exit = EXIT_SUCCESS;
+    int exit = 0;
 
     while (true)
     {
         try
         {
             // Formula parsing
-            formula = configuration->getParser()(*(configuration->getInput()));
+            formula = configuration->parse();
             if (formula == NULL)
             {
                 break;
@@ -29,18 +28,16 @@ int DefaultTarget::execute(Configuration * configuration)
             // Formula printing
             if (configuration->getEcho())
             {
-                cout << (formula->*configuration->getPrinter())
-                        (configuration->getLanguage()) << endl;
+                cout << configuration->print(formula) << endl;
             }
             delete formula;
         } catch (ParseException & exception)
         {
-            // Parse error
+            exit = 1;
             if (configuration->getEcho())
             {
                 cerr << exception.getMessage() << endl;
             }
-            exit = EXIT_FAILURE;
             if (configuration->getStrict())
             {
                 break;
@@ -50,51 +47,55 @@ int DefaultTarget::execute(Configuration * configuration)
     return exit;
 }
 
-int AxiomCheck::execute(Configuration * configuration)
+int executeAxiomCheck(Configuration * configuration)
 {
     Formula * formula = NULL;
-    int exit = EXIT_SUCCESS;
+    int exit = 0;
+    int type;
 
     while (true)
     {
         try
         {
             // Formula parsing
-            formula = configuration->getParser()(*(configuration->getInput()));
+            formula = configuration->parse();
             if (formula == NULL)
             {
                 break;
             }
 
-            // Axiom validating
-            int type;
-            if ((type = system.validateAxiom(formula)) > 0)
+            // Axiom checking
+            type = hilbertSystem.isAxiom(formula);
+            if (type > 0)
             {
                 if (configuration->getEcho())
                 {
-                    cout << "Type " << type << " axiom." << endl;
+                    cout << "Type " <<
+                            type <<
+                            " axiom." <<
+                            endl;
                 }
             } else
             {
+                exit = 1;
                 if (configuration->getEcho())
                 {
                     cout << "Not an axiom." << endl;
                 }
-                exit = EXIT_FAILURE;
                 if (configuration->getStrict())
                 {
+                    delete formula;
                     break;
                 }
             }
             delete formula;
         } catch (ParseException & exception)
         {
-            // Parse error
+            exit = 1;
             if (configuration->getEcho())
             {
                 cerr << exception.getMessage() << endl;
             }
-            exit = EXIT_FAILURE;
             if (configuration->getStrict())
             {
                 break;
@@ -104,92 +105,85 @@ int AxiomCheck::execute(Configuration * configuration)
     return exit;
 }
 
-ProofCheck::~ProofCheck()
-{
-    for (Formula * formula : validProof)
-    {
-        delete formula;
-    }
-}
-
-bool ProofCheck::contains(Formula * formula) const
-{
-    for (Formula * proofFormula : validProof)
-    {
-        if (proofFormula->equals(formula)) return true;
-    }
-    return false;
-}
-
-int ProofCheck::execute(Configuration * configuration)
+int executeProofCheck(Configuration * configuration)
 {
     Formula * formula;
-    int exit = EXIT_SUCCESS;
-
+    int exit = 0;
+    Proof proof;
+    int type;
+    int * indexes;
     while (true)
     {
         try
         {
             // Formula parsing
-            formula = configuration->getParser()(*(configuration->getInput()));
+            formula = configuration->parse();
             if (formula == NULL)
             {
                 break;
             }
 
-            // Proof validating
-            int type;
-            string * message = NULL;
-
-            if (configuration->getSimplify() && contains(formula))
+            // Proof simplification
+            if (configuration->getSimplify() && proof.contains(formula))
             {
                 if (configuration->getEcho())
                 {
-                    cout << "The proof already contains this formula." << endl;
+                    cout << "Already contained." << endl;
                 }
                 delete formula;
-            } else if ((type = system.validateAxiom(formula)) > 0)
-            {
-                // Axiom validating
-                if (configuration->getEcho())
-                {
-                    cout << "Provable being a type " << type << " axiom." << endl;
-                }
-                validProof.push_back(formula);
-            } else
-            {
-                // Modus ponens proving
-                message = system.proveFormula(formula, validProof);
-                if (configuration->getEcho())
-                {
-                    if (message != NULL)
-                    {
-                        cout << *message << endl;
-                    } else
-                    {
-                        cout << "Inprovable within this proof." << endl;
-                    }
-                }
-                if (message != NULL)
-                {
-                    validProof.push_back(formula);
-                    delete message;
-                } else
-                {
-                    delete message;
-                    delete formula;
-                    exit = EXIT_FAILURE;
-                    break;
-                }
+                continue;
             }
+
+            // Axiom checking
+            type = hilbertSystem.isAxiom(formula);
+            if (type > 0)
+            {
+                proof.add(formula);
+                if (configuration->getEcho())
+                {
+                    cout << "Type " <<
+                            type <<
+                            " axiom." <<
+                            endl;
+                }
+                continue;
+            }
+
+            // Rules checking
+            indexes = hilbertSystem.isProvable(formula, proof);
+            if (indexes != NULL)
+            {
+                proof.add(formula);
+                if (configuration->getEcho())
+                {
+                    cout << "Provable (modus ponens) "
+                            "using formulas " <<
+                            indexes[0] <<
+                            " and " <<
+                            indexes[1] <<
+                            "." <<
+                            endl;
+                }
+                delete indexes;
+                continue;
+            }
+
+            // Formula is not provable.
+            exit = 1;
+            if (configuration->getStrict())
+            {
+                cout << "Not provable." << endl;
+            }
+            delete indexes;
+            delete formula;
+            break;
         } catch (ParseException & exception)
         {
-            // Parse exception
+            exit = 1;
             if (configuration->getEcho())
             {
                 cerr << exception.getMessage() << endl;
             }
-            exit = EXIT_FAILURE;
             break;
         }
     }

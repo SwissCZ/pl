@@ -5,10 +5,9 @@
 
 using namespace std;
 
-Hilbert::Hilbert()
+HilbertSystem::HilbertSystem()
 {
     stringstream stream;
-
     list<string> strings = {"(A>(B>A))",
                             "((A>(B>C))>((A>B)>(A>C)))",
                             "((-A>-B)>(B>A))"};
@@ -22,7 +21,7 @@ Hilbert::Hilbert()
     modusPonens = parseInfix(stream);
 }
 
-Hilbert::~Hilbert()
+HilbertSystem::~HilbertSystem()
 {
     for (Formula * formula : axioms)
     {
@@ -31,7 +30,7 @@ Hilbert::~Hilbert()
     delete modusPonens;
 }
 
-int Hilbert::validateAxiom(Formula * formula) const
+int HilbertSystem::isAxiom(Formula * formula) const
 {
     int type = 1;
     Substitutions substitutions;
@@ -48,31 +47,31 @@ int Hilbert::validateAxiom(Formula * formula) const
     return 0;
 }
 
-string * Hilbert::proveFormula(Formula * formula,
-                               vector<Formula *> & proof) const
+int * HilbertSystem::isProvable(Formula * formula, Proof & proof) const
 {
     int premiseOrder = 0;
     int implicationOrder = 0;
     Substitutions substitutions;
     stringstream stream;
+    int * indexes = new int[2];
 
-    for (Formula * premise : proof)
+    for (Formula * premise : proof.getFormulas())
     {
         premiseOrder++;
-        for (Formula * implication : proof)
+        for (Formula * implied : proof.getFormulas())
         {
             implicationOrder++;
-            if (premise == implication)
+            if (premise == implied)
             {
                 continue;
             }
             substitutions.emplace('A', premise);
             substitutions.emplace('B', formula);
-            if (modusPonens->matches(implication, substitutions))
+            if (modusPonens->matches(implied, substitutions))
             {
-                stream << "Provable via modus ponens using formulas " <<
-                        premiseOrder << " and " << implicationOrder << ".";
-                return new string(stream.str());
+                indexes[0] = premiseOrder;
+                indexes[1] = implicationOrder;
+                return indexes;
             }
             substitutions.clear();
         }

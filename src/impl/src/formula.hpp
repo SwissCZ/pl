@@ -1,6 +1,7 @@
 #ifndef FORMULA_HPP
 #define	FORMULA_HPP
 
+#include <cstddef>
 #include <map>
 
 using namespace std;
@@ -20,24 +21,24 @@ enum Language
 class Formula;
 
 typedef map<Language, string> Dictionary; ///< Output language dictionary.
-typedef map<char, Formula *> Substitutions; ///< Proposition substitutions.
+typedef map<char, Formula *> Substitutions; ///< Formula substitutions.
 
 //! Propositional formula.
 
 /**
- * Formulas can be trivial (e.g. 'A') or composite (e.g. '-(A+B)').
+ * Formula expression tree node.
  */
 class Formula
 {
 protected:
-    static map<char, Dictionary> dictionary; ///< Output language dictionary.
-    char character; ///< Characteristic character.
+    static const map<char, Dictionary> dictionary; ///< Output language dictionary.
+    char character; ///< Character representation.
 public:
     Formula(char);
     virtual ~Formula();
     /**
-     * Characteristic character getter.
-     * @return Characteristic character.
+     * Character representation getter.
+     * @return Character representation.
      */
     char getCharacter() const;
     /**
@@ -60,24 +61,23 @@ public:
     virtual string printPostfix(Language language) const = 0;
     /**
      * Checks whether given formula equals to this one.
-     * @param formula Formula to be compared.
-     * @return Whether given formula equals to this one.
+     * @param formula Formula to be compared with this one.
+     * @return True if given formula equals to this one.
      */
     virtual bool equals(Formula * formula) const = 0;
     /**
      * Checks whether given formula matches this one.
-     * @param formula Formula to be matched.
-     * @param substitutions Proposition substitutions (e.g. A (alpha) = (A+B)).
-     * @return Whether given formula matches this one.
+     * @param formula Formula to be matched to this one.
+     * @param substitutions Propositions substitutions of this formula.
+     * @return True if given formula matches this one.
      */
-    virtual bool matches(Formula * formula, Substitutions & substitutions)
-    const = 0;
+    virtual bool matches(Formula * formula, Substitutions & substitutions) const = 0;
 };
 
 //! Proposition.
 
 /**
- * Trivial formula consisting of one proposition.
+ * Trivial formula consisting of a proposition.
  */
 class Proposition : public Formula
 {
@@ -102,15 +102,15 @@ public:
     /**
      * Sets given formula as the first unset operand from the left.
      * @param formula Formula to be set as an operand.
-     * @return Unset operands count after this operation.
+     * @return True if all operands have been set.
      */
-    virtual int append(Formula * formula) = 0;
+    virtual bool append(Formula * formula) = 0;
     /**
-     * Set given formula as the first unset operand from the right.
+     * Set given formula as the last unset operand from the left.
      * @param formula Formula to be set as an operand.
-     * @return Unset operands count after this operation.
+     * @return True if all operands have been set.
      */
-    virtual int insert(Formula * formula) = 0;
+    virtual bool insert(Formula * formula) = 0;
 };
 
 //! Unary operator.
@@ -130,8 +130,8 @@ public:
     virtual string printPostfix(Language) const;
     virtual bool equals(Formula *) const;
     virtual bool matches(Formula *, Substitutions &) const;
-    virtual int append(Formula *);
-    virtual int insert(Formula *);
+    virtual bool append(Formula *);
+    virtual bool insert(Formula *);
 };
 
 //! Binary operator.
@@ -152,8 +152,8 @@ public:
     virtual string printPostfix(Language) const;
     virtual bool equals(Formula *) const;
     virtual bool matches(Formula *, Substitutions &) const;
-    virtual int append(Formula *);
-    virtual int insert(Formula *);
+    virtual bool append(Formula *);
+    virtual bool insert(Formula *);
 };
 
 #endif

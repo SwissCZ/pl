@@ -8,7 +8,7 @@
 
 \documentclass[thesis=B,czech]{FITthesis}[2012/06/26]
 
-\usepackage[utf8]{inputenc} % LaTeX source encoded as Windows-1250
+\usepackage[utf8]{inputenc} % LaTeX source encoded as UTF-8
 
 \usepackage{graphicx} %graphics files inclusion
 % \usepackage{amsmath} %advanced maths
@@ -33,10 +33,10 @@
 \authorGN{Jan} %(křestní) jméno (jména) autora
 \authorFN{Švajcr} %příjmení autora
 \authorWithDegrees{Jan Švajcr} %jméno autora včetně současných akademických titulů
-\supervisor{Mgr. Jan Starý}
-\acknowledgements{Děkuji svému vedoucímu práce Mgr. Janu Starému za přívětivost a zájem, své rodině za podporu a zázemí a své milované za lásku a věrnost.}
+\supervisor{Mgr. Jan Starý, Ph.D.}
+\acknowledgements{Děkuji svému vedoucímu práce Mgr. Janu Starému, Ph.D. za přívětivost a zájem, své rodině za podporu a zázemí a své milované za lásku a věrnost.}
 \abstractCS{Cílem této práce je vypracovat konzolový program implementující prostředí důkazového systému výrokové logiky. Jeho základní funkcionalitou je syntaktická analýza textového vstupu v podobě posloupnosti výrokových formulí a ověřování, zdali je tato posloupnost korektním výrokovým důkazem. Software je podporován prostředím UNIX a implementován v jazyce C. Součástí práce jsou náležitosti jako dokumentace zdrojového kódu a vytvoření uživatelské příručky v podobě standardní manuálové stránky.}
-\abstractEN{The goal of this thesis is creation of a console program implementing the environment of the proof system of propositional logic. The basic functionality contains parsing of the input represented as a sequence of propositional formulas and validation of this sequence as a proof. The software is implemented in the C language and supported in UNIX systems. This thesis also requires a code documentation and a standard manual page as a user manual.}
+\abstractEN{The goal of this thesis is a creation of a console program implementing the environment of the proof system of propositional logic. The basic functionality contains parsing of the input represented as a sequence of propositional formulas and validation of this sequence as a proof. The software is implemented in the C language and supported in UNIX systems. This thesis also requires a code documentation and a standard manual page as a user manual.}
 \placeForDeclarationOfAuthenticity{V~Praze}
 \declarationOfAuthenticityOption{2} %volba Prohlášení (číslo 1-6)
 \keywordsCS{Výroková logika, Dokazatelnost, Syntaktická analýza, C/C++.}
@@ -48,13 +48,178 @@
 % \newacronym{FIT}{FIT}{Fakulta informa{\v c}n{\' i}ch technologi{\' i}}
 
 \begin{introduction}
-Logika je formální věda zkoumající část lidského myšlení. Jejím předmětem je správné vyvozování důsledků z předpokladů, jejichž volbu, pravdivost nebo snad smysl blíže nezkoumáme. Činíme tak nejen proto, že naše vyvození je správné i v případě, kdy předpoklady nejsou, ale i proto, že to této disciplíně ani nepřísluší. Matematická logika toto usuzování formalizuje, čímž nás oprošťuje od psychologického aspektu. Dává tak vzniku postupům, které lze kdykoliv opakovaně aplikovat. Příkladem takového postupu je ověřování korektnosti našeho usuzování, takzvaného \emph{důkazu}. To je dokonce natolik mechanické, že jej můžeme svěřit strojovému zpracování \cite{kml}. Právě tohoto aspektu výrokové logiky využívá tato práce, která její formalismus přenáší do oblasti informačních technologií implementací některých principů výrokového počtu počítačovým programem. Již z názvu této práce vyplývá, že implementuje principy důkazového systému.
+Logika je formální věda zkoumající část lidského myšlení. Jejím předmětem je správné vyvozování důsledků z předpokladů, jejichž volbu, pravdivost nebo snad smysl blíže nezkoumáme. Činíme tak nejen proto, že naše vyvození je správné i v případě, kdy předpoklady nejsou, ale i proto, že to této disciplíně ani nepřísluší. Matematická logika toto usuzování formalizuje, čímž nás oprošťuje od psychologického náhledu. Dává tak vzniku postupům, které lze kdykoliv opakovaně aplikovat. Příkladem takového postupu je ověřování korektnosti našeho usuzování, takzvaného \emph{důkazu}. To je dokonce natolik mechanické, že jej můžeme svěřit strojovému zpracování\cite{sochor}. Právě tento aspekt výrokové logiky byl podnětem pro vznik této práce, která formalismus výrokové logiky přenáší do oblasti informačních technologií implementací některých principů výrokového počtu počítačovým programem. Již z názvu této práce vyplývá, že implementuje principy důkazového systému, konkrétně Hilbertova systému, na který se v této práci omezíme. Dokazatelnost je tedy ústřední kapitola výrokového počtu, o kterou se budeme zajímat.
 \end{introduction}
 
+%
+%
+%
+
 \chapter{Formální kontext}
-Definice (formule, důkaz), zefektivnění důkazu (duplicity)
+
+V úvodní kapitole se seznámíme s několika potřebnými základními pojmy výrokového počtu, aby každý čtenář byl srozumen s terminologii užitou v tomto textu a porozuměl tak obsahu následujících kapitol.
+
+\section{Výrok}
+\label{sec:vyrok}
+
+Kvůli zavedení ústředního pojmu \emph{formule} nejprve zavedeme elementární pojem \emph{výrok}.
+Výrok je takové tvrzení, o kterém má dostatečný smysl uvažovat, zdali je pravdivé či nikoliv. Lze ho tedy také chápat jako oznamovací větu. Výrokům přiřazujeme pravdivostní hodnotu \emph{true} nebo \emph{false}. Toto pak nazýváme \emph{pravdivostním ohodnocením} výroků. Ze základních výroků tvoříme další výroky (tzv. \emph{složené výroky}), pomocí logických operací, které si brzy popíšeme. V závislosti na pravdivostním ohodnocení elementárních výroků a na typu použité logické operace přisuzujeme pravdivostní ohodnocení výrokům z těchto výroků složených. Jednotlivé základní výroky značíme velkými písmeny latinky: $A, B, C, ...$.
+
+Pro ilustraci elementárního výroku uvažujme následující výrok $A$: \uv{Dnes je hezký den.}. Je na čtenáři, aby rozhodl o pravdivosti tohoto výroku a jistě bude souhlasit, že jiný čtenář by mohl rozhodnout stejně nebo opačně. V této práci se ale pravdivostním ohodnocením výroků stejně jako jejich významem nebudeme zabývat. Zmíněný fakt slouží pouze jako součást definice a čtenář ji nemusí považovat za klíčovou.
+
+\subsection{Logické operace}
+Logické operace v logice dělíme na unární a binární v závislosti na jejich aritě\footnote{Arita - počet operandů operace potřebných k jejímu provedení.}. Reprezentují je příslušné logické spojky následovně:
+\begin{description}
+\item[Unární]
+	\begin{itemize}
+	\item negace ($\neg$)
+	\end{itemize}
+\item[Binární]
+	\begin{itemize}
+	\item konjunkce ($\wedge$)
+	\item disjunkce ($\vee$)
+	\item implikace ($\rightarrow$)
+	\item ekvivalence ($\leftrightarrow$)
+	\end{itemize}
+\end{description}
+Již víme, že logické operace dávají vzniku složeným výrokům, jejichž pravdivostní hodnota závisí na typu použité operace\ref{sec:vyrok}. Význam těchto operací nebudeme blíže sledovat, protože nejsou podstatné pro účely této práce. Pro nás důležitou vnímejme pouze rozlišení jednotlivých operací a jejich aritu.
+
+Pro ilustraci složeného výroku uvažujme následující výrok $B = \neg A$. V souvislosti s předchozím příkladem elementárního výroku prohlásíme, že se jedná o výrok s opačnou pravdivostní hodnotou než má výrok $A$. Do přirozeného jazyka bychom jej tedy přeložili jako \uv{Dnes není hezký den} nebo \uv{Není pravda, že dnes je hezký den.}. Druhá varianta překladu více koresponduje se syntaktickým vnímáním tohoto složeného výroku.
+
+\section{Formule}
+
+Ústředním pojmem pro tuto práci je \emph{formule}. V matematické logice obecně definujeme formuli tak, že:
+\begin{enumerate}
+\item Každý elementární výrok je formulí.
+\item Vznikne-li $\alpha$ unární logickou operací z formule $\beta$ nebo binární logickou operací z formulí $\beta$ a $\gamma$ , je $\alpha$ také formulí.
+\item Každou formuli dostaneme postupnou aplikací předchozích pravidel\cite{sochor}.
+\end{enumerate}
+Jednotlivé formule značíme malými písmeny řecké abecedy: $\alpha , \beta , \gamma , ...$.
+
+Pro ilustraci uvažujme následující formule $\alpha$ a $\beta$:
+\begin{enumerate}
+\item $\alpha = A$
+\item $\beta = \neg (A \vee B)$
+\end{enumerate}
+Je zřejmé, že formule $\alpha$ je ve skutečnosti elementárním výrokem, kdežto formule $\beta$ je složená z několika výroků. Pro názornost popíšeme vznik formule $\beta$ na základě předchozí definice formule.
+\begin{enumerate}
+\item Uvažujme elementární výroky $A$ a $B$.
+\item Výroky $A$ a $B$ pojí operace disjunkce do podoby složeného výroku $A \vee B$.
+\item Na dosavadní formuli aplikujeme unární operaci negace. Tímto vzniká nová formule $\beta = \neg (A\vee B)$.
+\end{enumerate}
+
+\subsection{Syntaxe}
+
+Nyní se na okamžik věnujme způsobu zápisu výrokových formulí. Tuto znalost budeme později potřebovat při analýze. Výrokové formule stejně jako složené výroky lze zapisovat ve třech různých notacích:\emph{prefixní}, \emph{infixní} a \emph{postfixní}. Tyto notace jsou navzájem ekvivalentní, liší se pouze pořadím zápisu logické operace u složených výroků. Prefixní, infixní a postfixní zápis názorně předvedeme následovně na jedné formuli:
+\begin{description}
+\item[prefix] $\vee AB$
+\item[infix] $A \vee B$ nebo striktně $(A \vee B)$
+\item[postfix] $AB \vee$
+\end{description}
+Je třeba brát na vědomí, že s rostoucí složitostí výrokové formule je pro nás čím dál obtížnější udržet pozornost nad strukturou formule. Všimněme si, že infixní zápis je našemu vnímání nejpřirozenější. Budeme jej proto nadále používat stejně jako doposud.
+
+\section{Důkazový systém}
+
+Důkazový systém je aparát výrokové logiky, který rozhoduje o dokazatelnosti libovolné výrokové formule $\varphi$ v kontextu daného axiomatického systému. Ten je tvořen dvěma důležitými množinami: množinou axiomů a množinou odvozovacích pravidel, která  definují způsob, jakým lze z výrokových formulí odvozovat formule další.
+
+Axiom je speciální výroková formule s abstraktními elementárními členy, za které lze dosazovat konkrétní výrokové formule. Axiom lze tedy chápat jako jakousi šablonu, na základě které lze vytvářet jeho instance. Instancí axiomů je nekonečně mnoho stejně jako výrokových formulí. O pravdivosti axiomů rozhodujeme vždy tak, že je považujeme automaticky za pravdivé.
+
+\subsection{Hilbertův systém}
+
+Jedním takovým formálním důkazovým systémem je Hilbertův axiomatický systém. Ten se omezuje pouze na dvě logické spojky: negaci a implikaci. Tyto totiž dokáží zastoupit veškeré ostatní spojky, které se dají kombinací negace a implikace adekvátně vyjádřit. Tato práce bude implementovat právě tento axiomatický systém.
+
+Množina axiomů obsahuje tyto prvky:
+
+\begin{description}
+\item[A1:] $\varphi\rightarrow(\psi\rightarrow\varphi)$
+\item[A2:] $(\varphi\rightarrow(\psi\rightarrow\chi))\rightarrow((\varphi\rightarrow\psi)\rightarrow(\varphi\rightarrow\chi))$
+\item[A3:] $(\neg\varphi\rightarrow\neg\psi)\rightarrow((\neg\varphi\rightarrow\psi)\rightarrow\varphi)$
+\end{description}
+
+Množina odvozovacích pravidel obsahuje jedinný prvek - tzv. pravidlo \emph{modus ponens}, které zavedeme následovně: $\varphi$ lze odvodit, platí-li $\psi$ zároveň s $\psi\rightarrow\varphi$.
+
+\subsection{Důkaz}
+
+Buď $\varphi$ výroková formule. Řekněme, že konečná posloupnost výrokových formulí $\varphi , ..., \varphi$ je \emph{důkazem} formule $\varphi$ ve výrokové logice, pokud $\varphi_n$ je formule $\varphi$, a každá formule $\varphi_i$ z této posloupnosti je buďto instancí některého axiomu, nebo je z některých předchozích $\varphi_j, \varphi_k$, kde $j, k < i$, odvozena příslušným odvozovacím pravidlem důkazového systému. Libovolná formule $\varphi$ je dokazatelná (píšeme $\vdash\varphi$), právě když existuje její důkaz. Je zřejmé, že každý důkaz musí začínat axiomem, tedy triviálně každá instance axiomu je dokazatelnou formulí \cite{logika}.
+
+\subsubsection{Důkaz z předpokladů}
+V kontextu výrokového důkazu často také mluvíme o tzv. \emph{předpokladech}. Jedná se o formule, ze kterých v rámci důkazu vycházíme a nedokazujeme je. Mluvíme potom o více obecném důkazu, tzv. \emph{důkazu z předpokladů}. Tento typ důkazu tato práce neimplementuje. Zmínka o něm je zde pouze pro účely pozdější diskuze nad rozšířitelností této práce.
+
+\subsubsection{Zjednodušování důkazu}
+V rámci pozdějšího vymezení požadavků na implementovaný software je nutné si ujasnit, jakým způsobem lze důkazy optimalizovat v Hilbertově axiomatickém systému.
+
+{\em Lemma\/}:
+Buď $\phi_1, \dots, \phi_n$ posloupnost formulí
+tvořící Hilbertovský důkaz. Pak kaľdá podposloupnost,
+která vznikne z $\phi_1, \dots, \phi_n$ vynecháním druhého
+a kaľdého daląího výskytu nějaké zvolené formule $\phi_i$,
+je opět důkazem. Tedy i po vynechání vąech duplicit
+zůstává daná posloupnost důkazem.
+
+{\em Důkaz\/}:
+Netriviální je jen případ pouľití modus ponens.
+Pokud ale nějaká formule $\phi_i$ vyplývá z nějakých
+předchozích formulí $\phi_j$ a $\phi_j \to \phi_i$
+pomocí modus ponens, pak stejným způsobem vyplývá
+i z kaľdých jejich předchozích (specielně z prvních) výskytů.
+
+\bigskip
+Tento obrat můľeme povaľovat za zárodek {\em optimalizace důkazů\/},
+která vąak dalece přesahuje naąe zadání.
+
+%
+%
+%
 
 \chapter{Vymezení požadavků}
+Na základě oficálního zadání této práce, kterým začíná tento text, vymezíme v této kapitole požadavky na implementovaný software. Učiníme tak nejen proto, abychom mohli navrhnout všechny potřebné součásti systému, ale i proto, abychom byli schopni po provedení implementace ověřit, zdali jsme tyto požadavky splnili.
+
+
+
+
+
+%Naším úkolem je implementovat v jazyce C terminálový program pro platformu UNIX, který na základě stanoveného jazyka dokáže přečíst textový vstup v podobě řádek výrokových formulí v prefixové, infixové nebo postfixové notaci a rozhodne, zdali tato posloupnost vět je korektním formálním důkazem. Náplní mé práce je tedy především návrh datových struktur potřebných k binární reprezentaci dat výrokové logiky, implementace parseru výrokových formulí, tedy části programu, která převádí textový vstup do datové reprezentace, a validátoru, který díky schopnosti procházet strukturu načtených výrokových formulí dovede rozhodnout o jejich náležitostido korektního výrokového důkazu. Je také potřeba, aby program detekoval nekorektní vstupy a reagoval na ně příznakem chyby včetně její lokalizace. Program je třeba na závěr náležitě otestovat a vytvořit příslušnou dokumentaci.
+%
+%Cílem této práce je vypracovat konzolový program implementující prostředí důkazového systému výrokové logiky. Jeho základní funkcionalitou je syntaktická analýza textového vstupu v podobě posloupnosti výrokových formulí a ověřování, zdali je tato posloupnost korektním výrokovým důkazem. Software je podporován prostředím UNIX a implementován v jazyce C. Součástí práce jsou náležitosti jako dokumentace zdrojového kódu a vytvoření uživatelské příručky v podobě standardní manuálové stránky.
+%
+%(1) Podle materiálu zadaných vedoucím práce nastudujte a analyzujte vlastnosti dukazového systému pro
+%výrokovou logiku.
+%(2) Navrhnete datové struktury pro reprezentaci výrokových formulí a výrokových dukazu.
+%(3) Implementujte parser výrokových formulí, který prevede textový vstup (tedy výrokové formule
+%v prefixní, infixní, nebo postfixní notaci) do zvolené datové reprezentace.
+%(4) Implementujte dukazový systém, tedy program, který na vstupu cte posloupnost výrokových formulí
+%(jedna formule na rádek), verifikuje, zda se jedná o výrokový dukaz, a rozpoznává jeho strukturu.
+%(5) Implementaci provedte v jazyce C na zvolené UNIX-like platforme. Dbejte na korektnost, cistotu,
+%prenositelnost a rozširitelnost systému.
+%(6) Vytvorte uživatelský manuál ve forme standardní man-page, jakož i programátorskou dokumentaci.
+%Využijte existujících nástroju UNIXu.
+
+
+
+
+\section{Funkční požadavky}
+
+Funkční požadavky přímo popisují cíle, kterých má projekt (v našem případě program) dosáhnout. Na základě funkčních požadavků lze navrhnout metody testování a ověřit, zdali bylo zadání úspěšně splněno.
+
+\subsection{Manuál}
+Součástí zadání práce je uživatelský manuál. Nefunkčním požadavkem na manuál je jeho forma ve standardní manuálové stránky, které tvoří základ dokumentace v unixových operačních systémech.
+
+\section{Nefunkční požadavky}
+
+Mezi nefunkční požadavky řadíme implementační náležitosti, které popisují způsob, jakým máme implementaci provést. Některé z nich jsou součástí zadání, některé si musíme stanovit sami. Nefunkční požadavky nejsou předmětem ověřování, protože tvoří předpoklady, ze kterých vycházíme.
+
+\section{Manuál}
+Součástí zadání práce je uživatelský manuál. Nefunkčním požadavkem na manuál je jeho forma ve standardní manuálové stránky.
+
+\section{Dokumentace}
+
+
+Vytvorte uživatelský manuál ve forme standardní man-page, jakož i programátorskou dokumentaci.
+Využijte existujících nástroju UNIXu.
+
+
+\section{Testování}
+Dle zadání práce je třeba otestovat, zdali program korektně zpracovává korektní vstup, a korektně odmítá vstup nekorektní. Metody testování zdokumentujeme později v příslušné kapitole. Testování provádíme na základě stanovených funkčních požadavků. 
 
 \chapter{Analýza a návrh}
 
@@ -87,21 +252,19 @@ Důkaz z předpokladů, další pravidla (Gentzen,...) namísto MP / vzájemný 
 
 \begin{figure}
 	\dirtree{%
-		.1 exe\DTcomment{adresář se spustitelnou formou}.
-		.2 pl\DTcomment{implementace ve spustitelné podobě}.
-		.1 src\DTcomment{adresář se zdrojovou formou}.
+		.1 src\DTcomment{adresář se zdrojovou formou práce}.
 		.2 impl\DTcomment{adresář se zdrojovou formou implementace}.
 		.3 doc\DTcomment{adresář se soubory programátorské dokumentace}.
 		.3 src\DTcomment{adresář se soubory zdrojového kódu}.
-		.3 test\DTcomment{adresář se soubory testování}.
+		.3 test\DTcomment{adresář se soubory pro testování}.
 		.3 Doxyfile\DTcomment{soubor konfigurace dokumentace Doxygen}.
 		.3 mainpage.dox\DTcomment{soubor hlavní stránky programátorské dokumentace}.
 		.3 Makefile\DTcomment{soubor konfigurace sestavení programu}.
-		.3 pl.1\DTcomment{soubor zdrojové kódu manuálové stránky}.
+		.3 pl.1\DTcomment{soubor zdrojové formy manuálové stránky}.
 		.3 test.sh\DTcomment{soubor testovacího skriptu pro shell}.
 		.2 thesis\DTcomment{adresář se zdrojovou formou textu práce}.
 		.3 bibliography.bib\DTcomment{soubor bibliografických zdrojů}.
-		.1 text\DTcomment{adresář s textem práce ve formátu PDF}.
+		.1 text\DTcomment{adresář s textem práce}.
 	}
 \end{figure}
 

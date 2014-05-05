@@ -1,8 +1,10 @@
 #include "formula.hpp"
 
+#include <iostream>
+
 using namespace std;
 
-map<char, Dictionary> Formula::dictionary = {
+const map<char, Dictionary> Formula::dictionary = {
     {'-',
         {
             {ASCII, "-"},
@@ -72,8 +74,7 @@ bool Proposition::equals(Formula * formula) const
     return this->character == formula->getCharacter();
 }
 
-bool Proposition::matches(Formula * formula, Substitutions & substitutions)
-const
+bool Proposition::matches(Formula * formula, Substitutions & substitutions) const
 {
     try
     {
@@ -122,22 +123,28 @@ bool UnaryOperator::equals(Formula * formula) const
             && operand->equals(((UnaryOperator *) formula)->operand);
 }
 
-bool UnaryOperator::matches(Formula * formula, Substitutions & subsitutions)
-const
+bool UnaryOperator::matches(Formula * formula, Substitutions & subsitutions) const
 {
-    return character == formula->getCharacter() && operand->matches
-            (((UnaryOperator *) formula)->operand, subsitutions);
+    return character == formula->getCharacter()
+            && operand->matches(((UnaryOperator *) formula)->operand, subsitutions);
 }
 
-int UnaryOperator::append(Formula * operand)
+bool UnaryOperator::append(Formula * operand)
 {
-    this->operand = operand;
-    return 0;
+    if (this->operand == NULL)
+    {
+        this->operand = operand;
+    }
+    return true;
 }
 
-int UnaryOperator::insert(Formula * operand)
+bool UnaryOperator::insert(Formula * operand)
 {
-    return append(operand);
+    if (this->operand == NULL)
+    {
+        this->operand = operand;
+    }
+    return true;
 }
 
 BinaryOperator::BinaryOperator(char character) : Operator(character)
@@ -181,39 +188,35 @@ bool BinaryOperator::equals(Formula * formula) const
             && right->equals(((BinaryOperator *) formula)->right);
 }
 
-bool BinaryOperator::matches(Formula * formula,
-                             Substitutions & substitutions)
-const
+bool BinaryOperator::matches(Formula * formula, Substitutions & substitutions) const
 {
     return character == formula->getCharacter()
-            && left->matches(((BinaryOperator *) formula)->left,
-                             substitutions)
-            && right->matches(((BinaryOperator *) formula)->right,
-                              substitutions);
+            && left->matches(((BinaryOperator *) formula)->left, substitutions)
+            && right->matches(((BinaryOperator *) formula)->right, substitutions);
 }
 
-int BinaryOperator::append(Formula * operand)
+bool BinaryOperator::append(Formula * operand)
 {
     if (left == NULL)
     {
         left = operand;
-        return 1;
-    } else
+        return false;
+    } else if (right == NULL)
     {
         right = operand;
-        return 0;
     }
+    return true;
 }
 
-int BinaryOperator::insert(Formula * operand)
+bool BinaryOperator::insert(Formula * operand)
 {
     if (right == NULL)
     {
         right = operand;
-        return 1;
-    } else
+        return false;
+    } else if (left == NULL)
     {
         left = operand;
-        return 0;
     }
+    return true;
 }

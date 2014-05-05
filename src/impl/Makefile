@@ -1,6 +1,4 @@
-########################
-# Variables definition #
-########################
+### Variables definitions
 
 PREFIX	= /usr/local
 BINDIR	= $(PREFIX)/bin
@@ -10,57 +8,59 @@ GXX		= g++
 OPTS	= -Wall -pedantic -std=c++11
 
 NAME	= pl
-FILES	= configuration.o formula.o hilbert.o main.o parse.o parseException.o syntaxException.o target.o
+FILES	= configuration.o formula.o hilbert.o main.o parse.o parseException.o proof.o syntaxException.o target.o
 
-###################
-# Primary targets #
-###################
+BUILD	= build
+DOC		= doc
+OUT		= out
+SRC		= src
+TEST	= test
 
-# Compile the src files
+### Primary targets
+
+# Compile the source files
 build: .folders $(FILES)
-	cd build; $(GXX) $(FILES) -o ../out/$(NAME) $(OPTS)
+	cd $(BUILD) && $(GXX) $(FILES) -o ../$(OUT)/$(NAME) $(OPTS)
 
-# Remove all outs
+# Remove all outputs
 clean:
-	rm -fr build out documentation
-	rm -f test/*_test.txt
+	rm -rf $(BUILD) $(OUT) $(DOC)
 
-# Create documentation
+# Create the documentation
 doc:
 	doxygen
+	
+# Test the program
+test: $(BUILD) .test
 
 # Install the binary and manual page
-install: build .binary .manpage
-
-# Build and test the program
-test: build .test
+install: $(BUILD) .binary .manpage
 
 # Uninstall the program
 uninstall:
-	rm -f $(BINDIR)/$(NAME) $(MANDIR)/$(NAME).1.gz
+	sudo rm -f $(BINDIR)/$(NAME) $(MANDIR)/$(NAME).1.gz
 
-#####################
-# Auxiliary targets #
-#####################
+### Auxiliary targets
+
+# Create output directories
+.folders:
+	mkdir -p $(BUILD) $(OUT)
 
 # Install the binary file
 .binary:
-	install -g 0 -o 0 -m 0755 out/$(NAME) $(BINDIR);
-
-# Create out directories
-.folders:
-	mkdir -p build out
+	sudo install -g 0 -o 0 -m 0755 $(OUT)/$(NAME) $(BINDIR)
 
 # Install the manual page
 .manpage:
-	install -g 0 -o 0 -m 0644 $(NAME).1 $(MANDIR) && gzip -f $(MANDIR)/$(NAME).1
+	sudo install -g 0 -o 0 -m 0644 $(NAME).1 $(MANDIR) && sudo gzip -f $(MANDIR)/$(NAME).1
 
 # Perform tests
 .test:
-	./test.sh
+	sh test.sh
 
 # Universal *.cpp file compilation rule
-%.o: src/%.cpp
-	$(GXX) $(OPTS) -c -MMD -MP -MF build/$@.d $< -o build/$@
+%.o: $(SRC)/%.cpp
+	$(GXX) $(OPTS) -c -MD -MP $< -o $(BUILD)/$@
 
-.PHONY: build all clean doc install test uninstall .binary .folders .manpage .test
+# PHONY targets
+.PHONY: build clean doc test install uninstall .folders .binary .manpage .test
