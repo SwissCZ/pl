@@ -1,10 +1,10 @@
 #ifndef HILBERT_HPP
 #define	HILBERT_HPP
 
+#include <list>
+
 #include "formula.hpp"
 #include "proof.hpp"
-
-#include <list>
 
 using namespace std;
 
@@ -13,14 +13,14 @@ using namespace std;
 /**
  * Functionality of Hilbert system.
  */
-class HilbertSystem
+class Hilbert
 {
 private:
     list<Formula *> axioms; ///< Hilbert axioms.
     Formula * modusPonens; ///< Modus ponens implication formula.
 public:
-    HilbertSystem();
-    ~HilbertSystem();
+    Hilbert();
+    ~Hilbert();
     /**
      * Checks whether given formula is an axiom.
      * @param formula Formula to be validated as an axiom.
@@ -28,14 +28,14 @@ public:
      */
     int isAxiom(Formula * formula) const;
     /**
-     * Checks whether given formula is provable using the modus ponens rule.
-     * @param formula Formula to be proved via modus ponens.
-     * @param proof Proof within which given formula has to be proved.
-     * @return Premise and implication index or null if it is not provable.
+     * Checks whether given formula is deducible using the modus ponens rule.
+     * @param formula Formula to be deduced via modus ponens.
+     * @param proof Proof within which given formula has to be deduced.
+     * @return Premise and implication index or null if it is not deducible.
      */
-    int * isProvable(Formula * formula, Proof & proof) const;
+    int * isDeducible(Formula * formula, Proof & proof) const;
 };
 
-const HilbertSystem hilbertSystem;
+const Hilbert hilbert;
 
 #endif

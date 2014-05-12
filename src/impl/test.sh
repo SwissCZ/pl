@@ -2,11 +2,13 @@
 
 TEST_SUCCESS=1
 
+cd test
 echo "Performing tests\n----------------"
 
-# Valid formulas tests
+### Parser tests
 
-cd test
+# Positive parser tests
+
 for in in prefix infix postfix
 do
 	for out in prefix infix postfix
@@ -20,7 +22,7 @@ do
 	done
 done
 
-# Invalid formulas tests
+# Negative parser tests
 
 for in in prefix infix postfix
 do
@@ -32,25 +34,29 @@ do
 	fi
 done
 
-# Valid axioms test
+### Axiom checker testing
+
+# Positive axioms test
 
 ../out/pl -A -f axiom.txt
 if [ $? -ne 0 ];
 then
-	echo "Test 'valid axioms' failed!"
+	echo "Positive axioms testing failed!"
 	TEST_SUCCESS=0
 fi
 
-# Invalid axioms test
+# Negative axioms test
 
 ../out/pl -A -f axiom_error.txt
 if [ $? -eq 0 ];
 then
-	echo "Test 'invalid axioms' failed!"
+	echo "Negative axioms testing failed!"
 	TEST_SUCCESS=0
 fi
 
-# Valid proof test
+### Proof checker testing
+
+# Positive proof test
 
 ../out/pl -P -f proof.txt
 if [ $? -ne 0 ];
@@ -59,7 +65,7 @@ then
 	TEST_SUCCESS=0
 fi
 
-# Invalid proof test
+# Negative proof test
 
 ../out/pl -P -f proof_error.txt
 if [ $? -eq 0 ];
@@ -68,11 +74,11 @@ then
 	TEST_SUCCESS=0
 fi
 
-# Summary
+### Summary
 
 if [ $TEST_SUCCESS -eq 1 ];
 then
 	echo "Success!"
 else
-	echo "-----------------\nFailure!"
+	echo "----------------\nFailure!"
 fi

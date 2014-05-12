@@ -1,9 +1,9 @@
 #ifndef PROOF_HPP
 #define	PROOF_HPP
 
-#include "formula.hpp"
-
 #include <list>
+
+#include "formula.hpp"
 
 using namespace std;
 

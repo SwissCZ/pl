@@ -1,6 +1,6 @@
-#include "formula.hpp"
-
 #include <iostream>
+
+#include "formula.hpp"
 
 using namespace std;
 
@@ -9,32 +9,37 @@ const map<char, Dictionary> Formula::dictionary = {
         {
             {ASCII, "-"},
             {WORDS, " not "},
-            {TEX, "\\neg"}
-        }},
+            {TEX, " \\neg "}
+        }
+	},
     {'.',
         {
             {ASCII, "."},
             {WORDS, " and "},
-            {TEX, "\\wedge"}
-        }},
+            {TEX, " \\wedge "}
+        }
+	},
     {'+',
         {
             {ASCII, "+"},
             {WORDS, " or "},
-            {TEX, "\\vee"}
-        }},
+            {TEX, " \\vee "}
+        }
+	},
     {'>',
         {
             {ASCII, ">"},
             {WORDS, " implies "},
-            {TEX, "\\rightarrow"}
-        }},
+            {TEX, " \\Rightarrow "}
+        }
+	},
     {'=',
         {
             {ASCII, "="},
-            {WORDS, " iff "},
-            {TEX, "\\leftrightarrow"}
-        }}
+            {WORDS, " if and only if "},
+            {TEX, " \\Leftrightarrow "}
+        }
+	}
 };
 
 Formula::Formula(char character) : character(character)
@@ -74,7 +79,8 @@ bool Proposition::equals(Formula * formula) const
     return this->character == formula->getCharacter();
 }
 
-bool Proposition::matches(Formula * formula, Substitutions & substitutions) const
+bool Proposition::matches(Formula * formula, Substitutions & substitutions)
+const
 {
     try
     {
@@ -86,50 +92,50 @@ bool Proposition::matches(Formula * formula, Substitutions & substitutions) cons
     }
 }
 
-Operator::Operator(char character) : Formula(character)
+Composite::Composite(char character) : Formula(character)
 {
 }
 
-UnaryOperator::UnaryOperator(char character) : Operator(character)
+Unary::Unary(char character) : Composite(character)
 {
 }
 
-UnaryOperator::~UnaryOperator()
+Unary::~Unary()
 {
     delete operand;
 }
 
-string UnaryOperator::printPrefix(Language language) const
+string Unary::printPrefix(Language language) const
 {
     return dictionary.at(character).at(language)
             + operand->printPrefix(language);
 }
 
-string UnaryOperator::printInfix(Language language) const
+string Unary::printInfix(Language language) const
 {
     return dictionary.at(character).at(language)
             + operand->printInfix(language);
 }
 
-string UnaryOperator::printPostfix(Language language) const
+string Unary::printPostfix(Language language) const
 {
     return operand->printPostfix(language)
             + dictionary.at(character).at(language);
 }
 
-bool UnaryOperator::equals(Formula * formula) const
+bool Unary::equals(Formula * formula) const
 {
     return character == formula->getCharacter()
-            && operand->equals(((UnaryOperator *) formula)->operand);
+            && operand->equals(((Unary *) formula)->operand);
 }
 
-bool UnaryOperator::matches(Formula * formula, Substitutions & subsitutions) const
+bool Unary::matches(Formula * formula, Substitutions & subsitutions) const
 {
     return character == formula->getCharacter()
-            && operand->matches(((UnaryOperator *) formula)->operand, subsitutions);
+            && operand->matches(((Unary *) formula)->operand, subsitutions);
 }
 
-bool UnaryOperator::append(Formula * operand)
+bool Unary::setFirst(Formula * operand)
 {
     if (this->operand == NULL)
     {
@@ -138,7 +144,7 @@ bool UnaryOperator::append(Formula * operand)
     return true;
 }
 
-bool UnaryOperator::insert(Formula * operand)
+bool Unary::setLast(Formula * operand)
 {
     if (this->operand == NULL)
     {
@@ -147,24 +153,24 @@ bool UnaryOperator::insert(Formula * operand)
     return true;
 }
 
-BinaryOperator::BinaryOperator(char character) : Operator(character)
+Binary::Binary(char character) : Composite(character)
 {
 }
 
-BinaryOperator::~BinaryOperator()
+Binary::~Binary()
 {
     delete left;
     delete right;
 }
 
-string BinaryOperator::printPrefix(Language language) const
+string Binary::printPrefix(Language language) const
 {
     return dictionary.at(character).at(language)
             + left->printPrefix(language)
             + right->printPrefix(language);
 }
 
-string BinaryOperator::printInfix(Language language) const
+string Binary::printInfix(Language language) const
 {
     return string()
             + '('
@@ -174,28 +180,28 @@ string BinaryOperator::printInfix(Language language) const
             + ')';
 }
 
-string BinaryOperator::printPostfix(Language language) const
+string Binary::printPostfix(Language language) const
 {
     return left->printPostfix(language)
             + right->printPostfix(language)
             + dictionary.at(character).at(language);
 }
 
-bool BinaryOperator::equals(Formula * formula) const
+bool Binary::equals(Formula * formula) const
 {
     return character == formula->getCharacter()
-            && left->equals(((BinaryOperator *) formula)->left)
-            && right->equals(((BinaryOperator *) formula)->right);
+            && left->equals(((Binary *) formula)->left)
+            && right->equals(((Binary *) formula)->right);
 }
 
-bool BinaryOperator::matches(Formula * formula, Substitutions & substitutions) const
+bool Binary::matches(Formula * formula, Substitutions & substitutions) const
 {
     return character == formula->getCharacter()
-            && left->matches(((BinaryOperator *) formula)->left, substitutions)
-            && right->matches(((BinaryOperator *) formula)->right, substitutions);
+            && left->matches(((Binary *) formula)->left, substitutions)
+            && right->matches(((Binary *) formula)->right, substitutions);
 }
 
-bool BinaryOperator::append(Formula * operand)
+bool Binary::setFirst(Formula * operand)
 {
     if (left == NULL)
     {
@@ -208,7 +214,7 @@ bool BinaryOperator::append(Formula * operand)
     return true;
 }
 
-bool BinaryOperator::insert(Formula * operand)
+bool Binary::setLast(Formula * operand)
 {
     if (right == NULL)
     {

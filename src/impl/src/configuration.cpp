@@ -1,9 +1,9 @@
+#include <stdexcept>
+#include <unistd.h>
+
 #include "configuration.hpp"
 #include "syntaxException.hpp"
 #include "target.hpp"
-
-#include <stdexcept>
-#include <unistd.h>
 
 using namespace std;
 

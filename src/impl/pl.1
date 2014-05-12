@@ -1,6 +1,6 @@
-.Dd April 15, 2014
+.Dd May 10, 2014
 .Dt PL 1
-.Os
+.Os Ubuntu 14.04
 .Sh NAME
 .Nm pl
 .Nd handle formulas of propositional logic
@@ -16,47 +16,86 @@
 .Sh DESCRIPTION
 The
 .Nm
-utility implements the rudimentary algorithms of propositional logic. By default, it parses the standard input as propositional formulas, reports syntax errors, and exits. Other actions, as proof or axiom validation, can be specified using the options.
+utility implements the rudimentary algorithms of propositional logic.
+By default, it parses the standard input as propositional formulas,
+reports syntax errors, and exits.
+Other actions, as proof or axiom validation,
+can be specified using the options.
 .Ss Language
-The latin capitals A—Z are considered atomic propositions. This means we are reducing the possible complexity of formulas to 26 propositional variables, which is enough for our purposes.
+The latin capitals A—Z are considered atomic propositions.
+This means we are reducing the possible complexity of formulas
+to 26 propositional variables, which is enough for our purposes.
 .Pp
-The following table describes how the propositional connectives are expressed in ASCII, words, and TeX output.
+The following table describes how the propositional connectives
+are expressed in ASCII, words, and TeX output.
 .Pp
-.Bl -column "Connective" "ASCII" "words" "TeX" -compact
-.It Em "Connective	ASCII	words	TeX"
-.It Li negation Ta - Ta not Ta neg
-.It Li conjunction Ta . Ta and Ta wedge
-.It Li disjunction Ta + Ta or Ta vee
-.It Li implication Ta > Ta implies Ta rightarrow
-.It Li equivalence Ta = Ta iff Ta leftrightarrow
+.Bl -column "Connective" "ASCII" "words" "TeX"
+.It Em "Connective	ASCII	Words	TeX"
+.It Li negation Ta - Ta not Ta \eneg
+.It Li conjunction Ta . Ta and Ta \ewedge
+.It Li disjunction Ta + Ta or Ta \evee
+.It Li implication Ta > Ta implies Ta \eRightarrow
+.It Li biconditional Ta = Ta iff Ta \eLeftrightarrow
 .El
 .Ss Input
-Three types of input syntax are supported: prefix, infix and postfix. Only the ASCII form of connectives is recognized. With binary operations in infix, parentheses are required so e.g. 'A+—B' is not a valid formula, but '(A+—B)' is. White space is silently ignored, except newlines, which mark the end of a single formula.
+Three types of input syntax are supported: prefix, infix and postfix.
+Only the ASCII form of connectives is recognized.
+With binary operations in infix, parentheses are required so e.g.
+.Dq A+B
+is not a valid formula, but
+.Dq (A+B)
+is. White space is silently ignored, except newlines,
+which always mark the end of a formula.
 .Ss Output
-Three types of input syntax are supported: prefix, infix and postfix. The connectives can be output as ASCII, words, or TeX, as described in the table above. The ASCII output can be piped back into pl as input.
+Three types of input syntax are supported: prefix, infix and postfix.
+The connectives can be output as ASCII, words, or TeX,
+as described in the table above.
+The ASCII output can be piped back into
+.Nm
+as input.
 .Ss Options
 The options are as follows.
 .Bl -tag -width Fl
 .It Fl A
 Check whether each formula is a Hilbert axiom.
 .It Fl D
-Simplify the proof by ommitting redundant axioms and proofs.
+Simplify the proof by ommitting redundant axioms and sub-proofs.
 .It Fl e
-Allow printing an output. The
+Echo the input. The
 .Nm
-utility does not print either standard or error output by default.
+utility does not print any output by default.
 .It Fl f Ar file
-Read formulas from the specified file instead of standard input.
+Read formulas from
+.Ar file
+instead of standard input.
 .It Fl i Ar syntax
-Expect specified input syntax. Can be 'infix', 'prefix' or 'postfix'. By default, 'infix' is expected.
+Expect the specified input syntax. Can be 
+.Cm infix ,
+.Cm prefix
+or
+.Cm postfix .
+By default, infix is expected.
 .It Fl l Ar language
-Use specified output language. Can be 'ascii', 'words' or 'tex'. By default, 'ascii' is used.
+Use specified output language. Can be
+.Cm ascii ,
+.Cm words
+or
+.Cm tex .
+By default, ascii is used.
 .It Fl o Ar syntax
-Use specified output syntax. Can be 'infix', 'prefix' or 'postfix'. By default, 'infix' is used.
+Use specified output syntax. Can be
+.Cm infix ,
+.Cm prefix
+or
+.Cm postfix .
+By default, infix is used.
 .It Fl P
-Check whether a sequence of formulas is a valid Hilbert proof.
+Check whether a sequence of formulas is a valid Hilbert proof. Implies the
+.Fl s
+option.
 .It Fl s
-Terminates the execution immediately after an error occurs. This strict behaviour is obvious and enabled automatically when using either
+Be strict and terminate immediately if an error occurs.
+Obviously, this behavior is implied with the
 .Fl P
 or
 .Fl D
@@ -102,14 +141,14 @@ Proof cannot be simplified more (
 .El
 .El
 .Sh EXAMPLES
-.Bl -tag -width Fl
-.It Outputs \(dq-+AB\(dq
-echo \(dq-(A+B)\(dq | pl -e -o prefix
-.It Outputs \(dqType 2 axiom.\(dq
-echo \(dq((A>(B>C))>((A>B)>(A>C)))\(dq | pl -e -A
-.El
+.Pp
+Outputs \(dq-+AB\(dq:
+.Dl echo \(dq-(A+B)\(dq | pl -e -o prefix
+.Pp
+Outputs \(dqType 2 axiom.\(dq:
+.Dl echo \(dq((A>(B>C))>((A>B)>(A>C)))\(dq | pl -e -A
 .Sh HISTORY
 Written for academic purposes in 2014.
 .Sh AUTHORS
 Written by
-.An Jan Švajcr Mt svajcjan@fit.cvut.cz
+.An Jan Svajcr Aq Mt svajcjan@fit.cvut.cz

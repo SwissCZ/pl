@@ -7,20 +7,19 @@ MANDIR	= $(PREFIX)/man/man1
 GXX		= g++
 OPTS	= -Wall -pedantic -std=c++11
 
-NAME	= pl
-FILES	= configuration.o formula.o hilbert.o main.o parse.o parseException.o proof.o syntaxException.o target.o
-
 BUILD	= build
 DOC		= doc
 OUT		= out
 SRC		= src
-TEST	= test
+
+NAME	= pl
+FILES	:= $(patsubst $(SRC)/%.cpp, $(BUILD)/%.o, $(wildcard $(SRC)/*.cpp))
 
 ### Primary targets
 
 # Compile the source files
 build: .folders $(FILES)
-	cd $(BUILD) && $(GXX) $(FILES) -o ../$(OUT)/$(NAME) $(OPTS)
+	$(GXX) $(OPTS) $(FILES) -o $(OUT)/$(NAME)
 
 # Remove all outputs
 clean:
@@ -30,11 +29,11 @@ clean:
 doc:
 	doxygen
 	
-# Test the program
+# Build and test the program
 test: $(BUILD) .test
 
-# Install the binary and manual page
-install: $(BUILD) .binary .manpage
+# Build and install the program
+install: $(BUILD) .install
 
 # Uninstall the program
 uninstall:
@@ -46,21 +45,18 @@ uninstall:
 .folders:
 	mkdir -p $(BUILD) $(OUT)
 
-# Install the binary file
-.binary:
+# Install the binary and manual page
+.install:
 	sudo install -g 0 -o 0 -m 0755 $(OUT)/$(NAME) $(BINDIR)
-
-# Install the manual page
-.manpage:
 	sudo install -g 0 -o 0 -m 0644 $(NAME).1 $(MANDIR) && sudo gzip -f $(MANDIR)/$(NAME).1
 
-# Perform tests
+# Run the test script
 .test:
 	sh test.sh
 
 # Universal *.cpp file compilation rule
-%.o: $(SRC)/%.cpp
-	$(GXX) $(OPTS) -c -MD -MP $< -o $(BUILD)/$@
+$(BUILD)/%.o: $(SRC)/%.cpp
+	$(GXX) $(OPTS) -c -MD -MP $< -o $@
 
 # PHONY targets
-.PHONY: build clean doc test install uninstall .folders .binary .manpage .test
+.PHONY: build clean doc test install uninstall .folders .install .test

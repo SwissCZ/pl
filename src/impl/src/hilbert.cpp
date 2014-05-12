@@ -1,11 +1,11 @@
+#include <sstream>
+
 #include "hilbert.hpp"
 #include "parse.hpp"
 
-#include <sstream>
-
 using namespace std;
 
-HilbertSystem::HilbertSystem()
+Hilbert::Hilbert()
 {
     stringstream stream;
     list<string> strings = {"(A>(B>A))",
@@ -21,7 +21,7 @@ HilbertSystem::HilbertSystem()
     modusPonens = parseInfix(stream);
 }
 
-HilbertSystem::~HilbertSystem()
+Hilbert::~Hilbert()
 {
     for (Formula * formula : axioms)
     {
@@ -30,7 +30,7 @@ HilbertSystem::~HilbertSystem()
     delete modusPonens;
 }
 
-int HilbertSystem::isAxiom(Formula * formula) const
+int Hilbert::isAxiom(Formula * formula) const
 {
     int type = 1;
     Substitutions substitutions;
@@ -47,7 +47,7 @@ int HilbertSystem::isAxiom(Formula * formula) const
     return 0;
 }
 
-int * HilbertSystem::isProvable(Formula * formula, Proof & proof) const
+int * Hilbert::isDeducible(Formula * formula, Proof & proof) const
 {
     int premiseOrder = 0;
     int implicationOrder = 0;

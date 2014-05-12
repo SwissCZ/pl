@@ -1,11 +1,11 @@
+#include <iostream>
+#include <list>
+
 #include "formula.hpp"
 #include "hilbert.hpp"
 #include "parseException.hpp"
 #include "proof.hpp"
 #include "target.hpp"
-
-#include <iostream>
-#include <list>
 
 using namespace std;
 
@@ -65,7 +65,7 @@ int executeAxiomCheck(Configuration * configuration)
             }
 
             // Axiom checking
-            type = hilbertSystem.isAxiom(formula);
+            type = hilbert.isAxiom(formula);
             if (type > 0)
             {
                 if (configuration->getEcho())
@@ -135,7 +135,7 @@ int executeProofCheck(Configuration * configuration)
             }
 
             // Axiom checking
-            type = hilbertSystem.isAxiom(formula);
+            type = hilbert.isAxiom(formula);
             if (type > 0)
             {
                 proof.add(formula);
@@ -150,7 +150,7 @@ int executeProofCheck(Configuration * configuration)
             }
 
             // Rules checking
-            indexes = hilbertSystem.isProvable(formula, proof);
+            indexes = hilbert.isDeducible(formula, proof);
             if (indexes != NULL)
             {
                 proof.add(formula);

@@ -1,9 +1,9 @@
 #ifndef PARSE_HPP
 #define	PARSE_HPP
 
-#include "formula.hpp"
-
 #include <istream>
+
+#include "formula.hpp"
 
 using namespace std;
 

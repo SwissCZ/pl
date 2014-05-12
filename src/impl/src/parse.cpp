@@ -1,9 +1,9 @@
-#include "parse.hpp"
-#include "parseException.hpp"
-
 #include <cstdio>
 #include <limits>
 #include <stack>
+
+#include "parse.hpp"
+#include "parseException.hpp"
 
 using namespace std;
 
@@ -27,7 +27,7 @@ Formula * parsePrefix(istream & input)
     int position = 1;
     bool run = true;
 
-    stack<Operator *> operatorStack;
+    stack<Composite *> operatorStack;
     Formula * temporary = NULL;
 
     while (run)
@@ -68,7 +68,7 @@ Formula * parsePrefix(istream & input)
 
                     // While all operator stack top's operands have been set.
                     while (!operatorStack.empty() &&
-                           operatorStack.top()->append(temporary))
+                           operatorStack.top()->setFirst(temporary))
                     {
                         temporary = operatorStack.top();
                         operatorStack.pop();
@@ -94,11 +94,11 @@ Formula * parsePrefix(istream & input)
                 if (!operatorStack.empty())
                 {
                     // Push this to the operator stack.
-                    operatorStack.push(new UnaryOperator(buffer));
+                    operatorStack.push(new Unary(buffer));
                 } else if (position == 1)
                 {
                     // Initial operator case.
-                    operatorStack.push(new UnaryOperator(buffer));
+                    operatorStack.push(new Unary(buffer));
                 } else
                 {
                     // No more operands are needed.
@@ -119,11 +119,11 @@ Formula * parsePrefix(istream & input)
                 if (!operatorStack.empty())
                 {
                     // Push this to the operator stack.
-                    operatorStack.push(new BinaryOperator(buffer));
+                    operatorStack.push(new Binary(buffer));
                 } else if (position == 1)
                 {
                     // Initial operator case.
-                    operatorStack.push(new BinaryOperator(buffer));
+                    operatorStack.push(new Binary(buffer));
                 } else
                 {
                     // No more operands are needed.
@@ -199,7 +199,7 @@ Formula * parseInfix(istream & input)
     bool run = true;
 
     stack<Formula *> formulaStack;
-    stack<Operator *> operatorStack;
+    stack<Composite *> operatorStack;
     stack<int> stateStack;
     Formula * temporary;
 
@@ -269,7 +269,7 @@ Formula * parseInfix(istream & input)
                     // Close recent unary operators.
                     do
                     {
-                        operatorStack.top()->append(temporary);
+                        operatorStack.top()->setFirst(temporary);
                         temporary = operatorStack.top();
                         operatorStack.pop();
                         stateStack.pop();
@@ -322,7 +322,7 @@ Formula * parseInfix(istream & input)
                 {
                     // Push this to the operator stack.
                     stateStack.push(UNARY);
-                    operatorStack.push(new UnaryOperator(buffer));
+                    operatorStack.push(new Unary(buffer));
                 } else
                 {
                     // Unexpected element position.
@@ -380,7 +380,7 @@ Formula * parseInfix(istream & input)
                 {
                     // Between operands case.
                     stateStack.top() = BINARY;
-                    operatorStack.push(new BinaryOperator(buffer));
+                    operatorStack.push(new Binary(buffer));
                 } else
                 {
                     // Unexpected element position.
@@ -468,14 +468,14 @@ Formula * parseInfix(istream & input)
                     {
                         temporary = formulaStack.top();
                         formulaStack.pop();
-                    } while (!operatorStack.top()->insert(temporary));
+                    } while (!operatorStack.top()->setLast(temporary));
                     formulaStack.push(operatorStack.top());
                     operatorStack.pop();
 
                     // Close recent unary operators.
                     while (stateStack.size() && stateStack.top() == UNARY)
                     {
-                        operatorStack.top()->append(formulaStack.top());
+                        operatorStack.top()->setFirst(formulaStack.top());
                         formulaStack.pop();
                         formulaStack.push(operatorStack.top());
                         operatorStack.pop();
@@ -587,7 +587,7 @@ Formula * parsePostfix(istream & input)
     bool run = true;
 
     stack<Formula *> formulaStack;
-    Operator * temporary;
+    Composite * temporary;
 
     while (run)
     {
@@ -626,8 +626,8 @@ Formula * parsePostfix(istream & input)
                 if (!formulaStack.empty())
                 {
                     // Stack operand is available.
-                    temporary = new UnaryOperator(buffer);
-                    temporary->insert(formulaStack.top());
+                    temporary = new Unary(buffer);
+                    temporary->setLast(formulaStack.top());
                     formulaStack.pop();
                     formulaStack.push(temporary);
                 } else
@@ -649,10 +649,10 @@ Formula * parsePostfix(istream & input)
                 if (formulaStack.size() > 1)
                 {
                     // Stack operands are available.
-                    temporary = new BinaryOperator(buffer);
-                    temporary->insert(formulaStack.top());
+                    temporary = new Binary(buffer);
+                    temporary->setLast(formulaStack.top());
                     formulaStack.pop();
-                    temporary->insert(formulaStack.top());
+                    temporary->setLast(formulaStack.top());
                     formulaStack.pop();
                     formulaStack.push(temporary);
                 } else

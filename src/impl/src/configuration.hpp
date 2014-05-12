@@ -1,11 +1,11 @@
 #ifndef CONFIGURATION_HPP
 #define	CONFIGURATION_HPP
 
-#include "formula.hpp"
-#include "parse.hpp"
-
 #include <fstream>
 #include <iostream>
+
+#include "formula.hpp"
+#include "parse.hpp"
 
 using namespace std;
 

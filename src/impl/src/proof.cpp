@@ -1,5 +1,7 @@
 #include "proof.hpp"
 
+using namespace std;
+
 Proof::~Proof()
 {
     for (Formula * formula : formulas)

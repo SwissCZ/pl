@@ -1,8 +1,8 @@
+#include <unistd.h>
+
 #include "configuration.hpp"
 #include "target.hpp"
 #include "syntaxException.hpp"
-
-#include <unistd.h>
 
 using namespace std;
 

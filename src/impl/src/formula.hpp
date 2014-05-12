@@ -20,7 +20,7 @@ enum Language
 
 class Formula;
 
-typedef map<Language, string> Dictionary; ///< Output language dictionary.
+typedef map<Language, string> Dictionary; ///< Output dictionary.
 typedef map<char, Formula *> Substitutions; ///< Formula substitutions.
 
 //! Propositional formula.
@@ -31,7 +31,7 @@ typedef map<char, Formula *> Substitutions; ///< Formula substitutions.
 class Formula
 {
 protected:
-    static const map<char, Dictionary> dictionary; ///< Output language dictionary.
+    static const map<char, Dictionary> dictionary; ///< Output dictionary.
     char character; ///< Character representation.
 public:
     Formula(char);
@@ -71,7 +71,8 @@ public:
      * @param substitutions Propositions substitutions of this formula.
      * @return True if given formula matches this one.
      */
-    virtual bool matches(Formula * formula, Substitutions & substitutions) const = 0;
+    virtual bool matches(Formula * formula, Substitutions & substitutions)
+    const = 0;
 };
 
 //! Proposition.
@@ -90,70 +91,70 @@ public:
     virtual bool matches(Formula *, Substitutions &) const;
 };
 
-//! Operator.
+//! Composite formula.
 
 /**
- * Formula consisting of a connective and several formulas.
+ * Formula consisting of an operator and several formulas.
  */
-class Operator : public Formula
+class Composite : public Formula
 {
 public:
-    Operator(char);
+    Composite(char);
     /**
      * Sets given formula as the first unset operand from the left.
      * @param formula Formula to be set as an operand.
      * @return True if all operands have been set.
      */
-    virtual bool append(Formula * formula) = 0;
+    virtual bool setFirst(Formula * formula) = 0;
     /**
      * Set given formula as the last unset operand from the left.
      * @param formula Formula to be set as an operand.
      * @return True if all operands have been set.
      */
-    virtual bool insert(Formula * formula) = 0;
+    virtual bool setLast(Formula * formula) = 0;
 };
 
-//! Unary operator.
+//! Unary operator compound formula.
 
 /**
- * Operator taking one operand.
+ * Formula consisting of an unary operator and an operand.
  */
-class UnaryOperator : public Operator
+class Unary : public Composite
 {
 private:
     Formula * operand = NULL; ///< Operand
 public:
-    UnaryOperator(char);
-    virtual ~UnaryOperator();
+    Unary(char);
+    virtual ~Unary();
     virtual string printPrefix(Language) const;
     virtual string printInfix(Language) const;
     virtual string printPostfix(Language) const;
     virtual bool equals(Formula *) const;
     virtual bool matches(Formula *, Substitutions &) const;
-    virtual bool append(Formula *);
-    virtual bool insert(Formula *);
+    virtual bool setFirst(Formula *);
+    virtual bool setLast(Formula *);
 };
 
-//! Binary operator.
+//! Binary operator compound formula.
 
 /**
- * Operator taking two operands.
+ * Formula consisting of a binary operator and two operands.
  */
-class BinaryOperator : public Operator
+class Binary : public Composite
 {
 private:
     Formula * left = NULL; ///< Left operand
     Formula * right = NULL; ///< Right operand
 public:
-    BinaryOperator(char);
-    virtual ~BinaryOperator();
+    Binary(char);
+    virtual ~Binary();
     virtual string printPrefix(Language) const;
     virtual string printInfix(Language) const;
     virtual string printPostfix(Language) const;
     virtual bool equals(Formula *) const;
     virtual bool matches(Formula *, Substitutions &) const;
-    virtual bool append(Formula *);
-    virtual bool insert(Formula *);
+    virtual bool setFirst(Formula *);
+    virtual bool setLast(Formula *);
 };
 
 #endif
