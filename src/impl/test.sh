@@ -29,7 +29,7 @@ do
 	../out/pl -e -i $in -f $in\_error.txt > ../out/$in\_error\_test.txt 2>&1
 	if ! diff -q $in\_messages.txt ../out/$in\_error\_test.txt > /dev/null;
 	then
-		echo "Test 'invalid $in syntax' failed!"
+		echo "Invalid $in syntax test failed!"
 		TEST_SUCCESS=0
 	fi
 done
@@ -47,8 +47,8 @@ fi
 
 # Negative axioms test
 
-../out/pl -A -f axiom_error.txt
-if [ $? -eq 0 ];
+../out/pl -e -A -f axiom\_error.txt > ../out/axiom\_error\_test.txt 2>&1
+if ! diff -q axiom_error_messages.txt ../out/axiom\_error\_test.txt > /dev/null;
 then
 	echo "Negative axioms testing failed!"
 	TEST_SUCCESS=0

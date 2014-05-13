@@ -16,19 +16,18 @@
 .Sh DESCRIPTION
 The
 .Nm
-utility implements the rudimentary algorithms of propositional logic.
+utility implements some rudimentary algorithms of propositional logic.
 By default, it parses the standard input as propositional formulas,
 reports syntax errors, and exits.
-Other actions, as proof or axiom validation,
+Other actions, such as proof or axiom validation,
 can be specified using the options.
 .Ss Language
-The latin capitals A—Z are considered atomic propositions.
+The latin capitals A-Z are considered atomic propositions.
 This means we are reducing the possible complexity of formulas
 to 26 propositional variables, which is enough for our purposes.
 .Pp
 The following table describes how the propositional connectives
 are expressed in ASCII, words, and TeX output.
-.Pp
 .Bl -column "Connective" "ASCII" "words" "TeX"
 .It Em "Connective	ASCII	Words	TeX"
 .It Li negation Ta - Ta not Ta \eneg
@@ -69,21 +68,21 @@ Read formulas from
 .Ar file
 instead of standard input.
 .It Fl i Ar syntax
-Expect the specified input syntax. Can be 
+Expect the specified input syntax, which can be one of
 .Cm infix ,
 .Cm prefix
 or
 .Cm postfix .
 By default, infix is expected.
 .It Fl l Ar language
-Use specified output language. Can be
+Use specified output language, which can be one of
 .Cm ascii ,
 .Cm words
 or
 .Cm tex .
 By default, ascii is used.
 .It Fl o Ar syntax
-Use specified output syntax. Can be
+Use specified output syntax, which can be one of
 .Cm infix ,
 .Cm prefix
 or
@@ -108,45 +107,40 @@ option.
 .It
 Valid formula syntax.
 .It
-Each formula is an axiom (
-.Fl A
-).
+Each formula is an axiom
+.Pq Fl A .
 .It
-Valid Hilbert proof (
-.Fl P
-).
+Valid Hilbert proof
+.Pq Fl P .
 .It
-Proof was simplified (
-.Fl D
-).
+Proof got simplified
+.Pq Fl D .
 .El
 .It 1
 .Bl -item
 .It
 Invalid formula syntax.
 .It
-Non-axiom found (
-.Fl A
-).
+Non-axiom found
+.Pq Fl A .
 .It
-Invalid Hilbert proof (
+Invalid Hilbert proof
+.Po
 .Fl P
-|
+or
 .Fl D
-).
+.Pc
 .It
-Proof cannot be simplified more (
-.Fl D
-).
+No duplicities in proof to be removed
+.Pq Fl D .
 .El
 .El
 .Sh EXAMPLES
+Print an infix formula in prefix:
+.Dl echo '-(A+B)' | pl -e -o prefix
 .Pp
-Outputs \(dq-+AB\(dq:
-.Dl echo \(dq-(A+B)\(dq | pl -e -o prefix
-.Pp
-Outputs \(dqType 2 axiom.\(dq:
-.Dl echo \(dq((A>(B>C))>((A>B)>(A>C)))\(dq | pl -e -A
+Recognize an axiom:
+.Dl echo '((A>(B>C))>((A>B)>(A>C)))' | pl -e -A
 .Sh HISTORY
 Written for academic purposes in 2014.
 .Sh AUTHORS

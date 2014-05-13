@@ -12,13 +12,13 @@
 \authorFN{Švajcr}
 \authorWithDegrees{Jan Švajcr}
 \supervisor{Mgr. Jan Starý, Ph.D.}
-\acknowledgements{Děkuji svému vedoucímu práce Mgr. Janu Starému, Ph.D. za pomoc a přívětivost, své rodině za podporu a zázemí a své milované za lásku a věrnost.}
-\abstractCS{Cílem této práce je vypracovat terminálovou aplikaci implementující prostředí důkazového systému výrokové logiky. Jeho hlavní funkcionalitou je syntaktická analýza textového vstupu v podobě posloupnosti výrokových formulí a ověření, zdali je tato posloupnost korektním výrokovým důkazem. Software je implementován v jazyce C++ a je podporován prostředím UNIX. Součástí práce jsou náležitosti jako dokumentace zdrojového kódu a vytvoření uživatelské příručky v podobě standardní manuálové stránky.}
-\abstractEN{The goal of this thesis is a creation of a terminal application implementing the proof system environment of the propositional logic. It's main functionality is parsing the textual input represented as a sequence of propositional formulas and validation of this sequence as a proof. The software is implemented in the C++ language and supported by UNIX environment. This thesis also requires a code documentation and a standard manual page as a user manual.}
+\acknowledgements{Děkuji svému vedoucímu práce Mgr. Janu Starému, Ph.D. za přívětivost a pomoc, své rodině za podporu a zázemí a své milované za lásku a věrnost.}
+\abstractCS{Cílem této práce je vypracovat terminálovou aplikaci implementující prostředí důkazového systému výrokové logiky. Jeho hlavní funkcionalitou je syntaktická analýza textového vstupu v~podobě posloupnosti výrokových formulí a ověření, zdali je tato posloupnost korektním výrokovým důkazem. Software je implementován v~jazyce C++ a je podporován prostředím UNIX. Součástí práce jsou náležitosti jako dokumentace zdrojového kódu a uživatelská příručka v~podobě standardní manuálové stránky.}
+\abstractEN{The goal of this thesis is a creation of a terminal application implementing the proof system environment of the propositional logic. It's main functionality is parsing the textual input represented as a sequence of propositional formulas and validation of this sequence as a proof. The software is implemented in the C++ language and is supported by UNIX environment. This thesis also requires a code documentation and a standard manual page as a user manual.}
 \placeForDeclarationOfAuthenticity{V~Praze}
 \declarationOfAuthenticityOption{2}
-\keywordsCS{Výroková logika, Dokazatelnost, Syntaktická analýza, C++.}
-\keywordsEN{Propositional logic, Proofs, Parsing, C++.}
+\keywordsCS{Výroková logika, Důkazový systém, Parsing, C++.}
+\keywordsEN{Propositional logic, Proof system, Parsing, C++.}
 
 \begin{document}
 
@@ -33,9 +33,9 @@
 %
 
 \begin{introduction}
-Logika je formální věda zkoumající část lidského myšlení. Jejím předmětem je správné vyvozování důsledků z předpokladů, jejichž volbu, pravdivost nebo snad smysl blíže nezkoumáme. Činíme tak nejen proto, že naše vyvození je správné i v případě, kdy předpoklady správné nejsou, ale i proto, že to této disciplíně ani nepřísluší. Matematická logika toto usuzování formalizuje, čímž nás oprošťuje od psychologického aspektu. Dává tak vzniku postupům, které lze kdykoliv opakovaně aplikovat. Příkladem takového postupu je ověřování správnosti našeho usuzování, tzv. \emph{důkazu}. To je dokonce natolik mechanické, že jej můžeme svěřit strojovému zpracování\cite{sochor}. Právě tento aspekt výrokové logiky byl podnětem pro vznik této práce, která formalismus výrokové logiky přenáší do oblasti informačních technologií implementací některých principů výrokového počtu počítačovým programem. Již z názvu této práce vyplývá, že implementuje principy důkazového systému, konkrétně Hilbertova systému, na který se v této práci omezíme. Ústřední kapitolou výrokového počtu, o kterou se budeme v rámci teoretické přípravy zejména zajímat, je tedy jistě \emph{dokazatelnost}.
+Logika je formální věda zkoumající část lidského myšlení. Jejím předmětem je správné vyvozování důsledků z~předpokladů, jejichž volbu, pravdivost nebo snad smysl blíže nezkoumáme. Nečiníme tak nejen proto, že naše vyvození je správné i v~případě, kdy předpoklady správné nejsou, ale i proto, že to této disciplíně ani nepřísluší. Matematická logika toto usuzování formalizuje, čímž nás oprošťuje od psychologického aspektu. Dává tak vzniku postupům, které lze kdykoliv opakovaně aplikovat. Příkladem takového postupu je ověřování správnosti našeho usuzování, tzv. důkazu. To je dokonce natolik mechanické, že jej můžeme svěřit strojovému zpracování\cite{sochor}. Právě tento aspekt výrokové logiky byl podnětem pro vznik této práce, která formalismus výrokové logiky implementuje počítačovým programem. Již z~názvu této práce vyplývá, že implementuje principy důkazového systému, konkrétně Hilbertova systému. Ústřední kapitolou výrokového počtu, o~kterou se budeme v~rámci teoretické přípravy zejména zajímat, je tedy jistě dokazatelnost.
 
-Ještě předtím než se ponoříme do problematiky implementace, která je hlavním cílem této práce, je třeba analyzovat vlastnosti příslušné oblasti výrokového počtu. V první kapitole si proto vysvětlíme klíčové pojmy výrokové logiky, které nás budou provázet životním cyklem projektu a budou tak pro nás nutnou znalostí. Pokračovat budeme kapitolou, kterou zahájíme životní cyklus projektu vymezením požadavků na implementaci. Zde si zcela upřesníme zadání projektu na základě zadání původního. Následuje kapitola \emph{Analýza a návrh}, ve které položíme základy pro vlastní implementaci. Budeme se zde věnovat rozkladu problematiky na menší celky a návrhem jejich řešení. K programátorské realizaci projektu přejdeme v navazující kapitole zabývající se detaily samotné implementace. Ukážeme si zde zdrojový kód datových struktur a klíčových algoritmů. Už během implementace nás zabývá správná funkčnost produktu. Nelze proto vynechat kapitolu \emph{Testování}, která dokumentuje metody testování programu. Budeme se snažit pokrýt všechny rizikové oblasti, které mohou ohrozit stabilitu díla a tím i jeho hodnotu. Práci zakončíme krátkým zamyšlením nad jejím možným pokračováním. Pro potenciální zájemce o navázání zde proto prodiskutujeme její rozšířitelné stránky.
+Ještě předtím než se ponoříme do problematiky implementace, je třeba analyzovat vlastnosti příslušné oblasti výrokového počtu. V~první kapitole si proto vysvětlíme klíčové pojmy výrokové logiky, které nás budou provázet životním cyklem projektu a budou tak pro nás nutnou znalostí. Pokračovat budeme kapitolou, kterou zahájíme projekt vymezením požadavků na implementaci. Zde si zcela upřesníme zadání projektu na základě zadání původního. Následuje kapitola, ve které položíme základy pro vlastní implementaci. Budeme se zde věnovat rozkladu problémů na menší celky a návrhem jejich řešení. K~programátorské realizaci projektu přejdeme v~navazující kapitole zabývající se detaily samotné implementace. Nastíníme zde zdrojový kód datových struktur a klíčových algoritmů. Už během implementace nás zabývá správná funkčnost produktu. Nelze proto vynechat kapitolu, která se věnuje testování. Budeme se zde snažit pokrýt všechny rizikové oblasti, které mohou ohrozit stabilitu aplikace. Práci zakončíme krátkým zamyšlením nad jejím možným pokračováním. Pro potenciální zájemce o~navázání zde proto prodiskutujeme její rozšířitelné stránky.
 \end{introduction}
 
 %
@@ -44,27 +44,27 @@ Ještě předtím než se ponoříme do problematiky implementace, která je hla
 
 \chapter{Formální kontext}
 
-V úvodní kapitole se seznámíme s několika základními pojmy výrokového počtu, aby každý čtenář byl srozuměn s terminologií užitou v tomto textu a mohl na ni být později kdykoli zpětně odkázán. Tato část slouží jako teoretický základ celé práce a je zřejmé, že čtenář znalý výrokové logiky ji vynechá.
+V~úvodní kapitole se seznámíme s~několika základními pojmy výrokového počtu, aby každý čtenář byl srozuměn s~terminologií užitou v~tomto textu a mohl na ni být později kdykoli zpětně odkázán. Tato část slouží jako teoretický základ celé práce a je zřejmé, že čtenář znalý výrokové logiky ji vynechá.
 
 \section{Výrok}
 
 Nejprve zavedeme elementární pojem \emph{výrok}.
 
-Výrok je takové tvrzení, o kterém má dostatečný smysl uvažovat, zdali je pravdivé či nikoliv. Výrokům tedy přiřazujeme pravdivostní hodnotu pravda -- \emph{true} -- nebo nepravda -- \emph{false}, což nazýváme jejich \emph{pravdivostním ohodnocením}. Jednotlivé elementární výroky značíme velkými písmeny latinky: $A, B, C, \ldots$
+Výrok je takové tvrzení, o~kterém má dostatečný smysl uvažovat, zdali je pravdivé či nikoliv. Výrokům tedy přiřazujeme pravdivostní hodnotu pravda (true) nebo nepravda, (false) což nazýváme jejich \emph{pravdivostním ohodnocením}. Jednotlivé elementární výroky značíme velkými písmeny latinky: $A, B, C, \ldots$
 
 \begin{ex}
-Pro ilustraci \emph{elementárního výroku} uvažujme následující výrok $A$: \uv{Dnes je hezký den.} Je na čtenáři, aby rozhodl o pravdivosti tohoto výroku a jistě bude souhlasit, že jiný čtenář by mohl rozhodnout například opačně.
+Pro ilustraci \emph{elementárního výroku} uvažujme následující výrok $A$: \uv{Dnes je hezký den.} Je na čtenáři, aby rozhodl o~pravdivosti tohoto výroku a jistě bude souhlasit, že jiný čtenář by mohl rozhodnout například opačně.
 \end{ex}
 
-V této práci se ale pravdivostním ohodnocením výroků stejně jako jejich významem nebudeme zabývat. Zmíněná fakta o výroku slouží pouze jako součást definice a čtenář ji nemusí považovat za klíčovou.
+V~této práci se ale pravdivostním ohodnocením výroků stejně jako jejich významem nebudeme zabývat. Zmíněná fakta o~výroku slouží pouze jako součást definice a čtenář ji nemusí považovat za klíčovou.
 
 \subsection{Složený výrok}
 
-Ze základních výroků lze tvořit výroky další, tzv. \emph{složené výroky}, pomocí tzv. \emph{logických operací}. V závislosti na pravdivostním ohodnocení elementárních výroků a na typu použité logické operace přisuzujeme pravdivostní ohodnocení výrokům složeným.
+Ze základních výroků lze tvořit výroky další, tzv. \emph{složené výroky}, pomocí \emph{logických operací}. V~závislosti na pravdivostním ohodnocení elementárních výroků a na typu použité logické operace přisuzujeme pravdivostní ohodnocení výrokům složeným.
 
 \subsubsection{Logické operace}
 
-Logické operace dělíme na unární a binární podle jejich arity\footnote{Arita -- počet operandů operace potřebných k jejímu provedení.}. Symbolicky je reprezentují příslušné logické spojky následovně:
+Logické operace dělíme na unární a binární podle jejich arity\footnote{Arita -- počet operandů operace potřebných k~jejímu provedení.}. Symbolicky je reprezentují příslušné logické spojky následovně:
 
 \begin{itemize}
 	\item Unární
@@ -80,10 +80,10 @@ Logické operace dělíme na unární a binární podle jejich arity\footnote{Ar
 	\end{description}
 \end{itemize}
 
-Každá operace určuje pravdivostní hodnotu složeného výroku v závislosti na ohodnocení výroků, které pojí. Bystrý čtenář si jistě uvědomí analogii s aritmetickými operátory. Význam jednotlivých operací nebudeme definovat, protože není pro účely této práce podstatný. Jako důležité vnímejme pouze rozlišení jednotlivých operací a jejich aritu.
+Každá operace specificky určuje pravdivostní hodnotu složeného výroku v~závislosti na ohodnocení výroků, které pojí. Analogii s logickými operátory lze vidět v operátorech aritmetických. Význam uvedených operací nebudeme definovat, protože není pro účely této práce podstatný. Jako důležité vnímejme pouze rozlišení jednotlivých operací a jejich aritu.
 
 \begin{ex}
-Pro ilustraci \emph{složeného výroku} uvažujme následující výrok: $B = \neg A$. V souvislosti s předchozím příkladem elementárního výroku prohlásíme, že se jedná o výrok s opačnou pravdivostní hodnotou než má výrok $A$. Do přirozeného jazyka bychom jej tedy přeložili jako \uv{Dnes není hezký den} nebo \uv{Není pravda, že dnes je hezký den.}. Druhá varianta překladu více koresponduje se syntaktickým vnímáním tohoto složeného výroku.
+Pro ilustraci \emph{složeného výroku} uvažujme následující výrok: $B = \neg A$. V~souvislosti s~předchozím příkladem elementárního výroku prohlásíme, že se jedná o~výrok s~opačnou pravdivostní hodnotou než má výrok $A$. Do přirozeného jazyka bychom jej tedy přeložili jako \uv{Dnes není hezký den} nebo \uv{Není pravda, že dnes je hezký den.}. Druhá varianta překladu více koresponduje se syntaktickým vnímáním tohoto složeného výroku.
 \end{ex}
 
 \section{Formule}
@@ -91,11 +91,11 @@ Pro ilustraci \emph{složeného výroku} uvažujme následující výrok: $B = \
 Ústředním pojmem pro tuto práci je \emph{formule}.
 
 \begin{df}
-V matematické logice obecně definujeme formuli tak, že:
+V~matematické logice obecně definujeme formuli tak, že:
 
 \begin{enumerate}
 	\item Každá elementární formule je formulí.
-	\item Vznikne-li $\alpha$ unární logickou operací z formule $\beta$ nebo binární logickou operací z formulí $\beta$ a $\gamma$ , je $\alpha$ také formulí.
+	\item Vznikne-li $\alpha$ unární logickou operací z~formule $\beta$ nebo binární logickou operací z~formulí $\beta$ a $\gamma$ , je $\alpha$ také formulí.
 	\item Každou formuli dostaneme postupnou aplikací předchozích pravidel\cite{sochor}.
 \end{enumerate}
 \end{df}
@@ -108,7 +108,7 @@ Jednotlivé formule značíme malými písmeny řecké abecedy: $\alpha , \beta 
 		\item $\alpha = A$
 		\item $\beta = \neg (A \vee B)$
 	\end{itemize}
-	Je zřejmé, že formule $\alpha$ je elementární formulí, kdežto formule $\beta$ je složená z několika formulí. Pro názornost popíšeme skladbu formule $\beta$ na základě předchozí definice formule.
+	Je zřejmé, že formule $\alpha$ je elementární formulí, kdežto formule $\beta$ je složená z~několika formulí. Pro názornost popíšeme skladbu formule $\beta$ na základě předchozí definice formule.
 	\begin{enumerate}
 		\item Uvažujme elementární výroky $A, B$.
 		\item Výroky $A, B$ pojí operace disjunkce do podoby složeného výroku $A \vee B$.
@@ -131,11 +131,11 @@ Všechny tyto zápisy názorně předvedeme na konkrétním tvaru formule násle
 \end{description}
 \end{ex}
 
-Všimněme si, že v případě prefixní a postfixní notace je přednost operací určena jednoznačně narozdíl od notace infixní, která striktně vyžaduje užití závorek. Je třeba brát na vědomí, že s rostoucí složitostí formule je pro nás čím dál obtížnější udržet pozornost nad její strukturou. Protože infixní zápis je našemu vnímání nejpřirozenější, budeme jej v této práci používat i nadále.
+Všimněme si, že v~případě prefixní a postfixní notace je přednost operací určena jednoznačně na rozdíl od notace infixní, která striktně vyžaduje užití závorek. Je třeba brát na vědomí, že s~rostoucí složitostí formule je pro nás čím dál obtížnější udržet pozornost nad její strukturou. Protože infixní zápis je našemu vnímání nejpřirozenější, budeme jej v~této práci používat i nadále.
 
 \section{Důkazový systém}
 
-\emph{Důkazový systém} je aparát výrokové logiky, který rozhoduje o dokazatelnosti libovolné výrokové formule. Každý takový systém je tvořen dvěma důležitými množinami:
+\emph{Důkazový systém} je aparát výrokové logiky, který rozhoduje o~dokazatelnosti libovolné výrokové formule. Každý takový systém je tvořen dvěma důležitými množinami:
 
 \begin{itemize}
 	\item Množinou axiomů
@@ -144,13 +144,13 @@ Všimněme si, že v případě prefixní a postfixní notace je přednost opera
 
 Axiom je schema definující určitý tvar výrokových formulí. Můžeme si ho představit jako výrokovou formuli, za jejíž elementární členy lze dosazovat již konkrétní výrokové formule. Každá formule vyhovující tvaru popsaného axiomem nazýváme instancí tohoto axiomu. Instancí axiomů je tedy nekonečně mnoho stejně jako výrokových formulí.
 
-Odvozovací pravidlo je předpis, který definuje způsob, jakým lze z výrokových formulí dokázat formule další.
+Odvozovací pravidlo je předpis, který definuje způsob, jakým lze z~výrokových formulí dokázat formule další.
 
 Tyto náležitosti nyní objasníme na konkrétním důkazovém systému.
 
 \subsection{Hilbertův systém}
 
-Hilbertův axiomatický systém je formální důkazový systém, který se za účelem úspory tvaru formulí omezuje pouze na dvě logické spojky -- negaci a implikaci. Protože tyto dvě spojky tvoří minimální universální množinu, touto redukcí neomezujeme vyjadřovací možnosti jazyka, tedy všechny ostatní spojky můžeme těmito případně adekvátně vyjádřit\cite{logika}. Jakým způsobem lze takto vzájemně spojky převádět je však záležitost, kterou zkoumat nebudeme.
+Hilbertův axiomatický systém je formální důkazový systém, který se za účelem úspory tvaru formulí omezuje pouze na dvě logické spojky: negaci a implikaci. Protože tyto dvě spojky tvoří minimální universální množinu, touto redukcí neomezujeme vyjadřovací možnosti jazyka, tedy všechny ostatní spojky můžeme těmito případně adekvátně vyjádřit\cite{logika}. Jakým způsobem lze takto vzájemně spojky převádět je však záležitost, kterou také zkoumat nebudeme.
 
 Množina axiomů obsahuje tyto prvky:
 
@@ -160,21 +160,21 @@ Množina axiomů obsahuje tyto prvky:
 	\item[a3] $(( \neg \varphi \Rightarrow \neg \psi ) \Rightarrow (( \neg \varphi \Rightarrow \psi ) \Rightarrow \varphi ))$
 \end{description}
 
-Množina odvozovacích pravidel obsahuje jediný prvek -- tzv. pravidlo \emph{modus ponens}, které zavedeme následovně: $\varphi$ lze odvodit, platí-li $\psi$ a zároveň $\psi \Rightarrow \varphi$.
+Množina odvozovacích pravidel obsahuje jediný prvek, tzv. pravidlo \emph{modus ponens}, které zavedeme následovně: $\varphi$ lze odvodit, platí-li $\psi$ a zároveň $\psi \Rightarrow \varphi$.
 
-V této práci se nadále budeme zabývat pouze tímto axiomatickým systémem.
+V~této práci se nadále budeme zabývat pouze tímto axiomatickým systémem.
 
 \subsection{Důkaz}
 
 \begin{df}
-Buď $\varphi$ výroková formule. Řekneme, že konečná posloupnost výrokových formulí $\varphi , \ldots, \varphi$ je \emph{důkazem} formule $\varphi$ ve výrokové logice, pokud $\varphi_n$ je formule $\varphi$, a každá formule $\varphi_i$ z této posloupnosti je buďto instancí některého axiomu, nebo je z některých předchozích $\varphi_j, \varphi_k$, kde $j, k < i$, odvozena pravidlem modus ponens. Pokud existuje důkaz formule $\varphi$, řekneme, že $\varphi$ je dokazatelná ve výrokové logice, a píšeme $\vdash \varphi$.
+Buď $\varphi$ výroková formule. Řekneme, že konečná posloupnost výrokových formulí $\varphi , \ldots, \varphi$ je \emph{důkazem} formule $\varphi$ ve výrokové logice, pokud $\varphi_n$ je formule $\varphi$, a každá formule $\varphi_i$ z~této posloupnosti je buďto instancí některého axiomu, nebo je z~některých předchozích $\varphi_j, \varphi_k$, kde $j, k < i$, odvozena pravidlem modus ponens. Pokud existuje důkaz formule $\varphi$, řekneme, že $\varphi$ je dokazatelná ve výrokové logice, a píšeme $\vdash \varphi$\cite{logika}.
 \end{df}
 
-Je zřejmé, že každý důkaz musí začínat axiomem, tedy triviálně každá instance axiomu je dokazatelnou formulí. Pro nás klíčová je skutečnost, že důkaz vychází z konečně mnoha daných předpokladů, postupuje dle konečně mnoha daných pravidel a je v každém kroku ověřitelný, což lze provést i mechanicky\cite{logika}. Tato fakta však nenapomáhají důkaz dané formule nalézt a není to ani předmětem našeho zájmu, protože tato problematika již přesahuje rozsah této práce.
+Je zřejmé, že každý důkaz musí začínat axiomem, tedy triviálně každá instance axiomu je dokazatelnou formulí. Pro nás klíčová je skutečnost, že důkaz vychází z~konečně mnoha daných předpokladů, postupuje dle konečně mnoha daných pravidel a je v~každém kroku ověřitelný, což lze provést i mechanicky\cite{logika}. Tato fakta však nenapomáhají důkaz dané formule nalézt a není to ani předmětem našeho zájmu, protože tato problematika již přesahuje rozsah této práce.
 
 \begin{ex}
 \label{ex:proof}
-	Pro ilustraci důkazu předvedeme důkaz formule $\varphi \Rightarrow \varphi$. V kontextu této formule si připomeňme, že formalismus logiky nás oprošťuje od psychologického aspektu, tedy banalitu tohoto důkazu se snažíme nevnímat.
+	Pro ilustraci důkazu předvedeme důkaz formule $\varphi \Rightarrow \varphi$. V~kontextu této formule si připomeňme, že formalismus logiky nás oprošťuje od psychologického aspektu, tedy banalitu tohoto důkazu se snažíme nevnímat.
 	
 	\begin{enumerate}
 		\item $(\varphi \Rightarrow ((\varphi \Rightarrow \varphi) \Rightarrow \varphi))$
@@ -185,25 +185,25 @@ Je zřejmé, že každý důkaz musí začínat axiomem, tedy triviálně každ�
 	\end{enumerate}
 \end{ex}
 
-\subsubsection{Důkaz z předpokladů}
+\subsubsection{Důkaz z~předpokladů}
 \label{sec:dzp}
 
-Důkaz lze zobecnit na tzv. \emph{důkaz z předpokladů} doplněním stávající definice. Navíc zavedeme množinu formulí, ze kterých v rámci důkazu vycházíme -- tzv. \emph{předpoklady}. Toto zobecnění spočívá v tom, že kromě axiomů jako členy důkazu podobně připouštíme i prvky množiny předpokladů. Předpoklad je tedy formule, kterou, ačkoliv není axiomem, v rámci důkazu považujeme za dokazatelnou.
+Důkaz lze zobecnit na tzv. \emph{důkaz z~předpokladů} doplněním stávající definice. Navíc zavedeme množinu formulí, ze kterých v~rámci důkazu vycházíme, tzv. \emph{předpoklady}. Toto zobecnění spočívá v~tom, že kromě axiomů jako členy důkazu podobně připouštíme i prvky množiny předpokladů\cite{sochor}. Předpoklad je tedy formule, kterou, ačkoliv není axiomem, v~rámci důkazu považujeme za dokazatelnou.
 
-Tento obecný typ důkazu tato práce neimplementuje. Zmínka o něm je zde pouze pro účely pozdější diskuze nad rozšířitelností této práce.
+Tento obecný typ důkazu tato práce neimplementuje. Zmínka o~něm je zde pouze pro účely pozdější diskuze nad rozšířitelností této práce.
 
 \subsubsection{Optimalizace důkazů}
 
-V rámci pozdějšího návrhu software je nyní nutné zamyslet se, jakým způsobem lze důkazy v Hilbertově axiomatickém systému optimalizovat.
+V~rámci pozdějšího návrhu software je nyní nutné zamyslet se, jakým způsobem lze důkazy v~Hilbertově systému optimalizovat.
 
 \begin{lm}
-Buď $\varphi_1, \ldots, \varphi_n$ posloupnost formulí tvořící Hilbertovský důkaz. Pak každá vybraná posloupnost, která vznikne z $\varphi_1, \ldots, \varphi_n$ vynecháním druhého a každého dalšího výskytu nějaké zvolené formule $\varphi_i$, je opět důkazem. Tedy i po vynechání všech duplicit zůstává daná posloupnost důkazem.
+Buď $\varphi_1, \ldots, \varphi_n$ posloupnost formulí tvořící Hilbertovský důkaz. Pak každá vybraná posloupnost, která vznikne z~$\varphi_1, \ldots, \varphi_n$ vynecháním druhého a každého dalšího výskytu nějaké zvolené formule $\varphi_i$, je opět důkazem. Tedy i po vynechání všech duplicit zůstává daná posloupnost důkazem.
 \end{lm}
 
-Důkaz tohoto tvrzení je netriviální pouze v případě použití modus ponens ve výrokovém důkazu. Je totiž zřejmé, že důkaz zůstane stále důkazem, vynecháme-li všechny duplicitní výskyty toho kterého axiomu.
+Důkaz tohoto tvrzení je netriviální pouze v~případě použití modus ponens ve výrokovém důkazu. Je totiž zřejmé, že důkaz zůstane stále důkazem, vynecháme-li všechny duplicitní výskyty toho kterého axiomu.
 
 \begin{pf}
-Pokud nějaká formule $\varphi_i$ vyplývá z nějakých předchozích formulí $\varphi_j$ a $\varphi_j \to \varphi_i$ pomocí modus ponens, pak stejným způsobem vyplývá i z každých jejich předchozích (speciálně z prvních) výskytů.
+Pokud nějaká formule $\varphi_i$ vyplývá z~nějakých předchozích formulí $\varphi_j$ a $\varphi_j \to \varphi_i$ pomocí modus ponens, pak stejným způsobem vyplývá i z~každých jejich předchozích (speciálně z~prvních) výskytů.
 \end{pf}
 
 Tento obrat můžeme považovat za zárodek optimalizace důkazů.
@@ -214,37 +214,37 @@ Tento obrat můžeme považovat za zárodek optimalizace důkazů.
 
 \chapter{Vymezení požadavků}
 
-Na základě oficiálního zadání této práce, kterým začíná tento text, vymezíme v této kapitole požadavky na implementovaný software. Tyto požadavky nám později pomohou analyzovat všechny potřebné součásti systému. Požadavky kategorizujeme na \emph{funkční} a \emph{nefunkční}.
+Na základě oficiálního zadání této práce, kterým začíná tento text, vymezíme v~této kapitole požadavky na implementovaný software. Tyto požadavky nám později pomohou analyzovat všechny potřebné součásti systému. Požadavky kategorizujeme na \emph{funkční} a \emph{nefunkční}.
 
-Funkční požadavky definují cíle, kterých má projekt dosáhnout. V našem případě se jedná o funkcionalitu námi implementovaného software. Na základě funkčních požadavků lze navrhnout metody testování a ověřit úspěšné splnění zadání na konci projektu.
+Funkční požadavky definují cíle, kterých má projekt dosáhnout. V~našem případě se jedná o~funkcionalitu námi implementovaného software. Na základě funkčních požadavků lze navrhnout metody testování a ověřit úspěšné splnění zadání na konci projektu.
 
-Mezi nefunkční požadavky řadíme náležitosti, které popisují způsob, jakým máme provést implementaci. Některé z nich jsou součástí zadání, některé si pro úplnost zadání stanovíme sami. Nefunkční požadavky jsou omezení, ze kterých vycházíme, a nejsou předmětem testování.
+Mezi nefunkční požadavky řadíme náležitosti, které popisují způsob, jakým máme provést implementaci. Některé z~nich jsou součástí zadání, některé si pro úplnost zadání stanovíme sami. Nefunkční požadavky jsou omezení, ze kterých vycházíme, a nejsou předmětem testování.
 
 \section{Funkční požadavky}
 
-Úkolem je vypracovat aplikaci \emph{pl}\footnote{pl -- propositional logic}, která dokáže rozhodnout, zdali je daná posloupnost výrokových formulí korektním formálním důkazem Hilbertova axiomatického systému, popřípadě dokáže tento důkaz optimalizovat. Elementární funkcionalitou programu je syntaktická analýza vstupních formulí a jejich případný výpis ve zvoleném jazyce a syntaxi. Nekorektní vstup program správně detekuje a případně jeho nekorektnost podrobně hlásí. Zdrojový kód programu je třeba náležitě zdokumentovat. K aplikaci je třeba vytvořit uživatelskou příručku.
+Úkolem je vypracovat aplikaci \emph{pl}\footnote{pl -- propositional logic}, která dokáže rozhodnout, zdali je daná posloupnost výrokových formulí korektním formálním důkazem Hilbertova axiomatického systému, popřípadě dokáže tento důkaz optimalizovat. Elementární funkcionalitou programu je syntaktická analýza vstupních formulí a jejich případný výpis ve zvoleném alternativním jazyce a syntaxi. Nekorektní vstup program správně detekuje a případně jeho nekorektnost podrobně hlásí. Zdrojový kód programu je třeba náležitě zdokumentovat. K~aplikaci je třeba vytvořit uživatelskou příručku.
 
 \section{Nefunkční požadavky}
 
 \subsection{Aplikace}
 
-Aplikace bude podporována na platformách systému UNIX a implementována v jazyce C. Její obsluha bude možná přes systémový terminál, tedy nebude disponovat grafickým uživatelským rozhraním. Veškerá funkcionalita aplikace bude dostupná standardně pomocí přepínačů. Vstupní data budou aplikaci předávána buď pomocí standardního vstupu, anebo textovým souborem. Návratová hodnota programu bude signalizovat úspěšnost výsledku.
+Aplikace bude podporována na platformách systému UNIX a implementována v~jazyce C. Její obsluha bude možná přes systémový terminál, tedy nebude disponovat grafickým uživatelským rozhraním. Veškerá funkcionalita aplikace bude dostupná standardně pomocí přepínačů. Vstupní data budou aplikaci předávána buď pomocí standardního vstupu, anebo textovým souborem. Návratová hodnota programu bude signalizovat úspěšnost výsledku.
 
 \subsection{Vstup}
 
-Program čte textový ASCII vstup v podobě posloupnosti řádek obsahujících výrokové formule zapsané ve stanoveném jazyce. Podporován je prefixní, infixní i postfixní zápis formulí. Vstup nevyhovující stanovené formě je považován za nekorektní a jeho použití způsobí neúspěšné vykonání požadavku.
+Program čte textový ASCII vstup v~podobě posloupnosti řádek obsahujících výrokové formule zapsané ve stanoveném jazyce. Podporován je prefixní, infixní i postfixní zápis formulí. Vstup nevyhovující stanovené formě je považován za nekorektní a jeho použití způsobí neúspěšné vykonání aplikace.
 
 \subsection{Výstup}
 
-Forma výstupu závisí na zvolené funkcionalitě, ke které je program nakonfigurován při spuštění. Podporován je výpis formulí v prefixní, infixní i postfixní notaci. Výstupní jazyk formulí může mít podobu ASCII znaků, anglických slov nebo jazyka LaTeX. Výstupem programu může být v určitých případech chybové hlášení.
+Forma výstupu závisí na zvolené funkcionalitě, ke které je program nakonfigurován při spuštění. Podporován je výpis formulí v~prefixní, infixní i postfixní notaci. Výstupní jazyk formulí může mít podobu ASCII znaků, anglických slov nebo jazyka LaTeX. Výstupem programu může být v~určitých případech chybové hlášení.
 
 \subsection{Dokumentace}
 
-Programátorská dokumentace bude dostupná v podobě HTML stránek za použití nástroje \emph{Doxygen}, který takovou dokumentaci generuje. Zdrojový kód programu proto zdokumentujeme komentáři speciálního stylu, který tento nástroj vyžaduje.
+Programátorská dokumentace bude dostupná v~podobě HTML stránek za použití nástroje \emph{Doxygen}, který takovou dokumentaci generuje. Zdrojový kód programu proto zdokumentujeme komentáři speciálního stylu, který tento nástroj vyžaduje.
 
 \subsection{Příručka}
 
-Uživatelskou příručku realizujeme v podobě standardní manuálové stránky operačních systémů UNIX. Tato stránka bude přístupná standardně přes příkaz \texttt{man pl}.
+Uživatelskou příručku realizujeme v~podobě standardní manuálové stránky operačních systémů UNIX. Tato stránka bude přístupná standardně přes příkaz \texttt{man pl} po instalaci aplikace do systému.
 
 %
 %
@@ -252,24 +252,102 @@ Uživatelskou příručku realizujeme v podobě standardní manuálové stránky
 
 \chapter{Analýza a návrh}
 
+Před samotným návrhem je potřeba vybrat si platformu systému UNIX. My zvolíme platformu Linux, konkrétně distribuci \emph{Ubuntu 14.04 Trusty Tahr}.
+
 \section{Aplikace}
 
 \subsection{Sestavení}
 
-K sestavení aplikace využijeme nástroj \emph{make}. Proces sestavení pak lze řídit konfiguračním souborem \texttt{Makefile}. Tento soubor má předepsanou strukturu a obsahuje definice pravidel, tzv. \emph{cílů}. Jednotlivé cíle mají svůj význam a jsou definovány názvem, závislostmi na ostatních cílech a posloupností příkazů, které mají být provedeny při volání cíle. Cíle rozdělíme do dvou kategorií -- hlavní a podpůrné. Hlavní cíle jsou určeny uživateli aplikace. Podpůrné cíle jsou využívány hlavními a slouží k rozkladu složitějšího cíle na jednodušší celky. Protože nástroj make má programátorovi proces sestavení aplikace usnadnit, nakonfigurujeme proces kompilace tak, abychom nemuseli zasahovat do struktury souboru Makefile po každé provedené změně zdrojových souborů, například po přejmenování souboru nebo změně závislostí na hlavičkových souborech. Make tedy bude aplikaci sestavovat dynamicky podle aktuální podoby zdrojové formy.
+K~sestavení aplikace využijeme nástroj \emph{GNU make}\cite{gmake}. Proces sestavení lze nyní řídit konfiguračním souborem \emph{Makefile}. Tento soubor má předepsanou strukturu a obsahuje definice pravidel, tzv. \emph{cílů}. Jednotlivé cíle mají svůj význam a jsou definovány jménem, závislostmi na ostatních cílech a posloupností příkazů, které mají být provedeny při volání cíle. Cíle rozdělíme do dvou kategorií: hlavní a podpůrné. Hlavní cíle jsou určeny uživateli aplikace. Podpůrné cíle jsou využívány hlavními a slouží k~rozkladu složitějšího úkonu na jednodušší kroky. Protože nástroj \texttt{make} má programátorovi proces sestavení aplikace usnadnit, nakonfigurujeme proces kompilace tak, abychom nemuseli zasahovat do struktury souboru \texttt{Makefile} po každé provedené změně zdrojových souborů, například po přejmenování souboru nebo změně závislostí na hlavičkových souborech. Příkaz \texttt{make} tedy bude aplikaci sestavovat dynamicky podle aktuální podoby zdrojové formy.
 
-\subsubsection{Návrh}
-
-Náš Makefile bude disponovat těmito hlavními cíly:
+Náš \texttt{Makefile} bude disponovat těmito hlavními cíly:
 
 \begin{description}
 	\item[build] Kompilace zdrojových souborů a sestavení aplikace.
 	\item[clean] Vyčištění adresáře odstraněním všech výstupů.
-	\item[doc] Vygenerování dokumentace Doxygen.
+	\item[doc] Generování Doxygen dokumentace.
 	\item[test] Vyvolání aplikačních testů.
 	\item[install] Instalace aplikace do systému.
 	\item[uninstall] Odinstalace aplikace ze systému.
 \end{description}
+
+\subsection{Vstup}
+
+Textový vstup předaný aplikaci \texttt{pl} má jednoduchý formát. Skládá se z posloupnosti formulí z nichž každá (včetně poslední) je zakončená řádkovým zalomením, znakem \texttt{\\n}. Zápis formulí užívá znaků \texttt{A-Z}\footnote{Vstup je tímto omezen na 26 různých výroků, což pro naše účely plně postačuje.} pro elementární výroky, \texttt{-.+>=} pro logické operátory (negace, konjunkce, disjunkce, implikace, ekvivalence), případně symbolů \texttt{()} pro infixní syntaxi.
+
+\subsection{Výstup}
+
+Kromě výstupní syntaxe je možné zvolit i jeden ze tří výstupních jazyků. Jak jsou jednotlivé operátory zastoupeny v těchto jazycích znázorňuje tabulka \ref{tab:spojky}.
+
+\begin{table}
+\centering
+\caption{Výstupní jazyky spojek}
+\label{tab:spojky}
+\begin{tabular}{|c|c|c|c|}\hline
+	ASCII & Slovní & \LaTeX \tabularnewline \hline \hline
+	\verb|-| & \verb|not| & \verb|\neg| \tabularnewline \hline
+	\verb|.| & \verb|and| & \verb|\wedge| \tabularnewline \hline
+	\verb|+| & \verb|or| & \verb|\vee| \tabularnewline \hline
+	\verb|>| & \verb|implies| & \verb|\Rightarrow| \tabularnewline \hline
+	\verb|=| & \verb|iff| & \verb|\Leftrightarrow| \tabularnewline \hline
+\end{tabular}
+\end{table}
+
+\subsection{Přepínače}
+
+Přepínače, které aplikace \texttt{pl} podporuje mají následující význam:
+
+\begin{description}
+	\item[A] Ověř, zdali formule jsou Hilbertovské axiomy.
+	\item[D] Optimalizuj Hilbertovský důkaz.
+	\item[e] Povol hlášení na výstup.
+	\item[f] Čti z daného souboru.
+	\item[i] Očekávej danou vstupní syntaxi.
+	\item[l] Použij daný výstupní jazyk.
+	\item[o] Použij danou výstupní syntaxi.
+	\item[P] Ověř, zdali posloupnost formulí je korektní Hilbertovský důkaz.
+	\item[s] Ukonči aplikaci při první nalezené chybě.
+\end{description}
+
+Tímto výčtem jsme stanovili veškerou funkcionalitu aplikace. Ještě dodáme, že aplikace implicitně neprodukuje žádný výstup, čte ze standardního vstupu, očekává infixní vstupní syntaxi, pro výstup používá ASCII jazyk a infixní syntaxi a neukončuje se při první nalezené chybě.
+
+\section{Manuálová stránka}
+
+Manuálové stránky systému UNIX lze psát ve speciálním značkovacím jazyce. Takový jazyk je ve skutečnosti balíček maker pro jazyk \emph{troff}\cite{troff}. Troff pochází ze 70. let a podobně jako například \LaTeX slouží k~sazbě textu. Zpracovává jej textový procesor \texttt{troff}, který podporuje právě zmíněné balíčky maker pro tento jazyk. Jednotlivá makra podobně jako například HTML formátují daný obsah do požadované podoby. Běžné manuálové stránky užívají balíček maker \texttt{man}. My však zvolíme sofistikovanější balíček \texttt{mdoc}\cite{mdoc}, který narozdíl od \texttt{man} disponuje sémanticky koncipovanými makry. Záznam o~tomto balíčku nalezneme v~sekci \emph{MDOC(7)}.
+
+Aby manuálová stránka byla dostupná příkazem \texttt{man pl}, musí splňovat určité náležitosti. Název souboru manuálové stránky se skládá z~názvu dokumentované aplikace, tečky a čísla příslušné manuálové sekce, v~našem případě tedy \texttt{pl.1}. Textový soubor manuálové stránky je zabalen v archivu \texttt{.gz} a nachází se v~umístění, ve kterém příkaz \texttt{man} implicitně hledá manuálové stránky. Tato umístění jsou nastavena v~konfiguračním souboru \texttt{/etc/manpath.config} a lze je vypsat příkazem \texttt{manpath}. Archiv manuálové stránky je ještě nutné umístit do podadresáře příslušícího dané manuálové sekci, v~našem případě do adresáře \texttt{man1}. Absolutní cesta k~naší manuálové stránce tedy může vypadat následovně: \texttt{/usr/local/man/man1/pl.1.gz}. Nakonec ještě souboru archivu nastavíme příslušné atributy dle vzoru systémových manuálových stránek, vlastník a skupina: root, práva: 0644.
+
+\subsection{Návrh}
+
+Manuálové stránky mají standardní strukturu, kterou uživatel očekává a my se ji vynasnažíme dodržet. Text příručky napíšeme v~angličtině a rozdělíme jej do příslušných standardních sekcí následovně:
+
+\begin{description}
+	\item[NAME]  Název a krátký popis aplikace.
+	\item[SYNOPSIS] Výčet podporovaných přepínačů.
+	\item[DESCRIPTION] Podrobný popis aplikace.
+	\begin{description}
+		\item[Language] Popis vstupního jazyka.
+		\item[Input] Popis formy vstupu.
+		\item[Output] Popis formy výstupu.
+		\item[Options] Vysvětlení významu přepínačů.
+	\end{description}
+	\item[EXIT STATUS] Vysvětlení významu návratových hodnot.
+	\item[EXAMPLES] Praktické příklady použití.
+	\item[HISTORY] Historický kontext aplikace.
+	\item[AUTHOR] Informace o~autorovi.
+\end{description}
+
+%
+%
+%
+
+\chapter{Implementace}
+
+Při implementaci se držíme několika stanovených konvencí, které nám pomáhají udržet zdrojový kód konzistentním. Jednou ze zásad vyplývající ze zadání je komentování zdrojového kódu komentáři stylu Doxygen. Tyto speciální komentáře zapisujeme výhradně do hlavičkových souborů.
+
+\section{Aplikace}
+
+\subsection{Sestavení}
 
 Podpůrné cíle odlišíme od hlavních tečkou, kterou název podpůrného cíle bude začínat:
 
@@ -279,59 +357,17 @@ Podpůrné cíle odlišíme od hlavních tečkou, kterou název podpůrného cí
 	\item[.test] Spuštění aplikačních testů.
 \end{description}
 
-Speciálním podpůrným cílem je navíc pravidlo definující způsob kompilace jednotlivých zdrojových souborů. Toto pravidlo je v procesu kompilace klíčovým, protože dynamicky vyvolává kompilaci souborů s příponou \texttt{.cpp} a my tak nemusíme pro každý zdrojový soubor \texttt{.cpp} zvlášť definovat pravidlo pro jeho kompilaci.
+Speciálním podpůrným cílem je navíc pravidlo definující způsob kompilace jednotlivých zdrojových souborů. Toto pravidlo je v~procesu kompilace klíčovým, protože dynamicky vyvolává kompilaci souborů s~příponou \texttt{.cpp} a my tak nemusíme pro každý zdrojový soubor \texttt{.cpp} zvlášť definovat pravidlo pro jeho kompilaci.
 
-\subsection{Komponenty}
-
-\subsubsection{Parser}
-
-\subsubsection{Formule}
-
-\section{Manuálová stránka}
-
-Manuálové stránky systémů UNIX lze psát ve speciálním značkovací jazyce. Takový jazyk je ve skutečnosti balíček maker pro jazyk \emph{troff}. Troff pochází ze 70. let a podobně jako \LaTeX slouží k sazbě textu. Zpracovává jej textový procesor \texttt{troff}, který podporuje i zmíněné balíčky maker pro tento jazyk\cite{troff}. Jednotlivá makra podobně jako HTML formátují daný obsah do požadované podoby. Běžné manuálové stránky užívají balíček maker \texttt{man}. My však zvolíme sofistikovanější balíček \texttt{mdoc}, který narozdíl od \texttt{man} disponuje sémantikou maker. Záznam o tomto balíčku nalezneme v sekci \emph{MDOC(7) \cite{mdoc}}.
-
-Aby manuálová stránka byla dostupná příkazem \texttt{man pl}, musí splňovat určité náležitosti. Název souboru manuálové stránky se skládá z názvu dokumentované aplikace, tečky a čísla příslušné manuálové sekce -- v našem případě tedy \texttt{pl.1}. Textový soubor manuálové stránky je dále zabalen do archivu \texttt{.gz} a nachází se v umístění, ve kterém systém implicitně hledá manuálové stránky, když je zadán příkaz \texttt{man název}. Tato umístění jsou nastavena v konfiguračním souboru \texttt{/etc/manpath.config}\footnote{Ubuntu 14.04 Trusty Tahr} a lze je vypsat příkazem \texttt{manpath}. Archiv manuálové stránky je ještě nutné umístit do podadresáře příslušícího dané manuálové sekci -- v našem případě do adresáře \texttt{man1}. Absolutní cesta k naší manuálové stránce tedy může vypadat napřklad následovně: \texttt{/usr/local/man/man1/pl.1.gz}. Nakonec ještě archivu nastavíme příslušné atributy dle vzoru systémových manuálových stránek -- vlastník a skupina: root, práva: 0644.
-
-\subsection{Návrh}
-
-Manuálové stránky mají standardní strukturu, kterou se vynasnažíme dodržet. Text příručky napíšeme v angličtině rozdělíme jej do příslušných sekcí následovně:
-
-\begin{description}
-	\item[NAME]  Název a krátký popis.
-	\item[SYNOPSIS] Výčet podporovaných přepínačů.
-	\item[DESCRIPTION] Podrobný popis.
-	\begin{description}
-		\item[Language] Popis jazyka vstupu a výstupu.
-		\item[Input] Popis formy vstupu.
-		\item[Output] Popis formy výstupu.
-		\item[Options] Popis významu přepínačů.
-	\end{description}
-	\item[EXIT STATUS] Popis významu návratových hodnot.
-	\item[EXAMPLES] Příklady použití.
-	\item[HISTORY] Historie.
-	\item[AUTHOR] Informace o autorovi.
-\end{description}
-
-%
-%
-%
-
-\chapter{Implementace}
-
-Při implementaci se držíme několika stanovených konvencí, které nám pomáhají udržet zdrojový kód konsistentním. Jednou ze zásad vyplývající ze zadání je komentování zdrojového kódu komentáři stylu Doxygen. Tyto speciální komentáře zapisujeme výhradně do hlavičkových souborů. Další z konvencí je 
-
-\section{Aplikace}
-
-\subsection{Sestavení}
+\subsection{Implementace}
 
 
 
 \section{Manuálová stránka}
 
-Manuálovou stránku tvoří dvoupísmenná makra. Začíná-li makro na začátku řádku, předchází mu znak tečka. V textu manuálové stránky se nesmí vyskytovat prázdný řádek.
+Manuálovou stránku tvoří dvoupísmenná makra. Začíná-li makro na začátku řádku, předchází mu znak tečka. V~textu manuálové stránky se nesmí vyskytovat prázdný řádek.
 
-Korektní manuálová stránka začíná následujícími makry v dodrženém pořadí:
+Korektní manuálová stránka začíná následujícími makry v~dodrženém pořadí:
 
 \begin{description}
 \centering
@@ -353,7 +389,7 @@ Při tvorbě manuálové stránky dále využijeme makra \texttt{Sh} pro úvod n
 
 \subsection{Sekce NAME}
 
-V sekci \texttt{NAME} definujeme makrem \texttt{Nm} název aplikace a makrem \texttt{Nd} definujeme krátký popis účelu aplikace.
+V~sekci \texttt{NAME} definujeme makrem \texttt{Nm} název aplikace a makrem \texttt{Nd} definujeme krátký popis účelu aplikace.
 
 \begin{verbatim}
 \centering
@@ -364,7 +400,7 @@ V sekci \texttt{NAME} definujeme makrem \texttt{Nm} název aplikace a makrem \te
 
 \subsection{Sekce SYNOPSIS}
 
-V sekci \texttt{SYNOPSIS} stanovíme makry \texttt{Op}, \texttt{Fl} a případně \texttt{Ar} výčet podporovaných přepínačů.
+V~sekci \texttt{SYNOPSIS} stanovíme makry \texttt{Op}, \texttt{Fl} a případně \texttt{Ar} výčet podporovaných přepínačů.
 
 \begin{verbatim}
 \centering
@@ -399,8 +435,8 @@ Dále popíšeme formu vstupu a výstupu a nakonec vysvětlíme funkcionalitu je
 .Ss Options
 The options are as follows.
 .Bl -tag -width Fl
-.It Fl A
-Check whether each formula is a Hilbert axiom.
+.It Fl
+A~Check whether each formula is a Hilbert axiom.
 .
 .
 .
@@ -409,7 +445,7 @@ Check whether each formula is a Hilbert axiom.
 
 \subsection{Sekce EXIT STATUS}
 
-Tato sekce vysvětluje význam návratových hodnot aplikace v závislosti na použitém přepínači. Užijeme dvouúrovňového odrážkového seznamu.
+Tato sekce vysvětluje význam návratových hodnot aplikace v~závislosti na použitém přepínači. Užijeme dvouúrovňového odrážkového seznamu.
 
 \begin{verbatim}
 \centering
@@ -436,7 +472,7 @@ Invalid formula syntax.
 
 \subsection{Sekce EXAMPLES}
 
-V této sekci uvedeme krátký výčet příkladů použití. K tomu použijeme odrážkový seznam \texttt{Bl -tag}.
+V~této sekci uvedeme krátký výčet příkladů použití. K~tomu použijeme odrážkový seznam \texttt{Bl -tag}.
 
 \begin{verbatim}
 \centering
@@ -478,36 +514,38 @@ Written by
 
 \chapter{Testování}
 
-V této kapitole objasníme metody testování, které použijeme k ověření správného fungování aplikace. Testovat budeme konkrétně tyto oblasti:
+V~této kapitole objasníme metody testování, které použijeme k~ověření správného fungování aplikace. Testovat budeme konkrétně tyto oblasti:
 
 \begin{itemize}
-	\item Syntaktickou analýzu formulí
-	\item Validaci Hilbertovských axiomů
-	\item Validaci Hilbertovských důkazů
+	\item Syntaktickou analýzu formulí.
+	\item Rozpoznání Hilbertovských axiomů.
+	\item Ověření Hilbertovských důkazů.
 \end{itemize}
 
-Základní myšlenkou pro maximalizaci pokrytí případů testy je v každé oblasti provést dvě varianty testů:
+Základní myšlenkou pro maximalizaci pokrytí případů testy je v~každé oblasti provést dvě varianty testů:
 
 \begin{description}
-	\item[Pozitivní test] Test korektního přijetí korektního vstupu
-	\item[Negativní test] Test korektního nepřijetí nekorektního vstupu
+	\item[Pozitivní test] Test korektního přijetí korektního vstupu.
+	\item[Negativní test] Test korektního nepřijetí nekorektního vstupu.
 \end{description}
 
-Testování implementujeme pomocí skriptu pro \texttt{shell} za využití testovacích souborů se vstupními daty, které umístíme do adresáře \texttt{test}. Volání tohoto testovacího skriptu volá cíl \texttt{make target}. Inicializace testovacího skriptu zahrnuje inicializaci proměnné \texttt{TEST\_SUCCESS}, která značí úspěch celého testování, a výpis zprávy o zahájení testů.
+Testování implementujeme pomocí skriptu pro \texttt{shell} za využití souborů s testovacími daty, které umístíme do adresáře \texttt{test}. Volání tohoto testovacího skriptu volá cíl \texttt{make test}.
+
+Inicializace testovacího skriptu zahrnuje inicializaci proměnné \texttt{TEST\_SUCCESS}, která značí úspěch celého testování, a výpis hlášení o~zahájení testů.
 
 \lstinputlisting[language=sh, firstline=1, lastline=6, breaklines=true, breakatwhitespace=true, breakautoindent=true]{../impl/test.sh}
 
-V závěru testovacího skriptu pouze zkontrolujeme hodnotu proměnné \texttt{TEST\_SUCCESS} a vypíšeme příslušné hlášení o úspěšnosti testování.
+V~závěru testovacího skriptu zkontrolujeme hodnotu proměnné \texttt{TEST\_SUCCESS} a vypíšeme příslušné hlášení o~úspěchu testování.
 
 \lstinputlisting[language=sh, firstline=79, lastline=84, breaklines=true, breakatwhitespace=true, breakautoindent=true]{../impl/test.sh}
 
-\section{Parsery formulí}
+\section{Parser}
 
-Protože parsery výrokových formulí v naší implementaci sestávají ze třech nezávislých funkcí (prefixní, infixní a postfixní), je nezbytné provést testování na vstupu ve všech třech možných notacích. 
+Protože parsery výrokových formulí v~naší implementaci reprezentují tři nezávislé funkce (\texttt{parsePrefix}, \texttt{parseInfix} a \texttt{parsePostfix}), je nezbytné provést testování na vstupu ve všech třech možných syntaxích. 
 
-\subsection{Pozitivní testy}
+\subsection{Pozitivní test}
 
-Připravíme dostatečný počet různých výrokových formulí tak, abychom v nich pokryli kombinace výskytů následujících případů:
+Připravíme dostatečný počet různých výrokových formulí tak, abychom v~nich pokryli výskyty následujících případů:
 
 \begin{itemize}
 	\item Kořenem stromu je:
@@ -524,12 +562,12 @@ Připravíme dostatečný počet různých výrokových formulí tak, abychom v 
 	\end{itemize}
 \end{itemize}
 
-Každou z těchto formulí korektně zapíšeme v jazyce ASCII v každé notaci do příslušných vzorových souborů \texttt{prefix.txt}, \texttt{infix.txt} a \texttt{postfix.txt}. Vzorové formule znázorňuje tabulka \ref{tab:test:parser:pos}.
+Každou z~těchto formulí korektně zapíšeme v~každé notaci do příslušných vzorových souborů \texttt{prefix.txt}, \texttt{infix.txt} a \texttt{postfix.txt}. Vzorové formule znázorňuje tabulka \ref{tab:parserp}.
 
 \begin{table}
 \centering
 \caption{Korektní testovací formule}
-\label{tab:test:parser:pos}
+\label{tab:parserp}
 \begin{tabular}{|c|c|c|}\hline
 	Prefix & Infix & Postfix \tabularnewline \hline \hline
 	$A$ & $A$ & $A$ \tabularnewline \hline
@@ -541,33 +579,32 @@ Každou z těchto formulí korektně zapíšeme v jazyce ASCII v každé notaci 
 \end{tabular}
 \end{table}
 
-Soubory \texttt{prefix.txt}, \texttt{infix.txt} a \texttt{postfix.txt} předáme jako vstup aplikaci \texttt{pl -e} tak, abychom provedli jejich konverzi do každé ze tří notací. Výstup přesměrujeme do souboru \texttt{vstup\_výstup\_test.txt}, kde \texttt{vstup} značí použitou vstupní syntaxi a \texttt{výstup} značí použitou výstupní syntaxi. Nástrojem \texttt{diff} nakonec porovnáme, zdali se vytvořené soubory shodují se vzorovými.
+Soubory \texttt{prefix.txt}, \texttt{infix.txt} a \texttt{postfix.txt} předáme jako vstup aplikaci \texttt{pl -e} tak, abychom provedli jejich konverzi do každé ze tří notací. Výstup přesměrujeme do souborů \texttt{prefix\_test.txt}, \texttt{infix\_test.txt} a \texttt{postfix\_test.txt}. Nástrojem \texttt{diff} nakonec porovnáme, zdali se vytvořené soubory shodují se vzorovými.
 
 Implementace testů vypadá následovně:
 
-\begin{figure}
-\centering
+\begin{center}
 \lstinputlisting[language=sh, firstline=11, lastline=23, breaklines=true, breakatwhitespace=true, breakautoindent=true]{../impl/test.sh}
-\end{figure}
+\end{center}
 
-\subsection{Negativní testy}
+\subsection{Negativní test}
 
-Základem negativního testování je analyzovat všechny možné podoby nekorektního vstupu. K této analýze nám pomůže výčet námi implementovaných druhů výjimek vyvolávaných parsery. Připravíme dostatečný počet různých nekorektních výrokových formulí tak, abychom pokryli následující případy:
+Základem negativního testování je analyzovat všechny možné podoby nekorektního vstupu. K~této analýze nám pomůže výčet námi implementovaných druhů výjimek vyvolávaných parsery. Připravíme dostatečný počet různých nekorektních výrokových formulí tak, abychom pokryli následující případy:
 
 \begin{enumerate}
 	\item Formule je nekompletní.
-	\item Formule obsahuje prvek na nevyhovující pozici (pouze infixní parser).
+	\item Formule má nekorektní zápis (pouze infixní parser).
 	\item Formule je kompletní přičemž pokračuje nadbytečnými prvky.
 	\item Formule obsahuje neplatný znak.
 	\item Formule není zakončená řádkovým zalomením.
 \end{enumerate}
 
-Každou z těchto nekorektních formulí zapíšeme v jazyce ASCII v každé notaci do příslušných vzorových souborů \texttt{prefix\_error.txt}, \texttt{infix\_error.txt} a \texttt{postfix\_error.txt}. Vzorové formule znázorňuje tabulka \ref{tab:test:parser:neg}. Dále pro každou z těchto formuli připravíme chybové hlášení ve stejné podobě, jakou aplikace \texttt{pl} hlásí podrobnosti o nekorektním vstupu. Tato hlášení zapíšeme do příslušných vzorových souborů \texttt{prefix\_messages.txt}, \texttt{infix\_messages.txt} a \texttt{postfix\_messages.txt}.
+Každou z~těchto nekorektních formulí zapíšeme v~každé notaci do příslušných vzorových souborů \texttt{prefix\_error.txt}, \texttt{infix\_error.txt} a \texttt{postfix\_error.txt}. Vzorové formule znázorňuje tabulka \ref{tab:parsern}. Dále pro každou z~těchto formuli zapíšeme odpovídající chybové hlášení do vzorových souborů \texttt{prefix\_messages.txt}, \texttt{infix\_messages.txt} a \texttt{postfix\_messages.txt}.
 
 \begin{table}
 \centering
 \caption{Nekorektní testovací formule}
-\label{tab:test:parser:neg}
+\label{tab:parsern}
 \begin{tabular}{|c|c|c|c|}\hline
 	Případ & Prefix & Infix & Postfix \tabularnewline \hline \hline
 	1 & $AB$ & $\neg$ & $\neg$ \tabularnewline \hline
@@ -578,22 +615,21 @@ Každou z těchto nekorektních formulí zapíšeme v jazyce ASCII v každé not
 \end{tabular}
 \end{table}
 
-Soubory \texttt{prefix\_error.txt}, \texttt{infix\_error.txt} a \texttt{postfix\_error.txt} předáme jako vstup aplikaci \texttt{pl -e}. Výstup přesměrujeme do souboru \texttt{vstup\_error\_test.txt}, kde \texttt{vstup} značí použitou vstupní syntaxi. Nástrojem \texttt{diff} nakonec porovnáme, zdali se vytvořené soubory shodují se vzorovými.
+Soubory \texttt{prefix\_error.txt}, \texttt{infix\_error.txt} a \texttt{postfix\_error.txt} předáme jako vstup aplikaci \texttt{pl -e}. Výstup přesměrujeme do souborů \texttt{prefix\_error\_test.txt}, \texttt{infix\_error\_test.txt} a \texttt{postfix\_error\_test.txt}. Nástrojem \texttt{diff} nakonec porovnáme, zdali se vytvořené soubory shodují se vzorovými soubory s hlášeními.
 
 Implementace testů vypadá následovně:
 
-\begin{figure}
-\centering
+\begin{center}
 \lstinputlisting[language=sh, firstline=27, lastline=35, breaklines=true, breakatwhitespace=true, breakautoindent=true]{../impl/test.sh}
-\end{figure}
+\end{center}
 
 \section{Ověření axiomů}
 
-Protože naše práce implementuje Hilbertův důkazový systém, testovat budeme korektní ověření jeho axiomů.
+Protože naše práce implementuje Hilbertův systém, testovat budeme rozpoznání jeho axiomů.
 
-\subsection{Pozitivní testy}
+\subsection{Pozitivní test}
 
-Axiomy Hilbertova systému korektně zapíšeme v jazyce ASCII do souboru \texttt{axiom.txt} následovně:
+Axiomy Hilbertova systému korektně zapíšeme do vzorového souboru \texttt{axiom.txt}.
 
 \begin{verbatim}
 (A>(B>A))
@@ -605,14 +641,13 @@ Soubor \texttt{axiom.txt} předáme jako vstup aplikaci \texttt{pl -A} a zkontro
 
 Implementace testu vypadá následovně:
 
-\begin{figure}
-\centering
+\begin{center}
 \lstinputlisting[language=sh, firstline=41, lastline=46, breaklines=true, breakatwhitespace=true, breakautoindent=true]{../impl/test.sh}
-\end{figure}
+\end{center}
 
-\subsection{Negativní testy}
+\subsection{Negativní test}
 
-Formule představující Hilbertovské axiomy nepatrně pozměníme tak, aby tyto formule již axiomy nebyly, a korektně je zapíšeme v jazyce ASCII do souboru \texttt{axiom\_error.txt} následovně:
+Formule představující Hilbertovské axiomy nepatrně pozměníme tak, aby tyto formule již axiomy nebyly, a korektně je zapíšeme do souboru \texttt{axiom\_error.txt}.
 
 \begin{verbatim}
 (A>(A>B))
@@ -620,14 +655,21 @@ Formule představující Hilbertovské axiomy nepatrně pozměníme tak, aby tyt
 ((-A>-B)>(A>B))
 \end{verbatim}
 
-Soubor \texttt{axiom\_error.txt} předáme jako vstup aplikaci \texttt{pl -A} a zkontrolujeme, zdali její návratová hodnota značí neúspěch.
+Dále pro každou z těchto formulí zapíšeme do vzorového souboru \texttt{axiom\_error\_messages.txt} odpovídající chybové hlášení.
+
+\begin{verbatim}
+Not an axiom.
+Not an axiom.
+Not an axiom.
+\end{verbatim}
+
+Soubor \texttt{axiom\_error.txt} předáme jako vstup aplikaci \texttt{pl -A -e}. Výstup přesměrujeme do souboru \texttt{axiom\_error\_test.txt}. Nástrojem \texttt{diff} nakonec porovnáme, zdali se vytvořený soubor shoduje se vzorovým souborem s hlášeními.
 
 Implementace testu vypadá následovně:
 
-\begin{figure}
-\centering
+\begin{center}
 \lstinputlisting[language=sh, firstline=41, lastline=46, breaklines=true, breakatwhitespace=true, breakautoindent=true]{../impl/test.sh}
-\end{figure}
+\end{center}
 
 \section{Validátor důkazů}
 
@@ -635,7 +677,7 @@ Pro testování validátoru důkazů využijeme důkaz formule $A \Rightarrow A$
 
 \subsection{Pozitivní test}
 
-Důkaz formule $A \Rightarrow A$ korektně zapíšeme v jazyce ASCII do souboru \texttt{proof.txt} následovně:
+Důkaz formule $A \Rightarrow A$ korektně zapíšeme do vzorového souboru \texttt{proof.txt} následovně:
 
 \begin{verbatim}
 (A>((A>A)>A))
@@ -649,14 +691,13 @@ Soubor \texttt{proof.txt} předáme jako vstup aplikaci \texttt{pl -P} a zkontro
 
 Implementace testu vypadá následovně:
 
-\begin{figure}
-\centering
+\begin{center}
 \lstinputlisting[language=sh, firstline=61, lastline=66, breaklines=true, breakatwhitespace=true, breakautoindent=true]{../impl/test.sh}
-\end{figure}
+\end{center}
 
 \subsection{Negativní test}
 
-Poslední formuli důkazu $A \Rightarrow A$ pozměníme tak, aby se důkaz stal nekorektním, a takto upravený důkaz zapíšeme v jazyce ASCII do souboru \texttt{proof\_error.txt} následovně:
+Poslední formuli důkazu $A \Rightarrow A$ pozměníme tak, aby se důkaz stal nekorektním, a takto upravený důkaz zapíšeme v~jazyce ASCII do souboru \texttt{proof\_error.txt} následovně:
 
 \begin{verbatim}
 (A>((A>A)>A))
@@ -670,10 +711,9 @@ Soubor \texttt{proof\_error.txt} předáme jako vstup aplikaci \texttt{pl -P} a 
 
 Implementace testu vypadá následovně:
 
-\begin{figure}
-\centering
+\begin{center}
 \lstinputlisting[language=sh, firstline=70, lastline=75, breaklines=true, breakatwhitespace=true, breakautoindent=true]{../impl/test.sh}
-\end{figure}
+\end{center}
 
 %
 %
@@ -681,29 +721,29 @@ Implementace testu vypadá následovně:
 
 \chapter{Rozšířitelnost}
 
-Následující funkcionalita naší implementaci chybí a bylo by dobré ji v budoucnu implementovat.
+Následující funkcionalita naší implementaci chybí a bylo by dobré ji v~budoucnu implementovat.
 
-\section{Důkaz z předpokladů}
+\section{Důkaz z~předpokladů}
 
-V úvodní kapitole jsme v rámci popisu důkazových systémů definovali důkaz. Zmínili jsme se také o důkazu z předpokladů, který však tato práce neimplementuje. Implementaci bychom mohli rozšířit právě o tuto obecnou variantu důkazu. Následující návrh řešení dokazuje, že přidání této funkcionality lze pokládat za minimálně pracné.
+V~úvodní kapitole jsme v~rámci popisu důkazových systémů definovali důkaz. Na straně \pageref{sec:dzp} jsme se také zmínili o~důkazu z~předpokladů, který však tato práce neimplementuje. Implementaci bychom mohli rozšířit právě o~tuto obecnou variantu důkazu. Následující návrh řešení snad ukazuje, že přidání této funkcionality lze pokládat za minimálně pracné.
 
 \subsection{Návrh}
 
-Přepínač \texttt{-P} rozšíříme o číselnou hodnotu $n$ vyjadřující počet prvků množiny předpokladů. Aplikace tímto považuje prvních $n$ výrokových formulí za předpoklady, ukládá je do zvláštního seznamu a při validaci výrokového důkazu kontroluje, zdali se mezi prvky důkazu nenacházejí právě tyto předpoklady.
+Přepínač \texttt{-P} rozšíříme o~číselnou hodnotu $n$ vyjadřující počet prvků množiny předpokladů. Aplikace tímto považuje prvních $n$ výrokových formulí za předpoklady, ukládá je do zvláštního seznamu a při validaci výrokového důkazu kontroluje, zdali se mezi prvky důkazu nenacházejí právě tyto předpoklady.
 
 \section{Gentzenův systém}
 
-Hilbertův systém není jediný důkazový systém výrokové logiky, jeho pravidlo \emph{modus ponens} je však považováno za nejvíce odpovídající našemu uvažování. Naší implementaci bychom mohli doplnit o důkazový systém Gentzenův. Aplikace by tak mohla ověřovat důkazy v tomto systému nebo dokonce důkazy mezi těmito systémy převádět.
+Hilbertův systém není jediný důkazový systém výrokové logiky, jeho pravidlo \emph{modus ponens} je však považováno za nejvíce odpovídající našemu uvažování. Naší implementaci bychom mohli doplnit o~důkazový systém Gentzenův. Aplikace by tak mohla ověřovat důkazy v~tomto systému nebo dokonce důkazy mezi těmito systémy převádět.
 
 \subsection{Návrh}
 
 Zavedeme nové přepínače: \texttt{-s} a \texttt{-C}.
 
-Přepínač \texttt{-s} s možnými hodnotami \texttt{hilbert} a \texttt{gentzen} určuje, v rámci kterého důkazového systému má aplikace operovat při kontrole výrokového důkazu, je-li zároveň použit přepínač \texttt{-P}, nebo do kterého z těchto systémů má aplikace důkaz převést, je-li zároveň použit přepínač \texttt{-C}. Úspěch převodu závisí pouze na korektnosti vstupního důkazu a aplikace jej indikuje návratovou hodnotou.
+Přepínač \texttt{-s} s~možnými hodnotami \texttt{hilbert} a \texttt{gentzen} určuje, v~rámci kterého důkazového systému má aplikace operovat při kontrole výrokového důkazu, je-li zároveň použit přepínač \texttt{-P}, nebo do kterého z~těchto systémů má aplikace důkaz převést, je-li zároveň použit přepínač \texttt{-C}. Úspěch převodu závisí pouze na korektnosti vstupního důkazu a aplikace jej indikuje návratovou hodnotou.
 
 \section{Nalezení důkazu}
 
-Tato práce nás naučila ověřovat důkazy výrokových formulí na základě vlastností důkazových systémů, ale nezabývali jsme se v ní, jakým způsobem důkazy hledat. Naší implementaci by velice obohatila funkcionalita nalezení důkazu k dané formuli, pokud takový důkaz existuje.
+Tato práce nás naučila ověřovat důkazy výrokových formulí na základě vlastností důkazových systémů, ale nezabývali jsme se v~ní, jakým způsobem důkazy hledat. Naší implementaci by velice obohatila funkcionalita nalezení důkazu k~dané formuli, pokud takový důkaz existuje.
 
 \subsection{Návrh}
 
@@ -716,7 +756,7 @@ Při použití přepínače \texttt{-F} je vstupní formule vnímána jako formu
 %
 
 \begin{conclusion}
-Tato implementační práce mi dala možnost uplatnit mnohé znalosti, které mi dala Fakulta informačních technologií ČVUT v Praze během mého bakalářského studia. Zejména jsem uplatnil programovací dovednost v jazyce C++. Své dosavadní znalosti jsem také rozšířil. Nových zkušeností jsem konkrétně nabyl v oblasti výrokové logiky, jazyka C++, nástroje \texttt{make}, jazyka \LaTeX a tvorby manuálové stránky pro UNIX. V poslední řadě jsem si poprvé zkusil takto rozsáhlou literární činnost. Jsem rád, že mě práce na tomto projektu těšila.
+Tato implementační práce mi dala možnost uplatnit mnohé znalosti, které mi dala Fakulta informačních technologií ČVUT v~Praze během mého bakalářského studia. Zejména jsem uplatnil programovací dovednost v~jazyce C++. Své dosavadní znalosti jsem také rozšířil. Nových zkušeností jsem konkrétně nabyl v~oblasti výrokové logiky, jazyka C++, nástroje \texttt{make}, jazyka \LaTeX a tvorby manuálové stránky pro UNIX. V~poslední řadě jsem si poprvé zkusil takto rozsáhlou literární činnost. Jsem rád, že mě práce na tomto projektu těšila.
 \end{conclusion}
 
 %
@@ -758,7 +798,7 @@ Tato implementační práce mi dala možnost uplatnit mnohé znalosti, které mi
 		.3 pl.1\DTcomment{soubor zdrojové formy manuálové stránky}.
 		.3 test.sh\DTcomment{soubor testovacího skriptu pro shell}.
 		.2 thesis\DTcomment{adresář se zdrojovou formou textu práce}.
-		.1 text\DTcomment{adresář s textem práce}.
+		.1 text\DTcomment{adresář s~textem práce}.
 	}
 \end{figure}
 
