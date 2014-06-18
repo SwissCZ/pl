@@ -2,24 +2,18 @@
 
 #include "parseException.hpp"
 
-using namespace std;
-
-ParseException::ParseException(string message) : reason(message)
+ParseException::ParseException(string message)
 {
-}
-
-string ParseException::prepareMessage() const
-{
-    return reason;
+    this->message = message;
 }
 
 string ParseException::getMessage() const
 {
-    return prepareMessage() + ".";
+    return message + ".";
 }
 
 IncompleteFormulaException::IncompleteFormulaException()
-: ParseException("This formula is incomplete")
+: ParseException("Incomplete formula")
 {
 }
 
@@ -28,34 +22,43 @@ UnexpectedEOFException::UnexpectedEOFException()
 {
 }
 
-DetailedParseException::DetailedParseException(string message, char character,
+DetailedParseException::DetailedParseException(string message,
+                                               char character,
                                                int position)
-: ParseException(message), character(character), position(position)
+: ParseException(message)
 {
+    this->character = character;
+    this->position = position;
 }
 
-string DetailedParseException::prepareMessage() const
+string DetailedParseException::getMessage() const
 {
     stringstream stream;
 
-    stream << reason << " '" << character << "' at position " << position;
+    stream << message << " '" << character << "' at position " << position << ".";
     return stream.str();
 }
 
 UnexpectedElementException::UnexpectedElementException(char character,
                                                        int position)
-: DetailedParseException("Unexpected element", character, position)
+: DetailedParseException("Unexpected element",
+                         character,
+                         position)
 {
 }
 
-UnnecessaryElementException::UnnecessaryElementException(char character,
-                                                         int position)
-: DetailedParseException("Unnecessary element", character, position)
+RedundantElementException::RedundantElementException(char character,
+                                                     int position)
+: DetailedParseException("Unnecessary element",
+                         character,
+                         position)
 {
 }
 
 IllegalCharacterException::IllegalCharacterException(char character,
                                                      int position)
-: DetailedParseException("Illegal character", character, position)
+: DetailedParseException("Illegal character",
+                         character,
+                         position)
 {
 }

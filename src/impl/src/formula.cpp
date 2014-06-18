@@ -1,49 +1,44 @@
 #include <iostream>
+#include <stdexcept>
 
 #include "formula.hpp"
 
-using namespace std;
-
-const map<char, Dictionary> Formula::dictionary = {
+map<char, map<Language, string>> Formula::dictionary = {
     {'-',
         {
             {ASCII, "-"},
             {WORDS, " not "},
             {TEX, " \\neg "}
-        }
-	},
+        }},
     {'.',
         {
             {ASCII, "."},
             {WORDS, " and "},
             {TEX, " \\wedge "}
-        }
-	},
+        }},
     {'+',
         {
             {ASCII, "+"},
             {WORDS, " or "},
             {TEX, " \\vee "}
-        }
-	},
+        }},
     {'>',
         {
             {ASCII, ">"},
             {WORDS, " implies "},
             {TEX, " \\Rightarrow "}
-        }
-	},
+        }},
     {'=',
         {
             {ASCII, "="},
             {WORDS, " if and only if "},
             {TEX, " \\Leftrightarrow "}
-        }
-	}
+        }}
 };
 
-Formula::Formula(char character) : character(character)
+Formula::Formula(char character)
 {
+    this->character = character;
 }
 
 Formula::~Formula()
@@ -55,32 +50,33 @@ char Formula::getCharacter() const
     return character;
 }
 
-Proposition::Proposition(char character) : Formula(character)
+Trivial::Trivial(char character)
+: Formula(character)
 {
 }
 
-string Proposition::printPrefix(Language language) const
-{
-    return string() + this->character;
-}
-
-string Proposition::printInfix(Language language) const
+string Trivial::printPrefix(Language language) const
 {
     return string() + this->character;
 }
 
-string Proposition::printPostfix(Language language) const
+string Trivial::printInfix(Language language) const
 {
     return string() + this->character;
 }
 
-bool Proposition::equals(Formula * formula) const
+string Trivial::printPostfix(Language language) const
+{
+    return string() + this->character;
+}
+
+bool Trivial::equals(Formula* formula) const
 {
     return this->character == formula->getCharacter();
 }
 
-bool Proposition::matches(Formula * formula, Substitutions & substitutions)
-const
+bool Trivial::matches(Formula* formula,
+                      map<char, Formula*>& substitutions) const
 {
     try
     {
@@ -92,11 +88,11 @@ const
     }
 }
 
-Composite::Composite(char character) : Formula(character)
+Composite::Composite(char character): Formula(character)
 {
 }
 
-Unary::Unary(char character) : Composite(character)
+Unary::Unary(char character): Composite(character)
 {
 }
 
@@ -123,19 +119,20 @@ string Unary::printPostfix(Language language) const
             + dictionary.at(character).at(language);
 }
 
-bool Unary::equals(Formula * formula) const
+bool Unary::equals(Formula* formula) const
 {
     return character == formula->getCharacter()
-            && operand->equals(((Unary *) formula)->operand);
+            && operand->equals(((Unary*) formula)->operand);
 }
 
-bool Unary::matches(Formula * formula, Substitutions & subsitutions) const
+bool Unary::matches(Formula* formula,
+                    map<char, Formula*>& subsitutions) const
 {
     return character == formula->getCharacter()
-            && operand->matches(((Unary *) formula)->operand, subsitutions);
+            && operand->matches(((Unary*) formula)->operand, subsitutions);
 }
 
-bool Unary::setFirst(Formula * operand)
+bool Unary::setFirst(Formula* operand)
 {
     if (this->operand == NULL)
     {
@@ -144,7 +141,7 @@ bool Unary::setFirst(Formula * operand)
     return true;
 }
 
-bool Unary::setLast(Formula * operand)
+bool Unary::setLast(Formula* operand)
 {
     if (this->operand == NULL)
     {
@@ -153,7 +150,8 @@ bool Unary::setLast(Formula * operand)
     return true;
 }
 
-Binary::Binary(char character) : Composite(character)
+Binary::Binary(char character)
+: Composite(character)
 {
 }
 
@@ -187,21 +185,22 @@ string Binary::printPostfix(Language language) const
             + dictionary.at(character).at(language);
 }
 
-bool Binary::equals(Formula * formula) const
+bool Binary::equals(Formula* formula) const
 {
     return character == formula->getCharacter()
-            && left->equals(((Binary *) formula)->left)
-            && right->equals(((Binary *) formula)->right);
+            && left->equals(((Binary*) formula)->left)
+            && right->equals(((Binary*) formula)->right);
 }
 
-bool Binary::matches(Formula * formula, Substitutions & substitutions) const
+bool Binary::matches(Formula* formula,
+                     map<char, Formula*>& substitutions) const
 {
     return character == formula->getCharacter()
-            && left->matches(((Binary *) formula)->left, substitutions)
-            && right->matches(((Binary *) formula)->right, substitutions);
+            && left->matches(((Binary*) formula)->left, substitutions)
+            && right->matches(((Binary*) formula)->right, substitutions);
 }
 
-bool Binary::setFirst(Formula * operand)
+bool Binary::setFirst(Formula* operand)
 {
     if (left == NULL)
     {
@@ -214,7 +213,7 @@ bool Binary::setFirst(Formula * operand)
     return true;
 }
 
-bool Binary::setLast(Formula * operand)
+bool Binary::setLast(Formula* operand)
 {
     if (right == NULL)
     {

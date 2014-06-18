@@ -5,99 +5,85 @@
 
 using namespace std;
 
-//! Program usage syntax error.
+//! Program syntax exception
 
 /**
- * Invalid program usage syntax.
+ * Exception caused by invalid program syntax.
  */
 class SyntaxException
 {
 protected:
-    char option; ///< Error option character.
-    string reason; ///< Error reason.
+    char option;
+    ///< Erroneous option
+
+    string message;
+    ///< Exception details
+public:
+    SyntaxException(char,
+                    string);
 
     /**
-     * Composes a partial error message.
-     * @return Partial error message.
-     */
-    virtual string prepareMessage() const;
-public:
-    SyntaxException(char, string);
-    /**
-     * Composes an error message.
-     * @return Syntax error message.
+     * Composes a syntax error message.
+     * @return Syntax error message
      */
     string getMessage() const;
 };
 
-//! Multiple exclusive targets error.
+//! Illegal option exeption
 
 /**
- * Multiple exclusive targets were set to be performed.
+ * Thrown when an illegal option is set.
  */
-class MultipleTargetsException : public SyntaxException
-{
-public:
-    MultipleTargetsException(char);
-};
-
-//! Illegal option error.
-
-/**
- * Illegal option was set.
- */
-class IllegalOptionException : public SyntaxException
+class IllegalOptionException: public SyntaxException
 {
 public:
     IllegalOptionException(char);
 };
 
-//! Missing option value error.
+//! Missing value exception
 
 /**
- * Required option value was not set.
+ * Thrown when a mandatory option value is not set.
  */
-class MissingValueException : public SyntaxException
+class MissingValueException: public SyntaxException
 {
 public:
     MissingValueException(char);
 };
 
-//! Option value error.
+//! Multiple targets exception
 
 /**
- * Syntax error caused by invalid option value.
+ * Thrown when multiple targets are set to be performed.
  */
-class ValueException : public SyntaxException
+class MultipleTargetsException: public SyntaxException
 {
-private:
-    string value; ///< Error causing option value.
-
-    virtual string prepareMessage() const;
 public:
-    ValueException(char, string, string);
+    MultipleTargetsException(char);
 };
 
-//! Illegal option value error.
+//! Illegal value exception
 
 /**
- * Illegal option value was set.
+ * Thrown when an illegal option value is set.
  */
-class IllegalValueException : public ValueException
+class IllegalValueException: public SyntaxException
 {
 public:
-    IllegalValueException(char, string);
+    IllegalValueException(char,
+                          string);
 };
 
-//! File not found error.
+//! Invalid file exception
 
 /**
- * Given file can not be openned.
+ * Thrown when an invalid file is given.
  */
-class InvalidFileException : public ValueException
+class InvalidFileException: public SyntaxException
 {
 public:
-    InvalidFileException(string);
+    InvalidFileException(char,
+                         string);
 };
 
 #endif

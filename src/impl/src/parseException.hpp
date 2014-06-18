@@ -5,99 +5,102 @@
 
 using namespace std;
 
-//! Formula parse error.
+//! Formula parse exception
 
 /**
- * Error occured during formula parsing.
+ * Exception caused by incorrect formula parsing.
  */
 class ParseException
 {
 protected:
-    string reason; ///< Error reason.
-
-    /**
-     * Composes a partial error message.
-     * @return Partial error message.
-     */
-    virtual string prepareMessage() const;
+    string message;
+    ///< Exception details
 public:
     ParseException(string);
+
     /**
      * Composes an error message.
-     * @return Parse error message.
+     * @return Parse error message
      */
     virtual string getMessage() const;
 };
 
-//! Incomplete formula error.
+//! Incomplete formula exception
 
 /**
- * Formula was not finished.
+ * Thrown when a formula is not finished.
  */
-class IncompleteFormulaException : public ParseException
+class IncompleteFormulaException: public ParseException
 {
 public:
     IncompleteFormulaException();
 };
 
-//! Unexpected end of stream error.
+//! Unexpected end of stream exception
 
 /**
- * The end of input stream was not expected.
+ * Thrown when the end of the input stream is not expected.
  */
-class UnexpectedEOFException : public ParseException
+class UnexpectedEOFException: public ParseException
 {
 public:
     UnexpectedEOFException();
 };
 
-//! Detailed parse error.
+//! Detailed parse exception
 
 /**
- * Parse error specified with error causing character and it's position.
+ * Exception specified with an error causing character and it's position.
  */
-class DetailedParseException : public ParseException
+class DetailedParseException: public ParseException
 {
 protected:
-    char character; ///< Error causing character.
-    int position; ///< Error causing character position.
+    char character;
+    ///< Erroneous character
 
-    virtual string prepareMessage() const;
+    int position;
+    ///< Erroneous character position
 public:
-    DetailedParseException(string, char, int);
+    DetailedParseException(string,
+                           char,
+                           int);
+    virtual string getMessage() const;
 };
 
-//! Unexpected element error.
+//! Unexpected element exception
 
 /**
- * Parsed element was not expected.
+ * Thrown when a parsed element is not expected at it's position.
  */
-class UnexpectedElementException : public DetailedParseException
+class UnexpectedElementException: public DetailedParseException
 {
 public:
-    UnexpectedElementException(char, int);
+    UnexpectedElementException(char,
+                               int);
 };
 
-//! Unnecessary element error.
+//! Redundant element exception
 
 /**
- * Parsed formula has been already finished.
+ * Thrown when a redundant element is parsed after formula completion.
  */
-class UnnecessaryElementException : public DetailedParseException
+class RedundantElementException: public DetailedParseException
 {
 public:
-    UnnecessaryElementException(char, int);
+    RedundantElementException(char,
+                              int);
 };
 
-//! Illegal character error.
+//! Illegal character exception
 
 /**
- * Illegal character was read.
+ * Thrown when an illegal character is read.
  */
-class IllegalCharacterException : public DetailedParseException
+class IllegalCharacterException: public DetailedParseException
 {
 public:
-    IllegalCharacterException(char, int);
+    IllegalCharacterException(char,
+                              int);
 };
 
 #endif

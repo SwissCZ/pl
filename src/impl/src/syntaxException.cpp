@@ -1,53 +1,45 @@
 #include "syntaxException.hpp"
 
-using namespace std;
-
-SyntaxException::SyntaxException(char option, string message)
-: option(option), reason(message)
+SyntaxException::SyntaxException(char option,
+                                 string message)
 {
-}
-
-string SyntaxException::prepareMessage() const
-{
-    return string() + "Option '-" + option + "' " + reason;
+    this->option = option;
+    this->message = message;
 }
 
 string SyntaxException::getMessage() const
 {
-    return prepareMessage() + ".";
+    return string() + "'-" + option + "': " + message + ".";
 }
 
 MultipleTargetsException::MultipleTargetsException(char option)
-: SyntaxException(option, "is irrelevant")
+: SyntaxException(option,
+                  "Multiple targets were set")
 {
 }
 
 IllegalOptionException::IllegalOptionException(char option)
-: SyntaxException(option, "is illegal")
+: SyntaxException(option,
+                  "This is an illegal option")
 {
 }
 
 MissingValueException::MissingValueException(char option)
-: SyntaxException(option, "requires a value")
+: SyntaxException(option,
+                  "No option value was given")
 {
 }
 
-ValueException::ValueException(char option, string value, string message)
-: SyntaxException(option, message), value(value)
+IllegalValueException::IllegalValueException(char option,
+                                             string value)
+: SyntaxException(option,
+                  "Given value '" + value + "' is invalid")
 {
 }
 
-string ValueException::prepareMessage() const
-{
-    return SyntaxException::prepareMessage() + " '" + value + "'";
-}
-
-IllegalValueException::IllegalValueException(char option, string value)
-: ValueException(option, value, "value is illegal")
-{
-}
-
-InvalidFileException::InvalidFileException(string value)
-: ValueException('i', value, "file is illegal")
+InvalidFileException::InvalidFileException(char option,
+                                           string value)
+: SyntaxException(option,
+                  "Given file '" + value + "' is invalid")
 {
 }

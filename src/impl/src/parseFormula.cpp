@@ -1,34 +1,32 @@
 #include <cstdio>
 #include <limits>
+#include <sstream>
 #include <stack>
 
-#include "parse.hpp"
 #include "parseException.hpp"
+#include "parseFormula.hpp"
 
-using namespace std;
-
-//! Infix bracket state.
+//! Infix bracket state
 
 /**
- * Infix bracket completion state. The order must be preserved!
+ * Infix bracket completion state. The order must be preserved.
  */
 enum InfixState
 {
-    UNARY, ///< Unary operator set.
-    BLANK, ///< New bracket openned.
-    FIRST_OPERAND, ///< First operand set.
-    BINARY, ///< Binary operator set.
-    LAST_OPERAND ///< Last operand set.
+    UNARY, ///< Unary operator set
+    BLANK, ///< New bracket openned
+    FIRST_OPERAND, ///< First operand set
+    BINARY, ///< Binary operator set
+    LAST_OPERAND ///< Last operand set
 };
 
-Formula * parsePrefix(istream & input)
+Formula* parsePrefix(istream& input)
 {
     char buffer;
     int position = 1;
     bool run = true;
-
-    stack<Composite *> operatorStack;
-    Formula * temporary = NULL;
+    stack<Composite*> operatorStack;
+    Formula* temporary = NULL;
 
     while (run)
     {
@@ -64,7 +62,7 @@ Formula * parsePrefix(istream & input)
                 if (!operatorStack.empty())
                 {
                     // Set this as a operator stack top's operand.
-                    temporary = new Proposition(buffer);
+                    temporary = new Trivial(buffer);
 
                     // While all operator stack top's operands have been set.
                     while (!operatorStack.empty() &&
@@ -76,7 +74,7 @@ Formula * parsePrefix(istream & input)
                 } else if (position == 1)
                 {
                     // Trivial formula case.
-                    temporary = new Proposition(buffer);
+                    temporary = new Trivial(buffer);
                 } else
                 {
                     // No more operands are needed.
@@ -87,7 +85,7 @@ Formula * parsePrefix(istream & input)
                         operatorStack.pop();
                     }
                     delete temporary;
-                    throw UnnecessaryElementException(buffer, position);
+                    throw RedundantElementException(buffer, position);
                 }
                 break;
             case '-':
@@ -109,7 +107,7 @@ Formula * parsePrefix(istream & input)
                         operatorStack.pop();
                     }
                     delete temporary;
-                    throw UnnecessaryElementException(buffer, position);
+                    throw RedundantElementException(buffer, position);
                 }
                 break;
             case '.':
@@ -134,7 +132,7 @@ Formula * parsePrefix(istream & input)
                         operatorStack.pop();
                     }
                     delete temporary;
-                    throw UnnecessaryElementException(buffer, position);
+                    throw RedundantElementException(buffer, position);
                 }
                 break;
             case ' ':
@@ -175,7 +173,6 @@ Formula * parsePrefix(istream & input)
         }
         position++;
     }
-
     if (operatorStack.empty())
     {
         // Formula is complete.
@@ -192,16 +189,15 @@ Formula * parsePrefix(istream & input)
     }
 }
 
-Formula * parseInfix(istream & input)
+Formula* parseInfix(istream& input)
 {
     char buffer;
     int position = 1;
     bool run = true;
-
-    stack<Formula *> formulaStack;
-    stack<Composite *> operatorStack;
+    stack<Formula*> formulaStack;
+    stack<Composite*> operatorStack;
     stack<int> stateStack;
-    Formula * temporary;
+    Formula* temporary;
 
     while (run)
     {
@@ -238,7 +234,7 @@ Formula * parseInfix(istream & input)
                     if (position == 1)
                     {
                         // Trivial formula case.
-                        formulaStack.push(new Proposition(buffer));
+                        formulaStack.push(new Trivial(buffer));
                     } else
                     {
                         // Unexpected element position.
@@ -259,12 +255,12 @@ Formula * parseInfix(istream & input)
                            stateStack.top() == BINARY)
                 {
                     // The first or the last operand case.
-                    formulaStack.push(new Proposition(buffer));
+                    formulaStack.push(new Trivial(buffer));
                     stateStack.top()++;
                 } else if (stateStack.top() == UNARY)
                 {
                     // Unary operator operand.
-                    temporary = new Proposition(buffer);
+                    temporary = new Trivial(buffer);
 
                     // Close recent unary operators.
                     do
@@ -314,7 +310,7 @@ Formula * parseInfix(istream & input)
                         delete operatorStack.top();
                         operatorStack.pop();
                     }
-                    throw UnnecessaryElementException(buffer, position);
+                    throw RedundantElementException(buffer, position);
                 } else if ((stateStack.empty() && position == 1) ||
                            stateStack.top() == BLANK ||
                            stateStack.top() == BINARY ||
@@ -374,7 +370,7 @@ Formula * parseInfix(istream & input)
                             delete operatorStack.top();
                             operatorStack.pop();
                         }
-                        throw UnnecessaryElementException(buffer, position);
+                        throw RedundantElementException(buffer, position);
                     }
                 } else if (stateStack.top() == FIRST_OPERAND)
                 {
@@ -419,7 +415,7 @@ Formula * parseInfix(istream & input)
                             delete operatorStack.top();
                             operatorStack.pop();
                         }
-                        throw UnnecessaryElementException(buffer, position);
+                        throw RedundantElementException(buffer, position);
                     }
                 } else if (stateStack.top() == BLANK ||
                            stateStack.top() == BINARY ||
@@ -459,7 +455,7 @@ Formula * parseInfix(istream & input)
                         delete operatorStack.top();
                         operatorStack.pop();
                     }
-                    throw UnnecessaryElementException(buffer, position);
+                    throw RedundantElementException(buffer, position);
                 } else if (stateStack.top() == LAST_OPERAND)
                 {
                     // Tree level closing.
@@ -551,7 +547,6 @@ Formula * parseInfix(istream & input)
         }
         position++;
     }
-
     if (stateStack.empty())
     {
         if (position == 2)
@@ -580,14 +575,13 @@ Formula * parseInfix(istream & input)
     }
 }
 
-Formula * parsePostfix(istream & input)
+Formula* parsePostfix(istream& input)
 {
     char buffer;
     int position = 1;
     bool run = true;
-
-    stack<Formula *> formulaStack;
-    Composite * temporary;
+    stack<Formula*> formulaStack;
+    Composite* temporary;
 
     while (run)
     {
@@ -620,7 +614,7 @@ Formula * parsePostfix(istream & input)
             case 'Y':
             case 'Z':
                 // Push this to the formula stack.
-                formulaStack.push(new Proposition(buffer));
+                formulaStack.push(new Trivial(buffer));
                 break;
             case '-':
                 if (!formulaStack.empty())
@@ -639,7 +633,7 @@ Formula * parsePostfix(istream & input)
                         delete formulaStack.top();
                         formulaStack.pop();
                     }
-                    throw UnnecessaryElementException(buffer, position);
+                    throw RedundantElementException(buffer, position);
                 }
                 break;
             case '.':
@@ -664,7 +658,7 @@ Formula * parsePostfix(istream & input)
                         delete formulaStack.top();
                         formulaStack.pop();
                     }
-                    throw UnnecessaryElementException(buffer, position);
+                    throw RedundantElementException(buffer, position);
                 }
                 break;
             case ' ':
@@ -705,7 +699,6 @@ Formula * parsePostfix(istream & input)
         }
         position++;
     }
-
     if (position == 2)
     {
         // Empty line was parsed.

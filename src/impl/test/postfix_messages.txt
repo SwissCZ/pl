@@ -1,4 +1,0 @@
-This formula is incomplete.
-Unnecessary element '.' at position 2.
-Illegal character '?' at position 1.
-Unexpected end of stream.

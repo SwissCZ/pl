@@ -1,76 +1,96 @@
 #!/bin/sh
 
+### Initialization
+
+OUT_PATH="../out/"
+PL_CMD=$OUT_PATH"pl -e"
+
 TEST_SUCCESS=1
 
 cd test
 echo "Performing tests\n----------------"
 
-### Parser tests
+### Parser
 
-# Positive parser tests
-
-for in in prefix infix postfix
+# Positive test
+for IN in prefix infix postfix
 do
-	for out in prefix infix postfix
+	for OUT in prefix infix postfix
 	do
-		../out/pl -e -i $in -o $out -f $in.txt > ../out/$in\_$out\_test.txt 2>&1
-		if ! diff -q $out.txt ../out/$in\_$out\_test.txt > /dev/null;
+		$PL_CMD -i $IN -o $OUT -f $IN"_valid.txt" > $OUT_PATH"parser_"$IN"_"$OUT"_pos_test.txt" 2>&1
+		if ! diff $OUT"_valid.txt" $OUT_PATH"parser_"$IN"_"$OUT"_pos_test.txt" > "/dev/null" 2>&1;
 		then
-			echo "Test '$in ---> $out' failed!"
+			echo "Parser: Positive test failed! ($IN to $OUT)"
 			TEST_SUCCESS=0
 		fi
 	done
 done
 
-# Negative parser tests
-
-for in in prefix infix postfix
+# Negative test
+for IN in prefix infix postfix
 do
-	../out/pl -e -i $in -f $in\_error.txt > ../out/$in\_error\_test.txt 2>&1
-	if ! diff -q $in\_messages.txt ../out/$in\_error\_test.txt > /dev/null;
+	$PL_CMD -i $IN -f $IN"_invalid.txt" > $OUT_PATH"parser_"$IN"_neg_test.txt" 2>&1
+	if ! diff $IN"_invalid_msg.txt" $OUT_PATH"parser_"$IN"_neg_test.txt" > "/dev/null" 2>&1;
 	then
-		echo "Invalid $in syntax test failed!"
+		echo "Parser: Negative test failed! ($IN syntax)"
 		TEST_SUCCESS=0
 	fi
 done
 
-### Axiom checker testing
+### Axiom checker
 
-# Positive axioms test
-
-../out/pl -A -f axiom.txt
-if [ $? -ne 0 ];
+# Positive test
+$PL_CMD -A -f "axiom_valid.txt" > $OUT_PATH"axiom_checker_pos_test.txt" 2>&1
+if ! diff "axiom_valid_msg.txt" $OUT_PATH"axiom_checker_pos_test.txt" > "/dev/null" 2>&1;
 then
-	echo "Positive axioms testing failed!"
+	echo "Axiom checker: Positive test failed!"
 	TEST_SUCCESS=0
 fi
 
-# Negative axioms test
+# Negative test
+while read LINE
+do
+	echo $LINE | $PL_CMD -A >> $OUT_PATH"axiom_checker_neg_test.txt" 2>&1
+	if [ $? -eq 0];
+	then
+		echo "Axiom checker: Negative test failed! (axiom $LINE)"
+		TEST_SUCCESS=0
+	fi
+done < "axiom_invalid.txt"
 
-../out/pl -e -A -f axiom\_error.txt > ../out/axiom\_error\_test.txt 2>&1
-if ! diff -q axiom_error_messages.txt ../out/axiom\_error\_test.txt > /dev/null;
+### Proof checker
+
+# Positive test
+$PL_CMD -P -f "proof_valid.txt" > $OUT_PATH"proof_checker_pos_test.txt" 2>&1
+if ! diff "proof_valid_msg.txt" $OUT_PATH"proof_checker_pos_test.txt" > "/dev/null" 2>&1;
 then
-	echo "Negative axioms testing failed!"
+	echo "Proof checker: Positive test failed!"
 	TEST_SUCCESS=0
 fi
 
-### Proof checker testing
-
-# Positive proof test
-
-../out/pl -P -f proof.txt
-if [ $? -ne 0 ];
-then
-	echo "Test 'valid proof' failed!"
-	TEST_SUCCESS=0
-fi
-
-# Negative proof test
-
-../out/pl -P -f proof_error.txt
+# Negative test
+$PL_CMD -P -f "proof_invalid.txt" > $OUT_PATH"proof_checker_neg_test.txt" 2>&1
 if [ $? -eq 0 ];
 then
-	echo "Test 'invalid proof' failed!"
+	echo "Proof checker: Negative test failed!"
+	TEST_SUCCESS=0
+fi
+
+### Proof optimizer
+
+# Positive test
+$PL_CMD -O -f "proof_redundant.txt" > $OUT_PATH"proof_optimizer_pos_test.txt" 2>&1
+if ! diff "proof_valid.txt" $OUT_PATH"proof_optimizer_pos_test.txt" > "/dev/null" 2>&1;
+then
+	echo "Proof optimizer: Positive test failed!"
+	TEST_SUCCESS=0
+fi
+
+# Negative test
+$PL_CMD -O -f "proof_valid.txt" > $OUT_PATH"proof_optimizer_neg_test.txt" 2>&1
+if [ $? -eq 0 ];
+then
+	echo "Proof optimizer: Negative test failed!"
 	TEST_SUCCESS=0
 fi
 
@@ -78,7 +98,7 @@ fi
 
 if [ $TEST_SUCCESS -eq 1 ];
 then
-	echo "Success!"
+	echo "Testing succeeded!"
 else
-	echo "----------------\nFailure!"
+	echo "----------------\nTesting failed!"
 fi

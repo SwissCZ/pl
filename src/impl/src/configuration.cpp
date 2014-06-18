@@ -1,50 +1,43 @@
+#include <cstdlib>
 #include <stdexcept>
 #include <unistd.h>
 
 #include "configuration.hpp"
+#include "executionTarget.hpp"
 #include "syntaxException.hpp"
-#include "target.hpp"
 
-using namespace std;
-
-const map<string, Parser> Configuration::inputSyntax = {
+map<string, Parser> Configuration::inputSyntaxes = {
     {"prefix", &parsePrefix},
     {"infix", &parseInfix},
     {"postfix", &parsePostfix}
 };
-const map<string, Printer> Configuration::outputSyntax = {
+
+map<string, Printer> Configuration::outputSyntaxes = {
     {"prefix", &Formula::printPrefix},
     {"infix", &Formula::printInfix},
     {"postfix", &Formula::printPostfix}
 };
-const map<string, Language> Configuration::outputLanguage = {
+
+map<string, Language> Configuration::outputLanguages = {
     {"ascii", ASCII},
     {"words", WORDS},
     {"tex", TEX}
 };
 
-Configuration::Configuration(int argc, char ** argv)
+Configuration::Configuration(int argc,
+                             char** argv)
 {
     int option;
 
-    while ((option = getopt(argc, argv, ":ADef:i:l:o:Ps")) != -1)
+    opterr = 0;
+    while ((option = getopt(argc, argv, ":Aef:i:l:O:o:P:s")) != -1)
     {
         switch (option)
         {
             case 'A':
                 if (target == NULL)
                 {
-                    target = &executeAxiomCheck;
-                } else
-                {
-                    throw MultipleTargetsException(option);
-                }
-                break;
-            case 'D':
-                if (target == NULL)
-                {
-                    target = &executeProofCheck;
-                    simplify = true;
+                    target = new AxiomChecker();
                 } else
                 {
                     throw MultipleTargetsException(option);
@@ -60,13 +53,13 @@ Configuration::Configuration(int argc, char ** argv)
                     input = &file;
                 } else
                 {
-                    throw InvalidFileException(optarg);
+                    throw InvalidFileException(option, optarg);
                 }
                 break;
             case 'i':
                 try
                 {
-                    parser = inputSyntax.at(optarg);
+                    parser = inputSyntaxes.at(optarg);
                 } catch (out_of_range & ex)
                 {
                     throw IllegalValueException(option, optarg);
@@ -75,16 +68,25 @@ Configuration::Configuration(int argc, char ** argv)
             case 'l':
                 try
                 {
-                    language = outputLanguage.at(optarg);
+                    language = outputLanguages.at(optarg);
                 } catch (out_of_range & ex)
                 {
                     throw IllegalValueException(option, optarg);
                 }
                 break;
+            case 'O':
+                if (target == NULL)
+                {
+                    target = new ProofHandler(atoi(optarg), true);
+                } else
+                {
+                    throw MultipleTargetsException(option);
+                }
+                break;
             case 'o':
                 try
                 {
-                    printer = outputSyntax.at(optarg);
+                    printer = outputSyntaxes.at(optarg);
                 } catch (out_of_range & ex)
                 {
                     throw IllegalValueException(option, optarg);
@@ -93,7 +95,7 @@ Configuration::Configuration(int argc, char ** argv)
             case 'P':
                 if (target == NULL)
                 {
-                    target = &executeProofCheck;
+                    target = new ProofHandler(atoi(optarg), false);
                 } else
                 {
                     throw MultipleTargetsException(option);
@@ -112,7 +114,11 @@ Configuration::Configuration(int argc, char ** argv)
     }
     if (target == NULL)
     {
-        target = &executeDefault;
+        target = new DefaultTarget();
+    }
+    if (system == NULL)
+    {
+        system = new HilbertSystem();
     }
 }
 
@@ -122,21 +128,18 @@ Configuration::~Configuration()
     {
         file.close();
     }
+    delete target;
+    delete system;
 }
 
-Formula * Configuration::parse() const
-{
-    return parser(*input);
-}
-
-string Configuration::print(Formula * formula) const
-{
-    return (formula->*printer)(language);
-}
-
-Target Configuration::getTarget() const
+ExecutionTarget* Configuration::getTarget() const
 {
     return target;
+}
+
+ProofSystem* Configuration::getSystem() const
+{
+    return system;
 }
 
 bool Configuration::getEcho() const
@@ -149,7 +152,12 @@ bool Configuration::getStrict() const
     return strict;
 }
 
-bool Configuration::getSimplify() const
+Formula* Configuration::parseFormula() const
 {
-    return simplify;
+    return parser(*input);
+}
+
+string Configuration::printFormula(Formula* formula) const
+{
+    return (formula->*printer)(language);
 }
