@@ -5,7 +5,18 @@
 
 using namespace std;
 
-//! Program execution target.
+//! Proof handler target
+
+/**
+ * Targets of the proof handler target.
+ */
+enum ProofTarget
+{
+    VERIFY, ///< Verify the proof only
+    OPTIMIZE ///< Optimize the verified proof
+};
+
+//! Program execution target
 
 /**
  * Program can peform one target per execution.
@@ -17,13 +28,13 @@ public:
 
     /**
      * Executes the target.
-     * @param config Program configuration.
-     * @return Program exit status.
+     * @param config Program configuration
+     * @return Program exit status
      */
     virtual int execute(Configuration& config) const = 0;
 };
 
-//! Default execution target.
+//! Default execution target
 
 /**
  * Parse formulas only.
@@ -34,7 +45,7 @@ public:
     virtual int execute(Configuration&) const;
 };
 
-//! Axiom verification.
+//! Axiom verification
 
 /**
  * Verify each formula as an axiom.
@@ -45,7 +56,7 @@ public:
     virtual int execute(Configuration&) const;
 };
 
-//! Proof handling.
+//! Proof handling
 
 /**
  * Verify or optimize a proof given as a sequence of formulas.
@@ -54,13 +65,13 @@ class ProofHandler: public ExecutionTarget
 {
 private:
     unsigned premises;
-    ///< Input premises count.
+    ///< Input premises count
 
-    bool optimize;
-    ///< Proof optimization flag.
+    ProofTarget target;
+    ///< Proof handler target
 public:
     ProofHandler(unsigned,
-                 bool);
+                 ProofTarget);
 
     virtual int execute(Configuration&) const;
 };

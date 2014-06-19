@@ -101,8 +101,8 @@ int AxiomChecker::execute(Configuration& config) const
 }
 
 ProofHandler::ProofHandler(unsigned premises,
-                           bool optimize)
-: premises(premises), optimize(optimize)
+                           ProofTarget target)
+: premises(premises), target(target)
 {
 }
 
@@ -134,7 +134,7 @@ int ProofHandler::execute(Configuration& config) const
             unsigned type = config.getSystem()->isAxiom(formula);
             if (type > 0)
             {
-                if (!optimize && config.getEcho())
+                if (target == VERIFY && config.getEcho())
                 {
                     cout << "Axiom of type " << type << "." << endl;
                 }
@@ -154,7 +154,7 @@ int ProofHandler::execute(Configuration& config) const
             }
             if (type <= theory.size())
             {
-                if (!optimize && config.getEcho())
+                if (target == VERIFY && config.getEcho())
                 {
                     cout << "Premise of type " << type << "." << endl;
                 }
@@ -166,7 +166,7 @@ int ProofHandler::execute(Configuration& config) const
             list<unsigned> indexes = config.getSystem()->isDeducible(formula, proof);
             if (!indexes.empty())
             {
-                if (!optimize && config.getEcho())
+                if (target == VERIFY && config.getEcho())
                 {
                     cout << "Deducible using formulas ";
                     for (unsigned index: indexes)
@@ -187,12 +187,14 @@ int ProofHandler::execute(Configuration& config) const
             // Formula is not deducible
             if (config.getEcho())
             {
-                if (!optimize)
+                switch (target)
                 {
-                    cout << "Formula not deducible." << endl;
-                } else
-                {
-                    cout << "Invalid proof given." << endl;
+                    case VERIFY:
+                        cout << "Formula not deducible." << endl;
+                        break;
+                    case OPTIMIZE:
+                        cerr << "Invalid proof given." << endl;
+                        break;
                 }
             }
             exit = EXIT_FAILURE;
@@ -202,12 +204,14 @@ int ProofHandler::execute(Configuration& config) const
         {
             if (config.getEcho())
             {
-                if (!optimize)
+                switch (target)
                 {
-                    cerr << exception.getMessage() << endl;
-                } else
-                {
-                    cerr << "Invalid formula " << proof.size() + 1 << "." << endl;
+                    case VERIFY:
+                        cerr << exception.getMessage() << endl;
+                        break;
+                    case OPTIMIZE:
+                        cerr << "Invalid formula " << proof.size() + 1 << "." << endl;
+                        break;
                 }
             }
             exit = EXIT_FAILURE;
@@ -216,7 +220,7 @@ int ProofHandler::execute(Configuration& config) const
     }
 
     // Proof optimization
-    if (exit == EXIT_SUCCESS && optimize)
+    if (exit == EXIT_SUCCESS && target == OPTIMIZE)
     {
         list<ProofMember*> queue;
         unsigned preserved = 0;
@@ -253,7 +257,8 @@ int ProofHandler::execute(Configuration& config) const
             }
         }
     }
-
+    
+    // Cleanup
     for (Formula* formula: theory)
     {
         delete formula;

@@ -78,7 +78,7 @@ Configuration::Configuration(int argc,
                 {
                     try
                     {
-                        target = new ProofHandler(stoul(optarg), true);
+                        target = new ProofHandler(stoul(optarg), OPTIMIZE);
                     } catch (invalid_argument& exception)
                     {
                         throw IllegalValueException(option, optarg);
@@ -105,7 +105,7 @@ Configuration::Configuration(int argc,
                 {
                     try
                     {
-                        target = new ProofHandler(stoul(optarg), false);
+                        target = new ProofHandler(stoul(optarg), VERIFY);
                     } catch (invalid_argument& exception)
                     {
                         throw IllegalValueException(option, optarg);

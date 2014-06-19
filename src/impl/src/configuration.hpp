@@ -59,10 +59,10 @@ private:
     ///< Formula parser to use
 
     Printer printer = &Formula::printInfix;
-    ///< Output printer to use
+    ///< Formula printer to use
 
     Language language = ASCII;
-    ///< Output language of connectives
+    ///< Output language of connectives to use
 public:
     Configuration(int,
                   char**);
