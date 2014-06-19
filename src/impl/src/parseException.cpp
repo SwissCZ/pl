@@ -3,8 +3,8 @@
 #include "parseException.hpp"
 
 ParseException::ParseException(string message)
+: message(message)
 {
-    this->message = message;
 }
 
 string ParseException::getMessage() const
@@ -24,11 +24,9 @@ UnexpectedEOFException::UnexpectedEOFException()
 
 DetailedParseException::DetailedParseException(string message,
                                                char character,
-                                               int position)
-: ParseException(message)
+                                               unsigned position)
+: ParseException(message), character(character), position(position)
 {
-    this->character = character;
-    this->position = position;
 }
 
 string DetailedParseException::getMessage() const
@@ -40,7 +38,7 @@ string DetailedParseException::getMessage() const
 }
 
 UnexpectedElementException::UnexpectedElementException(char character,
-                                                       int position)
+                                                       unsigned position)
 : DetailedParseException("Unexpected element",
                          character,
                          position)
@@ -48,7 +46,7 @@ UnexpectedElementException::UnexpectedElementException(char character,
 }
 
 RedundantElementException::RedundantElementException(char character,
-                                                     int position)
+                                                     unsigned position)
 : DetailedParseException("Unnecessary element",
                          character,
                          position)
@@ -56,7 +54,7 @@ RedundantElementException::RedundantElementException(char character,
 }
 
 IllegalCharacterException::IllegalCharacterException(char character,
-                                                     int position)
+                                                     unsigned position)
 : DetailedParseException("Illegal character",
                          character,
                          position)

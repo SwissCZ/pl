@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "formula.hpp"
-#include "proofElement.hpp"
+#include "proofMember.hpp"
 
 using namespace std;
 
@@ -29,7 +29,7 @@ public:
      * @param formula Formula to be verified as an axiom
      * @return Axiom type given formula is or 0 when formula is not an axiom
      */
-    int isAxiom(Formula* formula) const;
+    unsigned isAxiom(Formula* formula) const;
 
     /**
      * Verifies whether given formula is deducible using the deduction rules.
@@ -37,8 +37,8 @@ public:
      * @param proof Proof within which given formula is to be deduced
      * @return Deducing formulas indexes, empty when formula is not deducible
      */
-    virtual list<int> isDeducible(Formula* formula,
-                                  vector<ProofElement>& proof) const = 0;
+    virtual list<unsigned> isDeducible(Formula* formula,
+                                       vector<ProofMember*>& proof) const = 0;
 };
 
 //! Hilbert's proof system
@@ -54,8 +54,9 @@ private:
 public:
     HilbertSystem();
     virtual ~HilbertSystem();
-    virtual list<int> isDeducible(Formula*,
-                                  vector<ProofElement>&) const;
+
+    virtual list<unsigned> isDeducible(Formula*,
+                                       vector<ProofMember*>&) const;
 };
 
 #endif

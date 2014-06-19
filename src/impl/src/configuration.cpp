@@ -1,4 +1,3 @@
-#include <cstdlib>
 #include <stdexcept>
 #include <unistd.h>
 
@@ -60,7 +59,7 @@ Configuration::Configuration(int argc,
                 try
                 {
                     parser = inputSyntaxes.at(optarg);
-                } catch (out_of_range & ex)
+                } catch (out_of_range& exception)
                 {
                     throw IllegalValueException(option, optarg);
                 }
@@ -69,7 +68,7 @@ Configuration::Configuration(int argc,
                 try
                 {
                     language = outputLanguages.at(optarg);
-                } catch (out_of_range & ex)
+                } catch (out_of_range& exception)
                 {
                     throw IllegalValueException(option, optarg);
                 }
@@ -77,7 +76,16 @@ Configuration::Configuration(int argc,
             case 'O':
                 if (target == NULL)
                 {
-                    target = new ProofHandler(atoi(optarg), true);
+                    try
+                    {
+                        target = new ProofHandler(stoul(optarg), true);
+                    } catch (invalid_argument& exception)
+                    {
+                        throw IllegalValueException(option, optarg);
+                    } catch (out_of_range& exception)
+                    {
+                        throw IllegalValueException(option, optarg);
+                    }
                 } else
                 {
                     throw MultipleTargetsException(option);
@@ -87,7 +95,7 @@ Configuration::Configuration(int argc,
                 try
                 {
                     printer = outputSyntaxes.at(optarg);
-                } catch (out_of_range & ex)
+                } catch (out_of_range& exception)
                 {
                     throw IllegalValueException(option, optarg);
                 }
@@ -95,7 +103,16 @@ Configuration::Configuration(int argc,
             case 'P':
                 if (target == NULL)
                 {
-                    target = new ProofHandler(atoi(optarg), false);
+                    try
+                    {
+                        target = new ProofHandler(stoul(optarg), false);
+                    } catch (invalid_argument& exception)
+                    {
+                        throw IllegalValueException(option, optarg);
+                    } catch (out_of_range& exception)
+                    {
+                        throw IllegalValueException(option, optarg);
+                    }
                 } else
                 {
                     throw MultipleTargetsException(option);

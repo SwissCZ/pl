@@ -58,12 +58,12 @@ protected:
     char character;
     ///< Erroneous character
 
-    int position;
+    unsigned position;
     ///< Erroneous character position
 public:
     DetailedParseException(string,
                            char,
-                           int);
+                           unsigned);
     virtual string getMessage() const;
 };
 
@@ -76,7 +76,7 @@ class UnexpectedElementException: public DetailedParseException
 {
 public:
     UnexpectedElementException(char,
-                               int);
+                               unsigned);
 };
 
 //! Redundant element exception
@@ -88,7 +88,7 @@ class RedundantElementException: public DetailedParseException
 {
 public:
     RedundantElementException(char,
-                              int);
+                              unsigned);
 };
 
 //! Illegal character exception
@@ -100,7 +100,7 @@ class IllegalCharacterException: public DetailedParseException
 {
 public:
     IllegalCharacterException(char,
-                              int);
+                              unsigned);
 };
 
 #endif

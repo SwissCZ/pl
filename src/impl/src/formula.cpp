@@ -81,7 +81,7 @@ bool Trivial::matches(Formula* formula,
     try
     {
         return substitutions.at(character)->equals(formula);
-    } catch (out_of_range & ex)
+    } catch (out_of_range& exception)
     {
         substitutions.emplace(character, formula);
         return true;

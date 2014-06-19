@@ -17,10 +17,10 @@ public:
 
     /**
      * Executes the target.
-     * @param configuration Program configuration.
+     * @param config Program configuration.
      * @return Program exit status.
      */
-    virtual int execute(Configuration& configuration) const = 0;
+    virtual int execute(Configuration& config) const = 0;
 };
 
 //! Default execution target.
@@ -53,14 +53,15 @@ public:
 class ProofHandler: public ExecutionTarget
 {
 private:
-    int premises;
+    unsigned premises;
     ///< Input premises count.
 
     bool optimize;
     ///< Proof optimization flag.
 public:
-    ProofHandler(int,
+    ProofHandler(unsigned,
                  bool);
+
     virtual int execute(Configuration&) const;
 };
 

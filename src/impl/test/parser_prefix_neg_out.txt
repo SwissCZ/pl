@@ -1,4 +1,4 @@
 Incomplete formula.
-Unnecessary element '.' at position 8.
+Unnecessary element 'A' at position 8.
 Illegal character '&' at position 1.
 Unexpected end of stream.

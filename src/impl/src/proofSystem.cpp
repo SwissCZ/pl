@@ -22,10 +22,10 @@ ProofSystem::~ProofSystem()
     }
 }
 
-int ProofSystem::isAxiom(Formula* formula) const
+unsigned ProofSystem::isAxiom(Formula* formula) const
 {
     map<char, Formula*> substitutions;
-    int type = 1;
+    unsigned type = 1;
 
     for (Formula* axiom: axioms)
     {
@@ -53,32 +53,36 @@ HilbertSystem::~HilbertSystem()
     delete modusPonens;
 }
 
-list<int> HilbertSystem::isDeducible(Formula* formula,
-                                     vector<ProofElement>& proof) const
+list<unsigned> HilbertSystem::isDeducible(Formula* formula,
+                                          vector<ProofMember*>& proof) const
 {
     map<char, Formula*> substitutions;
-    int premiseIndex = 1;
-    int implicationIndex = 1;
+    unsigned impliesIndex = 1;
+    unsigned implicationIndex = 1;
 
-    for (ProofElement implies: proof)
+    for (ProofMember* implies: proof)
     {
-        for (ProofElement implication: proof)
+        for (ProofMember* implication: proof)
         {
-            if (premiseIndex == implicationIndex)
+            if (impliesIndex == implicationIndex)
             {
+                implicationIndex++;
                 continue;
             }
-            substitutions.emplace('A', implies.getFormula());
+            substitutions.emplace('A', implies->getFormula());
             substitutions.emplace('B', formula);
-            if (modusPonens->matches(implication.getFormula(), substitutions))
+            if (modusPonens->matches(implication->getFormula(), substitutions))
             {
-                return {premiseIndex, implicationIndex};
+                return
+                {
+                    impliesIndex, implicationIndex
+                };
             }
             substitutions.clear();
             implicationIndex++;
         }
-        premiseIndex++;
-        implicationIndex = 0;
+        impliesIndex++;
+        implicationIndex = 1;
     }
-    return list<int>();
+    return list<unsigned>();
 }

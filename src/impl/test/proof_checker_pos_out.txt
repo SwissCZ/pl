@@ -1,0 +1,5 @@
+Axiom of type 1.
+Axiom of type 2.
+Deducible using formulas 1 2 as witnesses.
+Axiom of type 1.
+Deducible using formulas 4 3 as witnesses.

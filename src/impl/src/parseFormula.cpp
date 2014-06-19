@@ -22,15 +22,14 @@ enum InfixState
 
 Formula* parsePrefix(istream& input)
 {
-    char buffer;
-    int position = 1;
+    unsigned position = 1;
     bool run = true;
     stack<Composite*> operatorStack;
     Formula* temporary = NULL;
 
     while (run)
     {
-        buffer = input.get();
+        char buffer = input.get();
         switch (buffer)
         {
             case 'A':
@@ -61,10 +60,10 @@ Formula* parsePrefix(istream& input)
             case 'Z':
                 if (!operatorStack.empty())
                 {
-                    // Set this as a operator stack top's operand.
+                    // Set this as a operator stack top's operand
                     temporary = new Trivial(buffer);
 
-                    // While all operator stack top's operands have been set.
+                    // While all operator stack top's operands have been set
                     while (!operatorStack.empty() &&
                            operatorStack.top()->setFirst(temporary))
                     {
@@ -73,11 +72,11 @@ Formula* parsePrefix(istream& input)
                     }
                 } else if (position == 1)
                 {
-                    // Trivial formula case.
+                    // Trivial formula case
                     temporary = new Trivial(buffer);
                 } else
                 {
-                    // No more operands are needed.
+                    // No more operands are needed
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
                     while (!operatorStack.empty())
                     {
@@ -91,15 +90,15 @@ Formula* parsePrefix(istream& input)
             case '-':
                 if (!operatorStack.empty())
                 {
-                    // Push this to the operator stack.
+                    // Push this to the operator stack
                     operatorStack.push(new Unary(buffer));
                 } else if (position == 1)
                 {
-                    // Initial operator case.
+                    // Initial operator case
                     operatorStack.push(new Unary(buffer));
                 } else
                 {
-                    // No more operands are needed.
+                    // No more operands are needed
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
                     while (!operatorStack.empty())
                     {
@@ -116,15 +115,15 @@ Formula* parsePrefix(istream& input)
             case '=':
                 if (!operatorStack.empty())
                 {
-                    // Push this to the operator stack.
+                    // Push this to the operator stack
                     operatorStack.push(new Binary(buffer));
                 } else if (position == 1)
                 {
-                    // Initial operator case.
+                    // Initial operator case
                     operatorStack.push(new Binary(buffer));
                 } else
                 {
-                    // No more operands are needed.
+                    // No more operands are needed
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
                     while (!operatorStack.empty())
                     {
@@ -137,21 +136,21 @@ Formula* parsePrefix(istream& input)
                 break;
             case ' ':
             case '\t':
-                // Legal whitespace skipping.
+                // Legal whitespace skipping
                 position--;
                 break;
             case '\n':
-                // Formula proper ending.
+                // Formula proper ending
                 run = false;
                 break;
             case EOF:
                 if (position == 1)
                 {
-                    // End of formula sequence.
+                    // End of formula sequence
                     run = false;
                 } else
                 {
-                    // Unexpected end of stream.
+                    // Unexpected end of stream
                     while (!operatorStack.empty())
                     {
                         delete operatorStack.top();
@@ -161,7 +160,7 @@ Formula* parsePrefix(istream& input)
                 }
                 break;
             default:
-                // Illegal character used.
+                // Illegal character used
                 input.ignore(numeric_limits<streamsize>::max(), '\n');
                 while (!operatorStack.empty())
                 {
@@ -175,11 +174,11 @@ Formula* parsePrefix(istream& input)
     }
     if (operatorStack.empty())
     {
-        // Formula is complete.
+        // Formula is complete
         return temporary;
     } else
     {
-        // Formula is incomplete.
+        // Formula is incomplete
         while (!operatorStack.empty())
         {
             delete operatorStack.top();
@@ -191,8 +190,7 @@ Formula* parsePrefix(istream& input)
 
 Formula* parseInfix(istream& input)
 {
-    char buffer;
-    int position = 1;
+    unsigned position = 1;
     bool run = true;
     stack<Formula*> formulaStack;
     stack<Composite*> operatorStack;
@@ -201,7 +199,8 @@ Formula* parseInfix(istream& input)
 
     while (run)
     {
-        switch (buffer = input.get())
+        char buffer = input.get();
+        switch (buffer)
         {
             case 'A':
             case 'B':
@@ -233,11 +232,11 @@ Formula* parseInfix(istream& input)
                 {
                     if (position == 1)
                     {
-                        // Trivial formula case.
+                        // Trivial formula case
                         formulaStack.push(new Trivial(buffer));
                     } else
                     {
-                        // Unexpected element position.
+                        // Unexpected element position
                         input.ignore(numeric_limits<streamsize>::max(), '\n');
                         while (!formulaStack.empty())
                         {
@@ -254,15 +253,15 @@ Formula* parseInfix(istream& input)
                 } else if (stateStack.top() == BLANK ||
                            stateStack.top() == BINARY)
                 {
-                    // The first or the last operand case.
+                    // The first or the last operand case
                     formulaStack.push(new Trivial(buffer));
                     stateStack.top()++;
                 } else if (stateStack.top() == UNARY)
                 {
-                    // Unary operator operand.
+                    // Unary operator operand
                     temporary = new Trivial(buffer);
 
-                    // Close recent unary operators.
+                    // Close recent unary operators
                     do
                     {
                         operatorStack.top()->setFirst(temporary);
@@ -272,7 +271,7 @@ Formula* parseInfix(istream& input)
                     } while (!stateStack.empty() &&
                              stateStack.top() == UNARY);
 
-                    // Push this to the formula stack.
+                    // Push this to the formula stack
                     formulaStack.push(temporary);
                     if (stateStack.size())
                     {
@@ -280,7 +279,7 @@ Formula* parseInfix(istream& input)
                     }
                 } else
                 {
-                    // Unexpected element position.
+                    // Unexpected element position
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
                     while (!formulaStack.empty())
                     {
@@ -298,7 +297,7 @@ Formula* parseInfix(istream& input)
             case '-':
                 if (stateStack.empty() && position != 1)
                 {
-                    // No more elements are needed.
+                    // No more elements are needed
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
                     while (!formulaStack.empty())
                     {
@@ -316,12 +315,12 @@ Formula* parseInfix(istream& input)
                            stateStack.top() == BINARY ||
                            stateStack.top() == UNARY)
                 {
-                    // Push this to the operator stack.
+                    // Push this to the operator stack
                     stateStack.push(UNARY);
                     operatorStack.push(new Unary(buffer));
                 } else
                 {
-                    // Unexpected element position.
+                    // Unexpected element position
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
                     while (!formulaStack.empty())
                     {
@@ -345,7 +344,7 @@ Formula* parseInfix(istream& input)
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
                     if (position == 1)
                     {
-                        // Unexpected element position.
+                        // Unexpected element position
                         while (!formulaStack.empty())
                         {
                             delete formulaStack.top();
@@ -359,7 +358,7 @@ Formula* parseInfix(istream& input)
                         throw UnexpectedElementException(buffer, position);
                     } else
                     {
-                        // No more elements are needed.
+                        // No more elements are needed
                         while (!formulaStack.empty())
                         {
                             delete formulaStack.top();
@@ -374,12 +373,12 @@ Formula* parseInfix(istream& input)
                     }
                 } else if (stateStack.top() == FIRST_OPERAND)
                 {
-                    // Between operands case.
+                    // Between operands case
                     stateStack.top() = BINARY;
                     operatorStack.push(new Binary(buffer));
                 } else
                 {
-                    // Unexpected element position.
+                    // Unexpected element position
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
                     while (!formulaStack.empty())
                     {
@@ -399,11 +398,11 @@ Formula* parseInfix(istream& input)
                 {
                     if (position == 1)
                     {
-                        // Initial openning bracket case.
+                        // Initial openning bracket case
                         stateStack.push(BLANK);
                     } else
                     {
-                        // No more elements are needed.
+                        // No more elements are needed
                         input.ignore(numeric_limits<streamsize>::max(), '\n');
                         while (!formulaStack.empty())
                         {
@@ -421,11 +420,11 @@ Formula* parseInfix(istream& input)
                            stateStack.top() == BINARY ||
                            stateStack.top() == UNARY)
                 {
-                    // Tree level openning.
+                    // Tree level openning
                     stateStack.push(BLANK);
                 } else
                 {
-                    // Unexpected element position.
+                    // Unexpected element position
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
                     while (!formulaStack.empty())
                     {
@@ -443,7 +442,7 @@ Formula* parseInfix(istream& input)
             case ')':
                 if (stateStack.empty())
                 {
-                    // Too much closing brackets case.
+                    // Too much closing brackets case
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
                     while (!formulaStack.empty())
                     {
@@ -458,7 +457,7 @@ Formula* parseInfix(istream& input)
                     throw RedundantElementException(buffer, position);
                 } else if (stateStack.top() == LAST_OPERAND)
                 {
-                    // Tree level closing.
+                    // Tree level closing
                     stateStack.pop();
                     do
                     {
@@ -468,7 +467,7 @@ Formula* parseInfix(istream& input)
                     formulaStack.push(operatorStack.top());
                     operatorStack.pop();
 
-                    // Close recent unary operators.
+                    // Close recent unary operators
                     while (stateStack.size() && stateStack.top() == UNARY)
                     {
                         operatorStack.top()->setFirst(formulaStack.top());
@@ -484,7 +483,7 @@ Formula* parseInfix(istream& input)
                     }
                 } else
                 {
-                    // Unexpected element position.
+                    // Unexpected element position
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
                     while (!formulaStack.empty())
                     {
@@ -501,21 +500,21 @@ Formula* parseInfix(istream& input)
                 break;
             case ' ':
             case '\t':
-                // Legal whitespace skipping.
+                // Legal whitespace skipping
                 position--;
                 break;
             case '\n':
-                // Proper formula ending.
+                // Proper formula ending
                 run = false;
                 break;
             case EOF:
                 if (position == 1)
                 {
-                    // End of formula sequence.
+                    // End of formula sequence
                     run = false;
                 } else
                 {
-                    // Unexpected end of stream.
+                    // Unexpected end of stream
                     while (!formulaStack.empty())
                     {
                         delete formulaStack.top();
@@ -530,7 +529,7 @@ Formula* parseInfix(istream& input)
                 }
                 break;
             default:
-                // Illegal character used.
+                // Illegal character used
                 input.ignore(numeric_limits<streamsize>::max(), '\n');
                 while (!formulaStack.empty())
                 {
@@ -551,16 +550,16 @@ Formula* parseInfix(istream& input)
     {
         if (position == 2)
         {
-            // Empty line was parsed.
+            // Empty line was parsed
             return NULL;
         } else
         {
-            // Formula is complete.
+            // Formula is complete
             return formulaStack.top();
         }
     } else
     {
-        // Formula is incomplete.
+        // Formula is incomplete
         while (!formulaStack.empty())
         {
             delete formulaStack.top();
@@ -577,15 +576,15 @@ Formula* parseInfix(istream& input)
 
 Formula* parsePostfix(istream& input)
 {
-    char buffer;
-    int position = 1;
+    unsigned position = 1;
     bool run = true;
     stack<Formula*> formulaStack;
     Composite* temporary;
 
     while (run)
     {
-        switch (buffer = input.get())
+        char buffer = input.get();
+        switch (buffer)
         {
             case 'A':
             case 'B':
@@ -613,20 +612,20 @@ Formula* parsePostfix(istream& input)
             case 'X':
             case 'Y':
             case 'Z':
-                // Push this to the formula stack.
+                // Push this to the formula stack
                 formulaStack.push(new Trivial(buffer));
                 break;
             case '-':
                 if (!formulaStack.empty())
                 {
-                    // Stack operand is available.
+                    // Stack operand is available
                     temporary = new Unary(buffer);
                     temporary->setLast(formulaStack.top());
                     formulaStack.pop();
                     formulaStack.push(temporary);
                 } else
                 {
-                    // Not enough stack operands.
+                    // Not enough stack operands
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
                     while (!formulaStack.empty())
                     {
@@ -642,7 +641,7 @@ Formula* parsePostfix(istream& input)
             case '=':
                 if (formulaStack.size() > 1)
                 {
-                    // Stack operands are available.
+                    // Stack operands are available
                     temporary = new Binary(buffer);
                     temporary->setLast(formulaStack.top());
                     formulaStack.pop();
@@ -651,7 +650,7 @@ Formula* parsePostfix(istream& input)
                     formulaStack.push(temporary);
                 } else
                 {
-                    // Not enough stack operands.
+                    // Not enough stack operands
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
                     while (!formulaStack.empty())
                     {
@@ -663,21 +662,21 @@ Formula* parsePostfix(istream& input)
                 break;
             case ' ':
             case '\t':
-                // Legal whitespace skipping.
+                // Legal whitespace skipping
                 position--;
                 break;
             case '\n':
-                // Proper formula ending.
+                // Proper formula ending
                 run = false;
                 break;
             case EOF:
                 if (position == 1)
                 {
-                    // End of formula sequence.
+                    // End of formula sequence
                     run = false;
                 } else
                 {
-                    // Unexpected end of stream.
+                    // Unexpected end of stream
                     while (!formulaStack.empty())
                     {
                         delete formulaStack.top();
@@ -687,7 +686,7 @@ Formula* parsePostfix(istream& input)
                 }
                 break;
             default:
-                // Illegal character used.
+                // Illegal character used
                 input.ignore(numeric_limits<streamsize>::max(), '\n');
                 while (!formulaStack.empty())
                 {
@@ -701,15 +700,15 @@ Formula* parsePostfix(istream& input)
     }
     if (position == 2)
     {
-        // Empty line was parsed.
+        // Empty line was parsed
         return NULL;
     } else if (formulaStack.size() == 1)
     {
-        // Formula is complete.
+        // Formula is complete
         return formulaStack.top();
     } else
     {
-        // Formula is incomplete.
+        // Formula is incomplete
         while (!formulaStack.empty())
         {
             delete formulaStack.top();

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <list>
+#include <stdlib.h>
 
 #include "executionTarget.hpp"
 #include "formula.hpp"
@@ -10,226 +11,256 @@ ExecutionTarget::~ExecutionTarget()
 {
 }
 
-int DefaultTarget::execute(Configuration& configuration) const
+int DefaultTarget::execute(Configuration& config) const
 {
-    Formula* formula = NULL;
-    int exit = 0;
-
-    while (true)
-    {
-        try
-        {
-            formula = configuration.parseFormula();
-            if (formula == NULL)
-            {
-                break;
-            }
-            if (configuration.getEcho())
-            {
-                cout << configuration.printFormula(formula) << endl;
-            }
-            delete formula;
-        } catch (ParseException& exception)
-        {
-            exit = 1;
-            if (configuration.getEcho())
-            {
-                cerr << exception.getMessage() << endl;
-            }
-            if (configuration.getStrict())
-            {
-                break;
-            }
-        }
-    }
-    return exit;
-}
-
-int AxiomChecker::execute(Configuration& configuration) const
-{
-    Formula* formula = NULL;
-    int exit = 0;
-    int type;
-
-    while (true)
-    {
-        try
-        {
-            formula = configuration.parseFormula();
-            if (formula == NULL)
-            {
-                break;
-            }
-            type = configuration.getSystem()->isAxiom(formula);
-            if (type > 0)
-            {
-                if (configuration.getEcho())
-                {
-                    cout << "Axiom of type " << type << "." << endl;
-                }
-            } else
-            {
-                exit = 1;
-                if (configuration.getEcho())
-                {
-                    cout << "Not an axiom." << endl;
-                }
-                if (configuration.getStrict())
-                {
-                    delete formula;
-                    break;
-                }
-            }
-            delete formula;
-        } catch (ParseException& exception)
-        {
-            exit = 1;
-            if (configuration.getEcho())
-            {
-                cerr << exception.getMessage() << endl;
-            }
-            if (configuration.getStrict())
-            {
-                break;
-            }
-        }
-    }
-    return exit;
-}
-
-ProofHandler::ProofHandler(int premises,
-                           bool optimize)
-{
-    this->premises = premises;
-    this->optimize = optimize;
-}
-
-int ProofHandler::execute(Configuration& configuration) const
-{
-    int exit = 0;
-    int premisesCount = premises;
-    unsigned type;
-    Formula* formula;
-    list<Formula*> theory;
-    vector<ProofElement> proof;
-    list<int> indexes;
+    int exit = EXIT_SUCCESS;
 
     while (true)
     {
         try
         {
             // Formula parsing
-            formula = configuration.parseFormula();
+            Formula* formula = config.parseFormula();
             if (formula == NULL)
             {
                 break;
             }
 
-            // Premises storing
-            if (premisesCount)
+            // Formula printing
+            if (config.getEcho())
             {
-                theory.push_back(formula);
-                premisesCount--;
+                cout << config.printFormula(formula) << endl;
+            }
+            delete formula;
+        } catch (ParseException& exception)
+        {
+            if (config.getEcho())
+            {
+                cerr << exception.getMessage() << endl;
+            }
+            exit = EXIT_FAILURE;
+            if (config.getStrict())
+            {
+                break;
+            }
+        }
+    }
+    return exit;
+}
+
+int AxiomChecker::execute(Configuration& config) const
+{
+    int exit = EXIT_SUCCESS;
+
+    while (true)
+    {
+        try
+        {
+            // Formula parsing
+            Formula* formula = config.parseFormula();
+            if (formula == NULL)
+            {
+                break;
             }
 
             // Axiom checking
-            type = configuration.getSystem()->isAxiom(formula);
+            unsigned type = config.getSystem()->isAxiom(formula);
+            delete formula;
             if (type > 0)
             {
-                proof.push_back(ProofElement(formula));
-                if (configuration.getEcho())
+                if (config.getEcho())
                 {
                     cout << "Axiom of type " << type << "." << endl;
                 }
+            } else
+            {
+                if (config.getEcho())
+                {
+                    cout << "Not an axiom." << endl;
+                }
+                exit = EXIT_FAILURE;
+                if (config.getStrict())
+                {
+                    break;
+                }
+            }
+        } catch (ParseException& exception)
+        {
+            if (config.getEcho())
+            {
+                cerr << exception.getMessage() << endl;
+            }
+            exit = EXIT_FAILURE;
+            if (config.getStrict())
+            {
+                break;
+            }
+        }
+    }
+    return exit;
+}
+
+ProofHandler::ProofHandler(unsigned premises,
+                           bool optimize)
+: premises(premises), optimize(optimize)
+{
+}
+
+int ProofHandler::execute(Configuration& config) const
+{
+    int exit = EXIT_SUCCESS;
+    unsigned premisesLeft = premises;
+    list<Formula*> theory;
+    vector<ProofMember*> proof;
+
+    while (true)
+    {
+        try
+        {
+            // Formula parsing
+            Formula* formula = config.parseFormula();
+            if (formula == NULL)
+            {
+                break;
+            }
+            if (premisesLeft > 0)
+            {
+                theory.push_back(formula);
+                premisesLeft--;
                 continue;
             }
 
-            // Premise checking
+            // Axiom checking
+            unsigned type = config.getSystem()->isAxiom(formula);
+            if (type > 0)
+            {
+                if (!optimize && config.getEcho())
+                {
+                    cout << "Axiom of type " << type << "." << endl;
+                }
+                proof.push_back(new ProofMember(formula));
+                continue;
+            }
+
+            // Theory member checking
             type = 1;
             for (Formula* premise: theory)
             {
                 if (formula->equals(premise))
                 {
-                    if (configuration.getEcho())
-                    {
-                        cout << "Premise of type " << type << "." << endl;
-                        break;
-                    }
+                    break;
                 }
                 type++;
             }
             if (type <= theory.size())
             {
+                if (!optimize && config.getEcho())
+                {
+                    cout << "Premise of type " << type << "." << endl;
+                }
+                proof.push_back(new ProofMember(formula));
                 continue;
             }
 
-            // Rules checking
-            indexes = configuration.getSystem()->isDeducible(formula, proof);
+            // Deduction checking
+            list<unsigned> indexes = config.getSystem()->isDeducible(formula, proof);
             if (!indexes.empty())
             {
-                list<ProofElement*> witnesses;
-                for (int index: indexes)
+                if (!optimize && config.getEcho())
                 {
-                    witnesses.push_back(&proof[index]);
-                }
-                proof.push_back(ProofElement(formula, witnesses));
-                if (configuration.getEcho())
-                {
-                    cout << "Provable using formulas ";
-                    for (int index: indexes)
+                    cout << "Deducible using formulas ";
+                    for (unsigned index: indexes)
                     {
                         cout << index << " ";
                     }
                     cout << "as witnesses." << endl;
                 }
+                list<ProofMember*> witnesses;
+                for (unsigned index: indexes)
+                {
+                    witnesses.push_back(proof[index - 1]);
+                }
+                proof.push_back(new ProofMember(formula, witnesses));
                 continue;
             }
 
-            // Formula is not provable.
-            if (configuration.getEcho())
+            // Formula is not deducible
+            if (config.getEcho())
             {
-                cout << "Not provable." << endl;
+                if (!optimize)
+                {
+                    cout << "Formula not deducible." << endl;
+                } else
+                {
+                    cout << "Invalid proof given." << endl;
+                }
             }
+            exit = EXIT_FAILURE;
             delete formula;
             break;
         } catch (ParseException& exception)
         {
-            exit = 1;
-            if (configuration.getEcho())
+            if (config.getEcho())
             {
-                cerr << exception.getMessage() << endl;
+                if (!optimize)
+                {
+                    cerr << exception.getMessage() << endl;
+                } else
+                {
+                    cerr << "Invalid formula " << proof.size() + 1 << "." << endl;
+                }
             }
+            exit = EXIT_FAILURE;
             break;
         }
     }
 
     // Proof optimization
-    if (optimize)
+    if (exit == EXIT_SUCCESS && optimize)
     {
-        list<ProofElement*> queue;
+        list<ProofMember*> queue;
         unsigned preserved = 0;
 
-        queue.push_back(&proof.back());
+        queue.push_back(proof.back());
         while (!queue.empty())
         {
-            for (ProofElement* witness: queue.front()->getWitnesses())
+            for (ProofMember* witness: queue.front()->getWitnesses())
             {
                 queue.push_back(witness);
             }
             queue.front()->setPreserve(true);
+            queue.pop_front();
             preserved++;
         }
         if (preserved == proof.size())
         {
-            cerr << "Already optimal." << endl;
-            exit = 1;
+            if (config.getEcho())
+            {
+                cerr << "Proof already optimal." << endl;
+            }
+            exit = EXIT_FAILURE;
         } else
         {
-            for (ProofElement element: proof)
+            if (config.getEcho())
             {
-                cout << configuration.printFormula(element.getFormula()) << endl;
+                for (ProofMember* member: proof)
+                {
+                    if (member->getPreserve())
+                    {
+                        cout << config.printFormula(member->getFormula()) << endl;
+                    }
+                }
             }
         }
+    }
+
+    for (Formula* formula: theory)
+    {
+        delete formula;
+    }
+    for (ProofMember* member: proof)
+    {
+        delete member;
     }
     return exit;
 }

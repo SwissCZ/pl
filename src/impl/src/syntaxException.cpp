@@ -2,9 +2,8 @@
 
 SyntaxException::SyntaxException(char option,
                                  string message)
+: option(option), message(message)
 {
-    this->option = option;
-    this->message = message;
 }
 
 string SyntaxException::getMessage() const

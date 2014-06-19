@@ -12,7 +12,7 @@ using namespace std;
  */
 class SyntaxException
 {
-protected:
+private:
     char option;
     ///< Erroneous option
 

@@ -134,6 +134,7 @@ private:
 public:
     Unary(char);
     virtual ~Unary();
+
     virtual string printPrefix(Language) const;
     virtual string printInfix(Language) const;
     virtual string printPostfix(Language) const;
@@ -160,6 +161,7 @@ private:
 public:
     Binary(char);
     virtual ~Binary();
+
     virtual string printPrefix(Language) const;
     virtual string printInfix(Language) const;
     virtual string printPostfix(Language) const;

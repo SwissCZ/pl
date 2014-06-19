@@ -1,0 +1,4 @@
+Axiom of type 1.
+Axiom of type 2.
+Axiom of type 1.
+Formula not deducible.

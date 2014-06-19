@@ -11,8 +11,8 @@ using namespace std;
 
 /**
  * Parses a formula in prefix syntax.
- * @param input Input stream to read
- * @return Formula expression tree root
+ * @param input Input stream to read from
+ * @return Formula expression tree root node
  */
 Formula* parsePrefix(istream& input);
 
@@ -20,8 +20,8 @@ Formula* parsePrefix(istream& input);
 
 /**
  * Parses a formula in infix syntax.
- * @param input Input stream to read
- * @return Formula expression tree root
+ * @param input Input stream to read from
+ * @return Formula expression tree root node
  */
 Formula* parseInfix(istream& input);
 
@@ -29,8 +29,8 @@ Formula* parseInfix(istream& input);
 
 /**
  * Parses a formula in postfix syntax.
- * @param input Input stream to read
- * @return Formula expression tree root
+ * @param input Input stream to read from
+ * @return Formula expression tree root node
  */
 Formula* parsePostfix(istream& input);
 

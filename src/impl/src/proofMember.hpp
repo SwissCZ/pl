@@ -1,5 +1,5 @@
-#ifndef PROOF_ELEMENT_HPP
-#define	PROOF_ELEMENT_HPP
+#ifndef PROOF_MEMBER_HPP
+#define	PROOF_MEMBER_HPP
 
 #include <list>
 
@@ -7,38 +7,38 @@
 
 using namespace std;
 
-//! Proof element
+//! Proof member
 
 /**
- * Proof element as a complex structure.
+ * Proof member as a complex structure.
  */
-class ProofElement
+class ProofMember
 {
 private:
     Formula* formula;
-    ///< Formula representing this proof element
+    ///< Formula representing this proof member
 
-    list<ProofElement*> witnesses;
+    list<ProofMember*> witnesses;
     ///< Formulas deducing this one
 
     bool preserve = false;
     ///< Optimal proof component flag
 public:
-    ProofElement(Formula*,
-                 list<ProofElement*> = list<ProofElement*>());
-    ~ProofElement();
+    ProofMember(Formula*,
+                list<ProofMember*> = list<ProofMember*>());
+    ~ProofMember();
 
     /**
      * Formula getter.
-     * @return Formula representing this proof element
+     * @return Formula representing this proof member
      */
     Formula* getFormula() const;
 
     /**
      * Witnesses getter.
-     * @return Formulas deducing this one
+     * @return Witnesses of this formula
      */
-    list<ProofElement*> getWitnesses() const;
+    list<ProofMember*> getWitnesses() const;
 
     /**
      * Optimal proof component flag getter.

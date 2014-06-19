@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "configuration.hpp"
 #include "executionTarget.hpp"
 #include "syntaxException.hpp"
@@ -9,11 +11,11 @@ int main(int argc,
 {
     try
     {
-        Configuration configuration(argc, argv);
-        return configuration.getTarget()->execute(configuration);
+        Configuration config(argc, argv);
+        return config.getTarget()->execute(config);
     } catch (SyntaxException& exception)
     {
         cerr << exception.getMessage() << endl;
-        return 1;
+        return EXIT_FAILURE;
     }
 }

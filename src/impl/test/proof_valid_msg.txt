@@ -1,5 +1,0 @@
-Type 1 axiom.
-Type 2 axiom.
-Provable using 1 2 formulas.
-Type 1 axiom.
-Provable using 4 3 formulas.
