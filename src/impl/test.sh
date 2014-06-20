@@ -76,15 +76,15 @@ fi
 ### Proof optimizer
 
 # Positive test
-$PL_CMD -O 0 -f "proof_optimizer_pos_in.txt" > $OUT_PATH"proof_optimizer_pos_test.txt" 2>&1
-if ! diff "proof_checker_pos_in.txt" $OUT_PATH"proof_optimizer_pos_test.txt" > "/dev/null" 2>&1;
+$PL_CMD -O 0 -f "proof_checker_pos_in.txt" > $OUT_PATH"proof_optimizer_pos_test.txt" 2>&1
+if ! diff "proof_optimizer_pos_out.txt" $OUT_PATH"proof_optimizer_pos_test.txt" > "/dev/null" 2>&1;
 then
 	echo "Proof optimizer: Positive test failed!"
 	TEST_SUCCESS=0
 fi
 
 # Negative test
-$PL_CMD -O 0 -f "proof_checker_pos_in.txt" > $OUT_PATH"proof_optimizer_neg_test.txt" 2>&1
+$PL_CMD -O 0 -f "proof_optimizer_pos_out.txt" > $OUT_PATH"proof_optimizer_neg_test.txt" 2>&1
 if ! diff "proof_optimizer_neg_out.txt" $OUT_PATH"proof_optimizer_neg_test.txt" > "/dev/null" 2>&1;
 then
 	echo "Proof optimizer: Negative test failed!"
