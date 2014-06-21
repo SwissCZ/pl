@@ -11,43 +11,6 @@ ExecutionTarget::~ExecutionTarget()
 {
 }
 
-int DefaultTarget::execute(Configuration& config) const
-{
-    int exit = EXIT_SUCCESS;
-
-    while (true)
-    {
-        try
-        {
-            // Formula parsing
-            Formula* formula = config.parseFormula();
-            if (formula == NULL)
-            {
-                break;
-            }
-
-            // Formula printing
-            if (config.getEcho())
-            {
-                cout << config.printFormula(formula) << endl;
-            }
-            delete formula;
-        } catch (ParseException& exception)
-        {
-            if (config.getEcho())
-            {
-                cerr << exception.getMessage() << endl;
-            }
-            exit = EXIT_FAILURE;
-            if (config.getStrict())
-            {
-                break;
-            }
-        }
-    }
-    return exit;
-}
-
 int AxiomChecker::execute(Configuration& config) const
 {
     int exit = EXIT_SUCCESS;
@@ -100,6 +63,43 @@ int AxiomChecker::execute(Configuration& config) const
     return exit;
 }
 
+int DefaultTarget::execute(Configuration& config) const
+{
+    int exit = EXIT_SUCCESS;
+
+    while (true)
+    {
+        try
+        {
+            // Formula parsing
+            Formula* formula = config.parseFormula();
+            if (formula == NULL)
+            {
+                break;
+            }
+
+            // Formula printing
+            if (config.getEcho())
+            {
+                cout << config.printFormula(formula) << endl;
+            }
+            delete formula;
+        } catch (ParseException& exception)
+        {
+            if (config.getEcho())
+            {
+                cerr << exception.getMessage() << endl;
+            }
+            exit = EXIT_FAILURE;
+            if (config.getStrict())
+            {
+                break;
+            }
+        }
+    }
+    return exit;
+}
+
 ProofHandler::ProofHandler(unsigned premises,
                            ProofTarget target)
 : premises(premises), target(target)
@@ -109,7 +109,6 @@ ProofHandler::ProofHandler(unsigned premises,
 int ProofHandler::execute(Configuration& config) const
 {
     int exit = EXIT_SUCCESS;
-    unsigned premisesLeft = premises;
     list<Formula*> theory;
     vector<ProofMember*> proof;
 
@@ -123,10 +122,9 @@ int ProofHandler::execute(Configuration& config) const
             {
                 break;
             }
-            if (premisesLeft > 0)
+            if (theory.size() < premises)
             {
                 theory.push_back(formula);
-                premisesLeft--;
                 continue;
             }
 
@@ -144,7 +142,7 @@ int ProofHandler::execute(Configuration& config) const
 
             // Theory member checking
             type = 1;
-            for (Formula* premise: theory)
+            for (Formula* premise : theory)
             {
                 if (formula->equals(premise))
                 {
@@ -169,14 +167,14 @@ int ProofHandler::execute(Configuration& config) const
                 if (target == VERIFY && config.getEcho())
                 {
                     cout << "Deducible using formulas ";
-                    for (unsigned index: indexes)
+                    for (unsigned index : indexes)
                     {
                         cout << index << " ";
                     }
                     cout << "as witnesses." << endl;
                 }
                 list<ProofMember*> witnesses;
-                for (unsigned index: indexes)
+                for (unsigned index : indexes)
                 {
                     witnesses.push_back(proof[index - 1]);
                 }
@@ -228,7 +226,7 @@ int ProofHandler::execute(Configuration& config) const
         queue.push_back(proof.back());
         while (!queue.empty())
         {
-            for (ProofMember* witness: queue.front()->getWitnesses())
+            for (ProofMember* witness : queue.front()->getWitnesses())
             {
                 queue.push_back(witness);
             }
@@ -247,7 +245,7 @@ int ProofHandler::execute(Configuration& config) const
         {
             if (config.getEcho())
             {
-                for (ProofMember* member: proof)
+                for (ProofMember* member : proof)
                 {
                     if (member->getPreserve())
                     {
@@ -257,13 +255,13 @@ int ProofHandler::execute(Configuration& config) const
             }
         }
     }
-    
+
     // Cleanup
-    for (Formula* formula: theory)
+    for (Formula* formula : theory)
     {
         delete formula;
     }
-    for (ProofMember* member: proof)
+    for (ProofMember* member : proof)
     {
         delete member;
     }

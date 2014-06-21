@@ -12,16 +12,6 @@ string ParseException::getMessage() const
     return message + ".";
 }
 
-IncompleteFormulaException::IncompleteFormulaException()
-: ParseException("Incomplete formula")
-{
-}
-
-UnexpectedEOFException::UnexpectedEOFException()
-: ParseException("Unexpected end of stream")
-{
-}
-
 DetailedParseException::DetailedParseException(string message,
                                                char character,
                                                unsigned position)
@@ -37,9 +27,19 @@ string DetailedParseException::getMessage() const
     return stream.str();
 }
 
-UnexpectedElementException::UnexpectedElementException(char character,
-                                                       unsigned position)
-: DetailedParseException("Unexpected element",
+IncompleteFormulaException::IncompleteFormulaException()
+: ParseException("Incomplete formula")
+{
+}
+
+UnexpectedEOFException::UnexpectedEOFException()
+: ParseException("Unexpected end of stream")
+{
+}
+
+IllegalCharacterException::IllegalCharacterException(char character,
+                                                     unsigned position)
+: DetailedParseException("Illegal character",
                          character,
                          position)
 {
@@ -53,9 +53,9 @@ RedundantElementException::RedundantElementException(char character,
 {
 }
 
-IllegalCharacterException::IllegalCharacterException(char character,
-                                                     unsigned position)
-: DetailedParseException("Illegal character",
+UnexpectedElementException::UnexpectedElementException(char character,
+                                                       unsigned position)
+: DetailedParseException("Unexpected element",
                          character,
                          position)
 {

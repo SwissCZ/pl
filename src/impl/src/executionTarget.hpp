@@ -34,23 +34,23 @@ public:
     virtual int execute(Configuration& config) const = 0;
 };
 
-//! Default execution target
-
-/**
- * Parse formulas only.
- */
-class DefaultTarget: public ExecutionTarget
-{
-public:
-    virtual int execute(Configuration&) const;
-};
-
 //! Axiom verification
 
 /**
  * Verify each formula as an axiom.
  */
 class AxiomChecker: public ExecutionTarget
+{
+public:
+    virtual int execute(Configuration&) const;
+};
+
+//! Default execution target
+
+/**
+ * Parse formulas only.
+ */
+class DefaultTarget: public ExecutionTarget
 {
 public:
     virtual int execute(Configuration&) const;

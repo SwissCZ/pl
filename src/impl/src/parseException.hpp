@@ -25,6 +25,26 @@ public:
     virtual string getMessage() const;
 };
 
+//! Detailed parse exception
+
+/**
+ * Exception specified with an error causing character and it's position.
+ */
+class DetailedParseException: public ParseException
+{
+protected:
+    char character;
+    ///< Erroneous character
+
+    unsigned position;
+    ///< Erroneous character position
+public:
+    DetailedParseException(string,
+                           char,
+                           unsigned);
+    virtual string getMessage() const;
+};
+
 //! Incomplete formula exception
 
 /**
@@ -47,36 +67,16 @@ public:
     UnexpectedEOFException();
 };
 
-//! Detailed parse exception
+//! Illegal character exception
 
 /**
- * Exception specified with an error causing character and it's position.
+ * Thrown when an illegal character is read.
  */
-class DetailedParseException: public ParseException
-{
-protected:
-    char character;
-    ///< Erroneous character
-
-    unsigned position;
-    ///< Erroneous character position
-public:
-    DetailedParseException(string,
-                           char,
-                           unsigned);
-    virtual string getMessage() const;
-};
-
-//! Unexpected element exception
-
-/**
- * Thrown when a parsed element is not expected at it's position.
- */
-class UnexpectedElementException: public DetailedParseException
+class IllegalCharacterException: public DetailedParseException
 {
 public:
-    UnexpectedElementException(char,
-                               unsigned);
+    IllegalCharacterException(char,
+                              unsigned);
 };
 
 //! Redundant element exception
@@ -91,16 +91,16 @@ public:
                               unsigned);
 };
 
-//! Illegal character exception
+//! Unexpected element exception
 
 /**
- * Thrown when an illegal character is read.
+ * Thrown when a parsed element is not expected at it's position.
  */
-class IllegalCharacterException: public DetailedParseException
+class UnexpectedElementException: public DetailedParseException
 {
 public:
-    IllegalCharacterException(char,
-                              unsigned);
+    UnexpectedElementException(char,
+                               unsigned);
 };
 
 #endif

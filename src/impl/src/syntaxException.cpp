@@ -11,21 +11,9 @@ string SyntaxException::getMessage() const
     return string() + "'-" + option + "': " + message + ".";
 }
 
-MultipleTargetsException::MultipleTargetsException(char option)
-: SyntaxException(option,
-                  "Multiple targets were set")
-{
-}
-
 IllegalOptionException::IllegalOptionException(char option)
 : SyntaxException(option,
                   "This is an illegal option")
-{
-}
-
-MissingValueException::MissingValueException(char option)
-: SyntaxException(option,
-                  "No option value was given")
 {
 }
 
@@ -40,5 +28,17 @@ InvalidFileException::InvalidFileException(char option,
                                            string value)
 : SyntaxException(option,
                   "Given file '" + value + "' is invalid")
+{
+}
+
+MissingValueException::MissingValueException(char option)
+: SyntaxException(option,
+                  "No option value was given")
+{
+}
+
+MultipleTargetsException::MultipleTargetsException(char option)
+: SyntaxException(option,
+                  "Multiple targets were set")
 {
 }

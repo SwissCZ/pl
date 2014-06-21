@@ -40,28 +40,6 @@ public:
     IllegalOptionException(char);
 };
 
-//! Missing value exception
-
-/**
- * Thrown when a mandatory option value is not set.
- */
-class MissingValueException: public SyntaxException
-{
-public:
-    MissingValueException(char);
-};
-
-//! Multiple targets exception
-
-/**
- * Thrown when multiple targets are set to be performed.
- */
-class MultipleTargetsException: public SyntaxException
-{
-public:
-    MultipleTargetsException(char);
-};
-
 //! Illegal value exception
 
 /**
@@ -84,6 +62,28 @@ class InvalidFileException: public SyntaxException
 public:
     InvalidFileException(char,
                          string);
+};
+
+//! Missing value exception
+
+/**
+ * Thrown when a mandatory option value is not set.
+ */
+class MissingValueException: public SyntaxException
+{
+public:
+    MissingValueException(char);
+};
+
+//! Multiple targets exception
+
+/**
+ * Thrown when multiple targets are set to be performed.
+ */
+class MultipleTargetsException: public SyntaxException
+{
+public:
+    MultipleTargetsException(char);
 };
 
 #endif

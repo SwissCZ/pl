@@ -79,23 +79,6 @@ public:
                          map<char, Formula*>& substitutions) const = 0;
 };
 
-//! Trivial formula
-
-/**
- * Trivial formula consisting of a proposition.
- */
-class Trivial: public Formula
-{
-public:
-    Trivial(char);
-    virtual string printPrefix(Language) const;
-    virtual string printInfix(Language) const;
-    virtual string printPostfix(Language) const;
-    virtual bool equals(Formula*) const;
-    virtual bool matches(Formula*,
-                         map<char, Formula*>&) const;
-};
-
 //! Composite formula
 
 /**
@@ -121,28 +104,21 @@ public:
     virtual bool setLast(Formula* formula) = 0;
 };
 
-//! Unary operator compound formula
+//! Trivial formula
 
 /**
- * Formula consisting of an unary operator and an operand.
+ * Trivial formula consisting of a proposition.
  */
-class Unary: public Composite
+class Trivial: public Formula
 {
-private:
-    Formula* operand = NULL;
-    ///< The operand
 public:
-    Unary(char);
-    virtual ~Unary();
-
+    Trivial(char);
     virtual string printPrefix(Language) const;
     virtual string printInfix(Language) const;
     virtual string printPostfix(Language) const;
     virtual bool equals(Formula*) const;
     virtual bool matches(Formula*,
                          map<char, Formula*>&) const;
-    virtual bool setFirst(Formula*);
-    virtual bool setLast(Formula*);
 };
 
 //! Binary operator compound formula
@@ -161,6 +137,30 @@ private:
 public:
     Binary(char);
     virtual ~Binary();
+
+    virtual string printPrefix(Language) const;
+    virtual string printInfix(Language) const;
+    virtual string printPostfix(Language) const;
+    virtual bool equals(Formula*) const;
+    virtual bool matches(Formula*,
+                         map<char, Formula*>&) const;
+    virtual bool setFirst(Formula*);
+    virtual bool setLast(Formula*);
+};
+
+//! Unary operator compound formula
+
+/**
+ * Formula consisting of an unary operator and an operand.
+ */
+class Unary: public Composite
+{
+private:
+    Formula* operand = NULL;
+    ///< The operand
+public:
+    Unary(char);
+    virtual ~Unary();
 
     virtual string printPrefix(Language) const;
     virtual string printInfix(Language) const;
