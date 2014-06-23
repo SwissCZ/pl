@@ -2,6 +2,7 @@
 
 \usepackage[utf8]{inputenc}
 
+\usepackage{algorithm2e}
 \usepackage{amsthm}
 \usepackage{dirtree}
 \usepackage{graphicx}
@@ -195,7 +196,7 @@ Pro ilustraci předvedeme důkaz formule $\varphi \Rightarrow \varphi$ v Hilbert
 
 Důkaz lze zobecnit na tzv. \emph{důkaz z~předpokladů} rozšířením stávající definice důkazu. Navíc zavedeme množinu \emph{předpokladů} $T$, tj. formulí, ze kterých v~rámci důkazu vycházíme. Zobecnění spočívá v~tom, že kromě axiomů jako členy důkazu obdobně připouštíme i formule z množiny předpokladů. Předpoklad je tedy formule, kterou, ačkoliv není axiomem, elementárně považujeme za dokazatelnou. Existuje-li důkaz formule $\varphi$ z předpokladů $T$, píšeme $T \vdash \varphi$.
 
-\subsubsection{Optimalizace důkazů}
+\subsubsection{Optimální důkaz}
 
 Protože se v této práci také zabýváme optimalizací, resp. minimalizací, důkazů, definujeme nyní důkaz, který nazveme \emph{optimálním}.
 
@@ -292,10 +293,11 @@ Aby manuálová stránka byla dostupná pomocí příkazu \texttt{man}, musí sp
 \texttt{[název aplikace].[manuálová sekce]}
 \end{center}
 
-V našem případě tedy \texttt{pl.1}. Stejnojmenný archiv souboru s manuálovou stránkou je umístěn v adresáři, ve kterém příkaz \texttt{man} implicitně hledá manuálové stránky\footnote{Tato umístění zobrazíme, popř. nastavíme, pomocí příkazu \texttt{manpath}} pod adresářem příslušícím dané manuálové sekci. V našem případě se jedná o adresář \texttt{man1}. Absolutní cesta k~naší manuálové stránce může vypadat například následovně: \texttt{/usr/local/man/man1/pl.1.gz}. Soubor archivu s manuálovou stránkou má vlastníka uživatele \texttt{root} a přístupová práva 0644.
+Stejnojmenný archiv souboru s manuálovou stránkou je umístěn v adresáři, ve kterém příkaz \texttt{man} implicitně hledá manuálové stránky\footnote{Tato umístění zobrazíme, popř. nastavíme, pomocí příkazu \texttt{manpath}} pod adresářem příslušícím dané manuálové sekci. V našem případě se jedná o adresář \texttt{man1}. Absolutní cesta k~naší manuálové stránce může vypadat například následovně: \texttt{/usr/local/man/man1/pl.1.gz}. Soubor archivu s manuálovou stránkou má vlastníka uživatele \texttt{root} a přístupová práva 0644.
+
+Manuálové stránky mají standardní strukturu, kterou dodržíme. Text příručky napíšeme v~angličtině a její obsah rozdělíme do příslušných standardních sekcí.
 
 \section{Případy užití}
-\label{sec:use_cases}
 
 Na základě funkčních požadavků nastíníme možné případy užití aplikace \ref{fig:use_cases}.
 
@@ -320,7 +322,7 @@ Tato funkcionalita je hlavním cílem této práce. Na vstupní posloupnost form
 
 \subsection{Optimalizace důkazu}
 
-Důkaz (z předpokladů) je nejprve ověřen stejně jako v předchozím případě. Následně, pokud je to možné, je optimalizován do nejúspornější možné podoby \ref{def:optimal_proof}. Výstupem je důkaz téže formule právě v této podobě.
+Důkaz (z předpokladů) je nejprve ověřen stejně jako v předchozím případě. Následně, pokud je to možné, je optimalizován do nejúspornější možné podoby \ref{dfn:optimal_proof}. Výstupem je důkaz téže formule právě v této podobě.
 
 \section{Návrh}
 
@@ -334,7 +336,7 @@ Kromě výstupní notace lze zvolit i jednu ze tří výstupních forem (jazyků
 
 \begin{table}
 \centering
-\caption{Výstupní jazyky spojek}
+\caption{Výstupní formy logických spojek}
 \label{tab:connectives_language}
 \begin{tabular}{|c||c|c|c|}\hline
 Operátor & ASCII & Slovní & \TeX \tabularnewline \hline \hline
@@ -357,32 +359,12 @@ Nefunkčním požadavkem na uživatelské rozhraní je obsluha pomocí přepína
 	\item[-i syntax] (input syntax) Nastaví danou vstupní notaci \emph{syntax} formulí s hodnotami \emph{prefix}, \emph{infix} a \emph{postfix}. Implicitní hodnota je \emph{infix}.
 	\item[-l language] (output language of connectives) Nastaví danou výstupní formu jazyka logických spojek. Možné hodnoty jsou: \emph{ascii}, \emph{words} a \emph{latex}. Implicitní hodnota je \emph{ascii}.
 	\item[-o syntax] (output syntax) Nastaví danou výstupní notaci \emph{syntax} formulí s hodnotami \emph{prefix}, \emph{infix} a \emph{postfix}. Implicitní hodnota je \emph{infix}.
-	\item[-O n] (proof optimizer) Optimalizuje důkaz ze vstupní posloupnosti formulí. Nepovinný parametr \emph{n} vyjadřuje počet formulí množiny předpokladů, které na vstupu předcházejí skutečnému důkazu. Implicitní hodnota je 0, tedy důkaz není implicitně optimalizován jako důkaz z předpokladů.
-	\item[-P n] (proof checker) Ověří vstupní posloupnost formulí jako důkaz. Nepovinný parametr \emph{n} vyjadřuje počet formulí množiny předpokladů, které na vstupu předcházejí skutečnému důkazu. Implicitní hodnota je 0, tedy důkaz není implicitně ověrován jako důkaz z předpokladů.
+	\item[-O n] (proof optimizer) Optimalizuje důkaz ze vstupní posloupnosti formulí. Povinný parametr \emph{n} vyjadřuje počet formulí množiny předpokladů, které na vstupu předcházejí skutečnému důkazu. Implicitní hodnota je 0, tedy důkaz není implicitně optimalizován jako důkaz z předpokladů.
+	\item[-P n] (proof checker) Ověří vstupní posloupnost formulí jako důkaz. Povinný parametr \emph{n} vyjadřuje počet formulí množiny předpokladů, které na vstupu předcházejí skutečnému důkazu. Implicitní hodnota je 0, tedy důkaz není implicitně ověrován jako důkaz z předpokladů.
 	\item[-s] (strict) Povolí zastavení vykonávání programu při prvním výskytu nekorektního syntaktického zápisu formule. Přepínače \emph{-O} a \emph{-P} takové chování povolují automaticky, protože nemá smysl dále optimalizovat či ověřovat evidentně nekorektní důkaz.
 \end{description}
 
-\emph{Axiom checker}, \emph{proof checker} a \emph{proof optimizer} budeme dále nazývat cíly aplikace. Volba těchto cílů je nepovinná, avšak je vždy omezena na jediný.
-
-\subsection{Manuálová stránka}
-
-Manuálové stránky mají standardní strukturu, kterou dodržíme. Text příručky napíšeme v~angličtině a její obsah rozdělíme do příslušných standardních sekcí následovně:
-
-\begin{description}
-	\item[NAME]  Název a krátký popis aplikace.
-	\item[SYNOPSIS] Výčet podporovaných přepínačů.
-	\item[DESCRIPTION] Podrobný popis aplikace.
-	\begin{description}
-		\item[Language] Popis vstupního jazyka.
-		\item[Input] Popis formy vstupu.
-		\item[Output] Popis formy výstupu.
-		\item[Options] Popis podporovaných přepínačů.
-	\end{description}
-	\item[EXIT STATUS] Popis návratových hodnot.
-	\item[EXAMPLES] Vzorové příklady užití.
-	\item[HISTORY] Historický kontext aplikace.
-	\item[AUTHOR] Informace o~autorovi.
-\end{description}
+\emph{Axiom checker}, \emph{proof checker} a \emph{proof optimizer} nazveme \emph{cíly} aplikace. Volba cíle je nepovinná, je však povoleno spustit aplikace s jediným zvoleným cílem.
 
 %
 %
@@ -398,7 +380,7 @@ Hlavní program aplikace představuje funkce \texttt{main}.
 
 \paragraph{main}
 
-Inicializací instance třídy \texttt{Configuration} nejprve dojde ke konfiguraci aplikace dle parametrů příkazové řádky. V případě úspěchu je proveden cíl aplikace, jehož návratová hodnota je zároveň návratovou hodnotou aplikace. V případě, že se nepodaří aplikaci nakonfigurovat, je vypsáno chybové hlášení a běh aplikace končí neúspěchem.
+Inicializací instance třídy \texttt{Configuration} dojde ke konfiguraci aplikace dle parametrů příkazové řádky. V případě úspěchu je proveden cíl aplikace, jehož návratová hodnota je zároveň návratovou hodnotou aplikace. V případě, že se nepodaří aplikaci nakonfigurovat, je vypsáno chybové hlášení a běh aplikace končí neúspěchem.
 
 \section{Popis tříd}
 
@@ -492,7 +474,7 @@ Tato abstraktní třída představuje cíl aplikace. Hierarchii tříd rodiny \t
 \centering
 \caption{Diagram tříd rodiny ExecutionTarget}
 \label{fig:execution_target}
-\includegraphics[width=\linewidth]{diagrams/execution_target}
+\includegraphics{diagrams/execution_target}
 \end{figure}
 
 \paragraph{executeTarget}
@@ -537,7 +519,7 @@ Struktura výrokové formule se dá vyjádřit \emph{stromem} a proto jsme ji im
 \centering
 \caption{Diagram tříd rodiny Formula}
 \label{fig:formula}
-\includegraphics[width=\linewidth]{diagrams/formula}
+\includegraphics{diagrams/formula}
 \end{figure}
 
 \paragraph{Metody print}
@@ -574,11 +556,19 @@ Implementace spočívá v porovnání prostřednictvím dané formule s formulí
 
 \subsubsection{Třída Binary}
 
+Tato třída představuje binární operátor. Objekt této třídy obsahuje odkaz na svůj levý a pravý operand, tedy levého a pravého potomka tohoto uzlu ve výrazovém stromu formule.
+
 \subsubsection{Třída Unary}
+
+Tato třída představuje unární operátor. Objekt této třídy obsahuje odkaz na svůj operand, tedy potomka tohoto uzlu ve výrazovém stromu formule.
+
+\paragraph{equals}
+
+Al
 
 \subsection{Třída ParseException}
 
-Tato obecná třída představuje výjimku při syntaktické analýze nekorektního vstupu. Objekt této třídy obsahuje řetězec s popisem syntaktické chyby. Hierarchii výjimek rodiny \texttt{ParseException} znázorňuje diagram \ref{fig:parse_exception}.
+Tato obecná třída představuje výjimku při syntaktické analýze v případě nekorektního vstupu. Objekt této třídy obsahuje řetězec s popisem syntaktické chyby. Hierarchii výjimek rodiny \texttt{ParseException} znázorňuje diagram \ref{fig:parse_exception}.
 
 \begin{figure}
 \centering
@@ -593,7 +583,7 @@ Tato metoda vrátí podrobnosti o chybě v podobě řetězce s chybovým hláše
 
 \subsubsection{Výjimka DetailedParseException}
 
-Tento obecný typ výjimky představuje syntaktickou chybu specifikovanou znakem vstupu, který chybu způsobil, a jeho pozici na řádce (kromě bílých znaků).
+Tento obecný typ výjimky představuje syntaktickou chybu specifikovanou znakem vstupu, který chybu způsobil, a jeho pozici na řádce (nepočítaje bílé znaky).
 
 \subsubsection{Výjimka IncompleteFormulaException}
 
@@ -601,7 +591,7 @@ Tento typ výjimky představuje případ nekompletní formule.
 
 \subsubsection{Výjimka UnexpectedEOFException}
 
-Tento typ výjimky představuje případ konce vstupu v místě, které nestanovuje korektní forma vstupu.
+Tento typ výjimky představuje případ výskytu konce vstupu v místě, které není stanoveno korektní formou vstupu.
 
 \subsubsection{Výjimka IllegalCharacterException}
 
@@ -609,11 +599,11 @@ Tento typ výjimky představuje případ užití nepovoleného znaku.
 
 \subsubsection{Výjimka RedundantElementException}
 
-Tento typ výjimky představuje případ výskytu nadbytečných prvků formule.
+Tento typ výjimky představuje případ výskytu nadbytečných prvků nacházejících se za korektní formulí.
 
 \subsubsection{Výjimka UnexpectedElementException}
 
-Tento typ výjimky představuje případ nekorektního infixního zápisu formule.
+Tento typ výjimky představuje případ nekorektního zápisu formule (pouze infixní notace).
 
 \subsection{Třída ProofMember}
 
@@ -621,22 +611,33 @@ Tato třída představuje člen důkazu jako komplexní strukturu. Objekt této 
 
 \subsection{Třída ProofSystem}
 
-Tato abstraktní třída představuje důkazový systém výrokové logiky. Ačkoliv tato práce implementuje Hilbertův systém jako jediný konkrétní důkazový systém, třídu \texttt{ProofSystem} jsme zavedli z důvodu rozšiřitelnosti aplikace. Objekt této třídy obsahuje axiomy důkazového systému. Hierarchii tříd rodiny \texttt{ProofSystem} znázorňuje diagram \ref{fig:proof_system}.
+Tato abstraktní třída představuje důkazový systém výrokové logiky. Objekt této třídy obsahuje axiomy důkazového systému. Hierarchii tříd rodiny \texttt{ProofSystem} znázorňuje diagram \ref{fig:proof_system}.
 
 \begin{figure}
 \centering
 \caption{Diagram tříd rodiny ProofSystem}
-\includegraphics[width=\linewidth]{diagrams/proof_system}
+\includegraphics{diagrams/proof_system}
 \label{fig:proof_system}
 \end{figure}
 
 \paragraph{isAxiom}
 
-Tato metoda prostřednictvím metody \texttt{matches} ověří, zdali je daná formule instancí některého z axiomů důkazového systému.
+Tato metoda ověří, zdali je daná formule instancí některého z axiomů důkazového systému. Implementace spočívá v porovnání axiomů tohoto systému metodou \texttt{matches} s danou formulí.
+
+\begin{algorithm}
+\ForEach{axiom systému}
+{
+	\If{daná formule vyhovuje tvaru axiomu}
+	{
+		vrať typ tohoto axiomu\;
+	}
+}
+daná formule není axiomem\;
+\end{algorithm}
 
 \paragraph{isDeducible}
 
-Tato abstraktní metoda ověří, zdali je daná formule v rámci daného důkazu odvoditelná pravidly důkazového systému. Metoda je abstraktní, protože každý konkrétní důkazový systém odvozuje formule jiným způsobem.
+Tato abstraktní metoda ověří, zdali je daná formule v rámci daného důkazu odvoditelná pravidly důkazového systému. Metoda je abstraktní, protože každý konkrétní důkazový systém odvozuje formule jiným způsobem, resp. pravidlem. Návratovou hodnotou je posloupnost indexů členů důkazu, ze kterých je daná formule odvoditelná. Tato posloupnost je prázdná v případě, že formuli v rámci daného důkazu odvodit nelze.
 
 \subsubsection{Třída HilbertSystem}
 
@@ -644,22 +645,22 @@ Tato třída představuje Hilbertův systém. Pro účely odvozování formulí 
 
 \paragraph{isDeducible}
 
-Tato metoda ověří, zdali je daná formule v rámci daného důkazu odvoditelná pravidlem modus ponens. Implementace spočívá v procházení jednotlivých formulí daného důkazu, přičemž na jednu z formulí je vždy nahlíženo jako na předpoklad pravidla modus ponens a na druhou jako jeho implikaci. Daná formule je odvoditelná, je-li nalezena dvojice formulí vyhovující právě tomuto tvaru.
+Tato metoda ověří, zdali je daná formule v rámci daného důkazu odvoditelná pravidlem modus ponens. Implementace spočívá v procházení jednotlivých formulí daného důkazu, přičemž na jednu z formulí je vždy nahlíženo jako na předpoklad pravidla modus ponens ($\varphi$) a na druhou jako jeho implikaci ($\varphi \Rightarrow \psi$). Daná formule je odvoditelná, je-li nalezena dvojice formulí vyhovující právě těmto tvarům.
 
 \subsection{Třída SyntaxException}
 
-Tato obecná třída představuje výjimku při konfiguraci aplikace v případě nesprávné syntaxe příkazové řádky. Objekt této třídy obsahuje záznam o tom, který přepínač syntaktickou chybu způsobil, a řetězec s popisem této chyby. Hierarchii tříd rodiny \texttt{SyntaxException} znázorňuje diagram \ref{fig:syntax_exception}.
+Tato obecná třída představuje výjimku při konfiguraci aplikace v případě nesprávné syntaxe příkazové řádky. Objekt této třídy obsahuje záznam o tom, který přepínač syntaktickou chybu způsobil, a řetězec s popisem této chyby. Hierarchii výjimek rodiny \texttt{SyntaxException} znázorňuje diagram \ref{fig:syntax_exception}.
 
 \begin{figure}
 \centering
 \caption{Diagram tříd rodiny SyntaxException}
 \label{fig:syntax_exception}
-\includegraphics[width=\linewidth]{diagrams/syntax_exception}
+\includegraphics{diagrams/syntax_exception}
 \end{figure}
 
 \paragraph{getMessage}
 
-Tato metoda vrátí podrobnosti o chybě v podobě řetězce s chybovým hlášením.
+Tato metoda vrátí podrobnosti o syntaktické chybě v podobě řetězce s chybovým hlášením.
 
 \subsubsection{Výjimka IllegalOptionException}
 
@@ -667,15 +668,15 @@ Tento typ výjimky představuje případ použití nepovoleného přepínače.
 
 \subsubsection{Výjimka IllegalValueException}
 
-Tento typ výjimky představuje případ zadání nepovolené hodnoty přepínače.
+Tento typ výjimky představuje případ použití nepovolené hodnoty přepínače.
 
 \subsubsection{Výjimka InvalidFileException}
 
-Tento typ výjimky představuje případ uvedení nepoužitelného vstupního souboru.
+Tento typ výjimky představuje případ zadání nepoužitelného vstupního souboru.
 
 \subsubsection{Výjimka MissingValueException}
 
-Tento typ výjimky představuje případ neuvedení povinné hodnoty přepínače.
+Tento typ výjimky představuje případ vynechání povinné hodnoty přepínače.
 
 \subsubsection{Výjimka MultipleTargetsException}
 
@@ -687,7 +688,7 @@ Tento typ výjimky představuje případ nastavení více cílů k provedení na
 
 \chapter{Testování}
 
-V~této kapitole popíšeme užité metody testování aplikace, jak požaduje zadání. Testovali jsme oblasti pokryté případy užití \ref{sec:use_cases}:
+V~této kapitole popíšeme užité metody testování aplikace, jak požaduje zadání. Testovali jsme oblasti pokryté případy užití:
 
 \begin{itemize}
 	\item Zpracování vstupu.
@@ -754,7 +755,7 @@ Výstupními testovacími daty jsou tatáž data.
 
 \subsection{Negativní test}
 
-Negativní test ověřuje korektní odmítnutí nekorektního vstupu. Nekorektní vstup však může mít mnoho podob jež bylo třeba všechny analyzovat. K tomu nám posloužil výčet druhů výjimek rodiny \texttt{ParseException} \ref{sec:parse_exception} vrhaných parserem.
+Negativní test ověřuje korektní odmítnutí nekorektního vstupu. Nekorektní vstup však může mít mnoho podob jež bylo třeba všechny analyzovat. K tomu nám posloužil výčet druhů výjimek rodiny \texttt{ParseException} vrhaných parserem.
 
 \subsubsection{Vstupní data}
 
@@ -888,15 +889,15 @@ Výstupními testovacími daty je následující hlášení:
 
 \section{Další testy}
 
-Kromě testů korektní funkčnosti aplikace jsme dále provedli následující ověření.
+Kromě testů korektní funkčnosti aplikace jsme ověřili následující náležitosti.
 
 \subsection{Test uvolnění paměti}
 
-Programy psané v jazyce C++ vyžadují explicitní správu paměti programátorem. Pro detekci paměťových úniků za běhu aplikace a ověření uvolnění veškeré alokované paměti na konci jejího běhu jsme použili nástroj \texttt{valgrind}. Zajistili jsme tak poctivou správu paměti aplikace v její konečné podobě.
+Programy psané v jazyce C++ vyžadují explicitní správu paměti již ve zdrojovém kódu. Pro detekci paměťových úniků za běhu aplikace a ověření uvolnění veškeré alokované paměti na konci jejího běhu jsme použili nástroj \texttt{valgrind}. Aplikaci jsme ručně spouštěli s testovacími daty a zjištěné nedostatky odstranili.
 
 \subsection{Test manuálové stránky}
 
-Jazyk manuálových stránek má stanovenou formu. Korektní manuálová stránka proto musí dodržovat syntaxi maker a např. také nesmí obsahovat prázdné řádky. K ověření korektnosti manuálové stránky jsme použili procesor GNU \texttt{troff}:
+Jazyk manuálových stránek má stanovenou formu. Korektní manuálová stránka proto musí dodržovat správnou syntaxi maker a např. také nesmí obsahovat prázdné řádky. K ověření korektnosti manuálové stránky jsme použili procesor GNU \texttt{troff}:
 
 \begin{lstlisting}
 groff -z -mdoc
@@ -921,7 +922,7 @@ Po implementaci dosavadní funkcionality se nabízí některá přirozená rozš
 
 \section{Nalezení důkazu}
 
-Tato práce nás naučila ověřovat důkazy výrokových formulí v Hilbertově systému. Nezabývali jsme se ovšem otázkou, jakým způsobem důkazy hledat. Naší implementaci by velice obohatila právě funkcionalita nalezení důkazu dané (dokazatelné) formule.
+Tato práce nás naučila ověřovat důkazy výrokových formulí v Hilbertově systému. Nezabývali jsme se však otázkou, jakým způsobem důkazy hledat. Naší implementaci by velice obohatila právě funkcionalita nalezení důkazu dané (dokazatelné) formule.
 
 Pro nalezení důkazu bychom využili rozhodnutelnosti logiky, tedy skutečnosti, že dokazatelné jsou právě tautologie\footnote{Tautologie -- výroková formule, která je vždy pravdivá.}, a ty se dají efektivně poznat. Je totiž zřejmé, že hledat důkaz formule má smysl až tehdy, když zjistíme, že je dokazatelná.
 
@@ -935,17 +936,17 @@ Přepínač \texttt{-F} je novým cílem aplikace \texttt{pl}. Při jeho použit
 
 Hilbertův systém není jediným formálním důkazovým systémem výrokové logiky. Pravidlo modus ponens však zřejmě nejlépe odpovídá postupům našeho uvažování\cite{sochor}. Existují ovšem i jiná formální odvozovací pravidla, např. \emph{pravidlo rezoluce}, které zavádí \emph{Gentzenův systém}. Ten je formálně stejně silný jako systém Hilbertův\cite{stary}.
 
-Stávající implementaci bychom mohli rozšířit právě o tento důkazový systém. Aplikace by tak mohla ověřovat důkazy v tomto systému nebo dokonce důkazy mezi těmito systémy převádět.
+Stávající implementaci bychom mohli rozšířit právě o tento důkazový systém. Aplikace by tak mohla důkazy v tomto systému ověřovat, optimalizovat nebo je mezi těmito systémy převádět.
 
 \subsection{Pravidlo rezoluce}
 
 Pravidlo rezoluce používá jazyk logických spojek odlišný od jazyka Hilbertova systému. Je zavedeno následovně:
 
 \begin{dfn}
-Z formulí $\varphi \vee \alpha$ a $\neg \psi \vee \vartheta$ odvoď formuli $\psi \vee \vartheta$\cite{sochor}.
+Z formulí $\varphi \vee \alpha$ a $\neg \psi \vee \vartheta$ odvoď formuli $\psi \vee \vartheta$.
 \end{dfn}
 
-Každou takto odvozenou formuli nazýváme \emph{rezolventou}.
+Každou takto odvozenou formuli nazýváme \emph{rezolventou}\cite{stary}.
 
 \subsection{Návrh obsluhy}
 
@@ -953,13 +954,13 @@ Každou takto odvozenou formuli nazýváme \emph{rezolventou}.
 
 Zavedeme nový přepínač \texttt{-r} (deduction rule).
 
-Přepínač \texttt{-r} s~možnými hodnotami \texttt{hilbert} a \texttt{gentzen} je rozšířením stávající funkcionality práce s důkazy. Určuje, kterému důkazovému systému náleží vstupní důkaz.
+Přepínač \texttt{-r} s hodnotami \texttt{hilbert} a \texttt{gentzen} je rozšířením stávající funkcionality práce s důkazy. Určuje, kterému důkazovému systému náleží vstupní důkaz, který chceme ověřit nebo optimalizovat.
 
 \subsubsection{Převod důkazů}
 
 Zavedeme nový přepínač \texttt{-C} (convert).
 
-Přepínač \texttt{-C} s možnými hodnotami \texttt{hilbert} a \texttt{gentzen} je novým cílem aplikce. Při jeho použití aplikace převede vstupní důkaz do podoby daného výstupního důkazového systému. Protože systémy Hilbertův a Gentzenův jsou ekvivalentní, úspěch převodu závisí pouze na korektnosti vstupního důkazu.
+Přepínač \texttt{-C} s hodnotami \texttt{hilbert} a \texttt{gentzen} je novým cílem aplikace. Při jeho použití aplikace převede vstupní důkaz do podoby daného výstupního důkazového systému. Protože systémy Hilbertův a Gentzenův jsou ekvivalentní, úspěch převodu závisí pouze na korektnosti vstupního důkazu.
 
 \section{Paralelní práce}
 
@@ -970,7 +971,7 @@ Zadání této bakalářské práce vychází z velkého množství požadavků 
 %
 
 \begin{conclusion}
-Tato implementační práce mi dala možnost uplatnit mnohé znalosti, které mi dala Fakulta informačních technologií ČVUT v~Praze během mého bakalářského studia. Zejména jsem uplatnil programovací dovednost v~jazyce C++, dokumentaci kódu ve stylu Doxygen, sestavování programu nástrojem \texttt{make}, sazbu textu v jazyce \LaTeX a znalost v oblasti výrokové logiky. Nicméně, své dosavadní znalosti jsem také rozšířil. Nových znalostí jsem nabyl konkrétně v~oblasti tvorby manuálové stránky pro systém UNIX v pomocí maker MDOC. V~poslední řadě jsem si poprvé zkusil literární činnost ve velkém rozsahu. Za veškeré nabyté zkušenosti jsem vděčný. Práce na tomto projektu mě velice těšila.
+Tato práce mi dala možnost uplatnit mnohé znalosti a postoje, které mi předala Fakulta informačních technologií ČVUT v~Praze během mého bakalářského studia. Zejména jsem uplatnil programovací dovednost v~jazyce C++, dokumentaci kódu ve stylu Doxygen, sestavování programu pomocí nástroje \texttt{make}, sazbu textu v \LaTeX a znalost v oblasti výrokové logiky. Své dosavadní znalosti jsem navíc rozšířil. Nových znalostí jsem nabyl konkrétně v~oblasti tvorby manuálových stránek pro systém UNIX v pomocí balíčku maker \texttt{mdoc}. V~poslední řadě jsem si poprvé zkusil literární činnost ve velkém rozsahu. Za veškeré nabyté zkušenosti jsem rád. Práce na tomto projektu mě velice těšila.
 \end{conclusion}
 
 %
@@ -1003,19 +1004,32 @@ Tato implementační práce mi dala možnost uplatnit mnohé znalosti, které mi
 \chapter{Obsah přiloženého CD}
 
 \begin{figure}
-	\dirtree{%
-		.1 src\DTcomment{adresář se zdrojovou formou práce}.
-		.2 impl\DTcomment{adresář se zdrojovou formou implementace}.
-		.3 doc\DTcomment{adresář se soubory HTML dokumentace}.
-		.3 src\DTcomment{adresář se soubory zdrojového kódu}.
-		.3 test\DTcomment{adresář se soubory pro testování}.
-		.3 Doxyfile\DTcomment{soubor konfigurace nástroje Doxygen}.
-		.3 Makefile\DTcomment{soubor konfigurace nástroje make}.
-		.3 pl.1\DTcomment{soubor zdrojové formy manuálové stránky}.
-		.3 test.sh\DTcomment{soubor testovacího skriptu pro shell}.
-		.2 thesis\DTcomment{adresář se zdrojovou formou textu práce}.
-		.1 text\DTcomment{adresář s~texty práce}.
-	}
+\dirtree{%
+	.1 src\DTcomment{adresář se zdrojovou formou práce}.
+	.2 impl\DTcomment{adresář se zdrojovou formou implementace}.
+	.3 doc\DTcomment{adresář se soubory HTML dokumentace}.
+	.3 src\DTcomment{adresář se soubory zdrojového kódu}.
+	.3 test\DTcomment{adresář se soubory pro testování}.
+	.3 Doxyfile\DTcomment{soubor konfigurace nástroje Doxygen}.
+	.3 Makefile\DTcomment{soubor konfigurace nástroje make}.
+	.3 pl.1\DTcomment{soubor zdrojové formy manuálové stránky}.
+	.3 test.sh\DTcomment{soubor testovacího skriptu pro shell}.
+	.2 thesis\DTcomment{adresář se zdrojovou formou textu práce}.
+	.1 text\DTcomment{adresář s~texty práce}.
+}
 \end{figure}
+
+\chapter{Instalační příručka}
+
+Adresář \texttt{src/impl} uložte na svůj disk a přejděte do pracovního adresáře \texttt{impl}. Následuje popis cílů nástroje GNU \texttt{make}, které nyní lze spouštět.
+
+\begin{description}
+	\item[build] Sestaví aplikaci. Binární formu aplikace \texttt{pl} naleznete po spuštění tohoto cíle v adresáři \texttt{out}. K úspěšnému sestavení je nutné, aby váš \texttt{gcc} kompilátor podporoval standard C++11.
+	\item[clean] Odstraní veškeré výstupy vyprodukovaných při práci s \texttt{make}. Spuštění tohoto cíle vrátí adresář \texttt{impl} do původního stavu.
+	\item[doc] Vygeneruje programátorskou dokumentaci ve formátu HTML. Dokumentaci naleznete po spuštění tohoto cíle v adresáři \texttt{doc}. Tento cíl vyžaduje přítomnost nástroje \texttt{doxygen} v systému.
+	\item[install] Sestaví a nainstaluje do systému aplikaci a manuálovou stránku. K úpravě instalačního umístění změňte proměnnou \texttt{PREFIX} v souboru \texttt{Makefile} na požadovanou hodnotu. K instalaci je nutné mít oprávnění uživatele \texttt{root}. Po instalaci je aplikace dostupná odkudkoliv pomocí příkazu \texttt{pl} a manuálová stránka pomocí příkazu \texttt{man pl}.
+	\item[test] Sestaví a otestuje aplikaci za využití testovacích souborů v adresáři \texttt{test}. Testování končí hlášením o úspěšnosti testů. Soubory vyprodukované testy naleznete po spuštění tohoto cíle v adresáři \texttt{out}.
+	\item[uninstall] Odinstaluje aplikaci a manuálovou stránku ze systému, pokud do něj předtím byla nainstalována spuštěním cíle \texttt{install}. 
+\end{description}
 
 \end{document}

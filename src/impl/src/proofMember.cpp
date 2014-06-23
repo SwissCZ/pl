@@ -16,7 +16,7 @@ Formula* ProofMember::getFormula() const
     return formula;
 }
 
-list<ProofMember*> ProofMember::getWitnesses() const
+const list<ProofMember*>& ProofMember::getWitnesses() const
 {
     return witnesses;
 }

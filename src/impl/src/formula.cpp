@@ -37,8 +37,8 @@ map<char, map<Language, string>> Formula::dictionary = {
 };
 
 Formula::Formula(char character)
+: character(character)
 {
-    this->character = character;
 }
 
 Formula::~Formula()
@@ -50,7 +50,8 @@ char Formula::getCharacter() const
     return character;
 }
 
-Composite::Composite(char character) : Formula(character)
+Composite::Composite(char character)
+: Formula(character)
 {
 }
 
@@ -168,7 +169,8 @@ bool Binary::setLast(Formula* operand)
     return true;
 }
 
-Unary::Unary(char character) : Composite(character)
+Unary::Unary(char character)
+: Composite(character)
 {
 }
 

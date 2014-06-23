@@ -1,4 +1,4 @@
-.Dd June 18, 2014
+.Dd June 22, 2014
 .Dt PL 1
 .Os
 .Sh NAME
@@ -6,7 +6,7 @@
 .Nd handle formulas of propositional logic
 .Sh SYNOPSIS
 .Nm
-.Op Fl A | O | P
+.Op Fl A | O Ar n | Fl P Ar n
 .Op Fl e
 .Op Fl f Ar file
 .Op Fl i Ar syntax
@@ -18,7 +18,7 @@ The
 .Nm
 utility implements some rudimentary algorithms of propositional logic.
 By default, it parses the standard input as propositional formulas,
-prints them in required syntax and exits.
+prints them in selected syntax and exits.
 Other actions can be specified using the options.
 .Ss Language
 The Latin capitals A-Z are considered atomic propositions.
@@ -94,19 +94,19 @@ or
 By default,
 .Cm infix
 is used.
-.It Fl O Ar theory
+.It Fl O Ar n
 Optimize the proof by omitting redundant axioms, premises and sub-proofs. The
-.Ar theory
-value indicates the number of theory elements preceding
+.Ar n
+value indicates the number of n elements preceding
 the beginning of the proof in the input. Implies the
 .Fl s
 option.
-.It Fl P Ar theory
+.It Fl P Ar n
 Verify whether a sequence of formulas is a valid Hilbert proof. Implies the
 .Fl s
 option. The
-.Ar theory
-value indicates the number of theory elements preceding
+.Ar n
+value indicates the number of n elements preceding
 the beginning of the proof in the input. Implies the
 .Fl s
 option.

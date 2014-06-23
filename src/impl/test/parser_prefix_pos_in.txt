@@ -1,6 +1,6 @@
 A
 -A
-.AA
--.-A-A
-.A..AAA
--.-A-.-.-A-A-A
+.AB
+-.-A-B
+.A>+BCD
+-.-A->-+-B-C-D

@@ -38,7 +38,7 @@ public:
      * Witnesses getter.
      * @return Witnesses of this formula
      */
-    list<ProofMember*> getWitnesses() const;
+    const list<ProofMember*>& getWitnesses() const;
 
     /**
      * Optimal proof component flag getter.

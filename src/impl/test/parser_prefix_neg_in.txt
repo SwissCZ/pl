@@ -1,4 +1,4 @@
-.A..AA
-.A..AAAA
-&A&&AAA
-.A..AAA
+.A>+BCDE
+*A>+BCD
+.A>+BC
+.A>+BCD

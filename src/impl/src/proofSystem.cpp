@@ -7,7 +7,7 @@ ProofSystem::ProofSystem(list<string> axiomStrings)
 {
     stringstream stream;
 
-    for (string axiomString: axiomStrings)
+    for (string axiomString : axiomStrings)
     {
         stream << axiomString << endl;
         axioms.push_back(parseInfix(stream));
@@ -16,7 +16,7 @@ ProofSystem::ProofSystem(list<string> axiomStrings)
 
 ProofSystem::~ProofSystem()
 {
-    for (Formula* axiom: axioms)
+    for (Formula* axiom : axioms)
     {
         delete axiom;
     }
@@ -27,7 +27,7 @@ unsigned ProofSystem::isAxiom(Formula* formula) const
     map<char, Formula*> substitutions;
     unsigned type = 1;
 
-    for (Formula* axiom: axioms)
+    for (Formula* axiom : axioms)
     {
         if (axiom->matches(formula, substitutions))
         {
@@ -60,9 +60,9 @@ list<unsigned> HilbertSystem::isDeducible(Formula* formula,
     unsigned impliesIndex = 1;
     unsigned implicationIndex = 1;
 
-    for (ProofMember* implies: proof)
+    for (ProofMember* implies : proof)
     {
-        for (ProofMember* implication: proof)
+        for (ProofMember* implication : proof)
         {
             if (impliesIndex == implicationIndex)
             {

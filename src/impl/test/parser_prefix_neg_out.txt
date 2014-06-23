@@ -1,4 +1,4 @@
+Unnecessary element 'E' at position 8.
+Illegal character '*' at position 1.
 Incomplete formula.
-Unnecessary element 'A' at position 8.
-Illegal character '&' at position 1.
 Unexpected end of stream.

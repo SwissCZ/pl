@@ -6,12 +6,12 @@
 #include "parseException.hpp"
 #include "parseFormula.hpp"
 
-//! Infix bracket state
+//! Bracket state
 
 /**
- * Infix bracket completion state. The order must be preserved.
+ * Bracket completion state.
  */
-enum InfixState
+enum BracketState
 {
     UNARY, ///< Unary operator set
     BLANK, ///< New bracket openned
@@ -22,10 +22,10 @@ enum InfixState
 
 Formula* parsePrefix(istream& input)
 {
-    unsigned position = 1;
     bool run = true;
-    stack<Composite*> operatorStack;
+    unsigned position = 1;
     Formula* temporary = NULL;
+    stack<Composite*> operators;
 
     while (run)
     {
@@ -58,53 +58,32 @@ Formula* parsePrefix(istream& input)
             case 'X':
             case 'Y':
             case 'Z':
-                if (!operatorStack.empty())
+                if (!operators.empty())
                 {
-                    // Set this as a operator stack top's operand
                     temporary = new Trivial(buffer);
-
-                    // While all operator stack top's operands have been set
-                    while (!operatorStack.empty() &&
-                           operatorStack.top()->setFirst(temporary))
+                    while (!operators.empty()
+                           && operators.top()->setFirst(temporary))
                     {
-                        temporary = operatorStack.top();
-                        operatorStack.pop();
+                        temporary = operators.top();
+                        operators.pop();
                     }
                 } else if (position == 1)
                 {
-                    // Trivial formula case
                     temporary = new Trivial(buffer);
                 } else
                 {
-                    // No more operands are needed
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
-                    while (!operatorStack.empty())
-                    {
-                        delete operatorStack.top();
-                        operatorStack.pop();
-                    }
                     delete temporary;
                     throw RedundantElementException(buffer, position);
                 }
                 break;
             case '-':
-                if (!operatorStack.empty())
+                if (!operators.empty() || position == 1)
                 {
-                    // Push this to the operator stack
-                    operatorStack.push(new Unary(buffer));
-                } else if (position == 1)
-                {
-                    // Initial operator case
-                    operatorStack.push(new Unary(buffer));
+                    operators.push(new Unary(buffer));
                 } else
                 {
-                    // No more operands are needed
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
-                    while (!operatorStack.empty())
-                    {
-                        delete operatorStack.top();
-                        operatorStack.pop();
-                    }
                     delete temporary;
                     throw RedundantElementException(buffer, position);
                 }
@@ -113,76 +92,70 @@ Formula* parsePrefix(istream& input)
             case '+':
             case '>':
             case '=':
-                if (!operatorStack.empty())
+                if (!operators.empty() || position == 1)
                 {
-                    // Push this to the operator stack
-                    operatorStack.push(new Binary(buffer));
-                } else if (position == 1)
-                {
-                    // Initial operator case
-                    operatorStack.push(new Binary(buffer));
+                    operators.push(new Binary(buffer));
                 } else
                 {
-                    // No more operands are needed
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
-                    while (!operatorStack.empty())
-                    {
-                        delete operatorStack.top();
-                        operatorStack.pop();
-                    }
                     delete temporary;
                     throw RedundantElementException(buffer, position);
                 }
                 break;
             case ' ':
             case '\t':
-                // Legal whitespace skipping
                 position--;
                 break;
             case '\n':
-                // Formula proper ending
                 run = false;
                 break;
             case EOF:
                 if (position == 1)
                 {
-                    // End of formula sequence
                     run = false;
                 } else
                 {
-                    // Unexpected end of stream
-                    while (!operatorStack.empty())
+                    if (operators.empty())
                     {
-                        delete operatorStack.top();
-                        operatorStack.pop();
+                        delete temporary;
+                    } else
+                    {
+                        while (!operators.empty())
+                        {
+                            delete operators.top();
+                            operators.pop();
+                        }
                     }
                     throw UnexpectedEOFException();
                 }
                 break;
             default:
-                // Illegal character used
                 input.ignore(numeric_limits<streamsize>::max(), '\n');
-                while (!operatorStack.empty())
+                if (operators.empty())
                 {
-                    delete operatorStack.top();
-                    operatorStack.pop();
+                    delete temporary;
+                } else
+                {
+                    while (!operators.empty())
+                    {
+                        delete operators.top();
+                        operators.pop();
+                    }
                 }
                 throw IllegalCharacterException(buffer, position);
                 break;
         }
         position++;
     }
-    if (operatorStack.empty())
+    if (operators.empty())
     {
-        // Formula is complete
         return temporary;
     } else
     {
-        // Formula is incomplete
-        while (!operatorStack.empty())
+        while (!operators.empty())
         {
-            delete operatorStack.top();
-            operatorStack.pop();
+            delete operators.top();
+            operators.pop();
         }
         throw IncompleteFormulaException();
     }
@@ -190,12 +163,12 @@ Formula* parsePrefix(istream& input)
 
 Formula* parseInfix(istream& input)
 {
-    unsigned position = 1;
     bool run = true;
-    stack<Formula*> formulaStack;
-    stack<Composite*> operatorStack;
-    stack<int> stateStack;
+    unsigned position = 1;
     Formula* temporary;
+    stack<Formula*> formulas;
+    stack<Composite*> operators;
+    stack<int> states;
 
     while (run)
     {
@@ -228,109 +201,95 @@ Formula* parseInfix(istream& input)
             case 'X':
             case 'Y':
             case 'Z':
-                if (stateStack.empty())
+                if (states.empty())
                 {
                     if (position == 1)
                     {
-                        // Trivial formula case
-                        formulaStack.push(new Trivial(buffer));
+                        formulas.push(new Trivial(buffer));
                     } else
                     {
-                        // Unexpected element position
                         input.ignore(numeric_limits<streamsize>::max(), '\n');
-                        while (!formulaStack.empty())
+                        while (!formulas.empty())
                         {
-                            delete formulaStack.top();
-                            formulaStack.pop();
+                            delete formulas.top();
+                            formulas.pop();
                         }
-                        while (!operatorStack.empty())
+                        while (!operators.empty())
                         {
-                            delete operatorStack.top();
-                            operatorStack.pop();
+                            delete operators.top();
+                            operators.pop();
                         }
                         throw UnexpectedElementException(buffer, position);
                     }
-                } else if (stateStack.top() == BLANK ||
-                           stateStack.top() == BINARY)
+                } else if (states.top() == BLANK || states.top() == BINARY)
                 {
-                    // The first or the last operand case
-                    formulaStack.push(new Trivial(buffer));
-                    stateStack.top()++;
-                } else if (stateStack.top() == UNARY)
+                    formulas.push(new Trivial(buffer));
+                    states.top()++;
+                } else if (states.top() == UNARY)
                 {
-                    // Unary operator operand
                     temporary = new Trivial(buffer);
-
-                    // Close recent unary operators
                     do
                     {
-                        operatorStack.top()->setFirst(temporary);
-                        temporary = operatorStack.top();
-                        operatorStack.pop();
-                        stateStack.pop();
-                    } while (!stateStack.empty() &&
-                             stateStack.top() == UNARY);
-
-                    // Push this to the formula stack
-                    formulaStack.push(temporary);
-                    if (stateStack.size())
+                        operators.top()->setFirst(temporary);
+                        temporary = operators.top();
+                        operators.pop();
+                        states.pop();
+                    } while (!states.empty() && states.top() == UNARY);
+                    formulas.push(temporary);
+                    if (states.size())
                     {
-                        stateStack.top()++;
+                        states.top()++;
                     }
                 } else
                 {
-                    // Unexpected element position
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
-                    while (!formulaStack.empty())
+                    while (!formulas.empty())
                     {
-                        delete formulaStack.top();
-                        formulaStack.pop();
+                        delete formulas.top();
+                        formulas.pop();
                     }
-                    while (!operatorStack.empty())
+                    while (!operators.empty())
                     {
-                        delete operatorStack.top();
-                        operatorStack.pop();
+                        delete operators.top();
+                        operators.pop();
                     }
                     throw UnexpectedElementException(buffer, position);
                 }
                 break;
             case '-':
-                if (stateStack.empty() && position != 1)
+                if (states.empty() && position != 1)
                 {
-                    // No more elements are needed
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
-                    while (!formulaStack.empty())
+                    while (!formulas.empty())
                     {
-                        delete formulaStack.top();
-                        formulaStack.pop();
+                        delete formulas.top();
+                        formulas.pop();
                     }
-                    while (!operatorStack.empty())
+                    while (!operators.empty())
                     {
-                        delete operatorStack.top();
-                        operatorStack.pop();
+                        delete operators.top();
+                        operators.pop();
                     }
                     throw RedundantElementException(buffer, position);
-                } else if ((stateStack.empty() && position == 1) ||
-                           stateStack.top() == BLANK ||
-                           stateStack.top() == BINARY ||
-                           stateStack.top() == UNARY)
+                } else if ((states.empty() && position == 1)
+                           || states.top() == BLANK
+                           || states.top() == BINARY
+                           || states.top() == UNARY)
                 {
-                    // Push this to the operator stack
-                    stateStack.push(UNARY);
-                    operatorStack.push(new Unary(buffer));
+                    states.push(UNARY);
+                    operators.push(new Unary(buffer));
                 } else
                 {
-                    // Unexpected element position
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
-                    while (!formulaStack.empty())
+                    while (!formulas.empty())
                     {
-                        delete formulaStack.top();
-                        formulaStack.pop();
+                        delete formulas.top();
+                        formulas.pop();
                     }
-                    while (!operatorStack.empty())
+                    while (!operators.empty())
                     {
-                        delete operatorStack.top();
-                        operatorStack.pop();
+                        delete operators.top();
+                        operators.pop();
                     }
                     throw UnexpectedElementException(buffer, position);
                 }
@@ -339,236 +298,214 @@ Formula* parseInfix(istream& input)
             case '+':
             case '>':
             case '=':
-                if (stateStack.empty())
+                if (states.empty())
                 {
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
                     if (position == 1)
                     {
-                        // Unexpected element position
-                        while (!formulaStack.empty())
+                        while (!formulas.empty())
                         {
-                            delete formulaStack.top();
-                            formulaStack.pop();
+                            delete formulas.top();
+                            formulas.pop();
                         }
-                        while (!operatorStack.empty())
+                        while (!operators.empty())
                         {
-                            delete operatorStack.top();
-                            operatorStack.pop();
+                            delete operators.top();
+                            operators.pop();
                         }
                         throw UnexpectedElementException(buffer, position);
                     } else
                     {
-                        // No more elements are needed
-                        while (!formulaStack.empty())
+                        while (!formulas.empty())
                         {
-                            delete formulaStack.top();
-                            formulaStack.pop();
+                            delete formulas.top();
+                            formulas.pop();
                         }
-                        while (!operatorStack.empty())
+                        while (!operators.empty())
                         {
-                            delete operatorStack.top();
-                            operatorStack.pop();
+                            delete operators.top();
+                            operators.pop();
                         }
                         throw RedundantElementException(buffer, position);
                     }
-                } else if (stateStack.top() == FIRST_OPERAND)
+                } else if (states.top() == FIRST_OPERAND)
                 {
-                    // Between operands case
-                    stateStack.top() = BINARY;
-                    operatorStack.push(new Binary(buffer));
+                    states.top() = BINARY;
+                    operators.push(new Binary(buffer));
                 } else
                 {
-                    // Unexpected element position
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
-                    while (!formulaStack.empty())
+                    while (!formulas.empty())
                     {
-                        delete formulaStack.top();
-                        formulaStack.pop();
+                        delete formulas.top();
+                        formulas.pop();
                     }
-                    while (!operatorStack.empty())
+                    while (!operators.empty())
                     {
-                        delete operatorStack.top();
-                        operatorStack.pop();
+                        delete operators.top();
+                        operators.pop();
                     }
                     throw UnexpectedElementException(buffer, position);
                 }
                 break;
             case '(':
-                if (stateStack.empty())
+                if (states.empty())
                 {
                     if (position == 1)
                     {
-                        // Initial openning bracket case
-                        stateStack.push(BLANK);
+                        states.push(BLANK);
                     } else
                     {
-                        // No more elements are needed
                         input.ignore(numeric_limits<streamsize>::max(), '\n');
-                        while (!formulaStack.empty())
+                        while (!formulas.empty())
                         {
-                            delete formulaStack.top();
-                            formulaStack.pop();
+                            delete formulas.top();
+                            formulas.pop();
                         }
-                        while (!operatorStack.empty())
+                        while (!operators.empty())
                         {
-                            delete operatorStack.top();
-                            operatorStack.pop();
+                            delete operators.top();
+                            operators.pop();
                         }
                         throw RedundantElementException(buffer, position);
                     }
-                } else if (stateStack.top() == BLANK ||
-                           stateStack.top() == BINARY ||
-                           stateStack.top() == UNARY)
+                } else if (states.top() == BLANK
+                           || states.top() == BINARY
+                           || states.top() == UNARY)
                 {
-                    // Tree level openning
-                    stateStack.push(BLANK);
+                    states.push(BLANK);
                 } else
                 {
-                    // Unexpected element position
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
-                    while (!formulaStack.empty())
+                    while (!formulas.empty())
                     {
-                        delete formulaStack.top();
-                        formulaStack.pop();
+                        delete formulas.top();
+                        formulas.pop();
                     }
-                    while (!operatorStack.empty())
+                    while (!operators.empty())
                     {
-                        delete operatorStack.top();
-                        operatorStack.pop();
+                        delete operators.top();
+                        operators.pop();
                     }
                     throw UnexpectedElementException(buffer, position);
                 }
                 break;
             case ')':
-                if (stateStack.empty())
+                if (states.empty())
                 {
-                    // Too much closing brackets case
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
-                    while (!formulaStack.empty())
+                    while (!formulas.empty())
                     {
-                        delete formulaStack.top();
-                        formulaStack.pop();
+                        delete formulas.top();
+                        formulas.pop();
                     }
-                    while (!operatorStack.empty())
+                    while (!operators.empty())
                     {
-                        delete operatorStack.top();
-                        operatorStack.pop();
+                        delete operators.top();
+                        operators.pop();
                     }
                     throw RedundantElementException(buffer, position);
-                } else if (stateStack.top() == LAST_OPERAND)
+                } else if (states.top() == LAST_OPERAND)
                 {
-                    // Tree level closing
-                    stateStack.pop();
+                    states.pop();
                     do
                     {
-                        temporary = formulaStack.top();
-                        formulaStack.pop();
-                    } while (!operatorStack.top()->setLast(temporary));
-                    formulaStack.push(operatorStack.top());
-                    operatorStack.pop();
-
-                    // Close recent unary operators
-                    while (stateStack.size() && stateStack.top() == UNARY)
+                        temporary = formulas.top();
+                        formulas.pop();
+                    } while (!operators.top()->setLast(temporary));
+                    formulas.push(operators.top());
+                    operators.pop();
+                    while (states.size() && states.top() == UNARY)
                     {
-                        operatorStack.top()->setFirst(formulaStack.top());
-                        formulaStack.pop();
-                        formulaStack.push(operatorStack.top());
-                        operatorStack.pop();
-                        stateStack.pop();
+                        operators.top()->setFirst(formulas.top());
+                        formulas.pop();
+                        formulas.push(operators.top());
+                        operators.pop();
+                        states.pop();
                     }
-
-                    if (stateStack.size())
+                    if (states.size())
                     {
-                        stateStack.top()++;
+                        states.top()++;
                     }
                 } else
                 {
-                    // Unexpected element position
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
-                    while (!formulaStack.empty())
+                    while (!formulas.empty())
                     {
-                        delete formulaStack.top();
-                        formulaStack.pop();
+                        delete formulas.top();
+                        formulas.pop();
                     }
-                    while (!operatorStack.empty())
+                    while (!operators.empty())
                     {
-                        delete operatorStack.top();
-                        operatorStack.pop();
+                        delete operators.top();
+                        operators.pop();
                     }
                     throw UnexpectedElementException(buffer, position);
                 }
                 break;
             case ' ':
             case '\t':
-                // Legal whitespace skipping
                 position--;
                 break;
             case '\n':
-                // Proper formula ending
                 run = false;
                 break;
             case EOF:
                 if (position == 1)
                 {
-                    // End of formula sequence
                     run = false;
                 } else
                 {
-                    // Unexpected end of stream
-                    while (!formulaStack.empty())
+                    while (!formulas.empty())
                     {
-                        delete formulaStack.top();
-                        formulaStack.pop();
+                        delete formulas.top();
+                        formulas.pop();
                     }
-                    while (!operatorStack.empty())
+                    while (!operators.empty())
                     {
-                        delete operatorStack.top();
-                        operatorStack.pop();
+                        delete operators.top();
+                        operators.pop();
                     }
                     throw UnexpectedEOFException();
                 }
                 break;
             default:
-                // Illegal character used
                 input.ignore(numeric_limits<streamsize>::max(), '\n');
-                while (!formulaStack.empty())
+                while (!formulas.empty())
                 {
-                    delete formulaStack.top();
-                    formulaStack.pop();
+                    delete formulas.top();
+                    formulas.pop();
                 }
-                while (!operatorStack.empty())
+                while (!operators.empty())
                 {
-                    delete operatorStack.top();
-                    operatorStack.pop();
+                    delete operators.top();
+                    operators.pop();
                 }
                 throw IllegalCharacterException(buffer, position);
                 break;
         }
         position++;
     }
-    if (stateStack.empty())
+    if (states.empty())
     {
-        if (position == 2)
+        if (formulas.empty())
         {
-            // Empty line was parsed
             return NULL;
         } else
         {
-            // Formula is complete
-            return formulaStack.top();
+            return formulas.top();
         }
     } else
     {
-        // Formula is incomplete
-        while (!formulaStack.empty())
+        while (!formulas.empty())
         {
-            delete formulaStack.top();
-            formulaStack.pop();
+            delete formulas.top();
+            formulas.pop();
         }
-        while (!operatorStack.empty())
+        while (!operators.empty())
         {
-            delete operatorStack.top();
-            operatorStack.pop();
+            delete operators.top();
+            operators.pop();
         }
         throw IncompleteFormulaException();
     }
@@ -576,10 +513,10 @@ Formula* parseInfix(istream& input)
 
 Formula* parsePostfix(istream& input)
 {
-    unsigned position = 1;
     bool run = true;
-    stack<Formula*> formulaStack;
+    unsigned position = 1;
     Composite* temporary;
+    stack<Formula*> formulas;
 
     while (run)
     {
@@ -612,25 +549,22 @@ Formula* parsePostfix(istream& input)
             case 'X':
             case 'Y':
             case 'Z':
-                // Push this to the formula stack
-                formulaStack.push(new Trivial(buffer));
+                formulas.push(new Trivial(buffer));
                 break;
             case '-':
-                if (!formulaStack.empty())
+                if (!formulas.empty())
                 {
-                    // Stack operand is available
                     temporary = new Unary(buffer);
-                    temporary->setLast(formulaStack.top());
-                    formulaStack.pop();
-                    formulaStack.push(temporary);
+                    temporary->setLast(formulas.top());
+                    formulas.pop();
+                    formulas.push(temporary);
                 } else
                 {
-                    // Not enough stack operands
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
-                    while (!formulaStack.empty())
+                    while (!formulas.empty())
                     {
-                        delete formulaStack.top();
-                        formulaStack.pop();
+                        delete formulas.top();
+                        formulas.pop();
                     }
                     throw RedundantElementException(buffer, position);
                 }
@@ -639,80 +573,70 @@ Formula* parsePostfix(istream& input)
             case '+':
             case '>':
             case '=':
-                if (formulaStack.size() > 1)
+                if (formulas.size() > 1)
                 {
-                    // Stack operands are available
                     temporary = new Binary(buffer);
-                    temporary->setLast(formulaStack.top());
-                    formulaStack.pop();
-                    temporary->setLast(formulaStack.top());
-                    formulaStack.pop();
-                    formulaStack.push(temporary);
+                    temporary->setLast(formulas.top());
+                    formulas.pop();
+                    temporary->setLast(formulas.top());
+                    formulas.pop();
+                    formulas.push(temporary);
                 } else
                 {
-                    // Not enough stack operands
                     input.ignore(numeric_limits<streamsize>::max(), '\n');
-                    while (!formulaStack.empty())
+                    while (!formulas.empty())
                     {
-                        delete formulaStack.top();
-                        formulaStack.pop();
+                        delete formulas.top();
+                        formulas.pop();
                     }
                     throw RedundantElementException(buffer, position);
                 }
                 break;
             case ' ':
             case '\t':
-                // Legal whitespace skipping
                 position--;
                 break;
             case '\n':
-                // Proper formula ending
                 run = false;
                 break;
             case EOF:
                 if (position == 1)
                 {
-                    // End of formula sequence
                     run = false;
                 } else
                 {
-                    // Unexpected end of stream
-                    while (!formulaStack.empty())
+                    while (!formulas.empty())
                     {
-                        delete formulaStack.top();
-                        formulaStack.pop();
+                        delete formulas.top();
+                        formulas.pop();
                     }
                     throw UnexpectedEOFException();
                 }
                 break;
             default:
-                // Illegal character used
                 input.ignore(numeric_limits<streamsize>::max(), '\n');
-                while (!formulaStack.empty())
+                while (!formulas.empty())
                 {
-                    delete formulaStack.top();
-                    formulaStack.pop();
+                    delete formulas.top();
+                    formulas.pop();
                 }
                 throw IllegalCharacterException(buffer, position);
                 break;
         }
         position++;
     }
-    if (position == 2)
+    if (formulas.empty())
     {
-        // Empty line was parsed
         return NULL;
-    } else if (formulaStack.size() == 1)
+    } else if (formulas.size() == 1)
     {
-        // Formula is complete
-        return formulaStack.top();
+        return formulas.top();
     } else
     {
-        // Formula is incomplete
-        while (!formulaStack.empty())
+        while (!formulas.empty())
         {
-            delete formulaStack.top();
-            formulaStack.pop();
+            delete formulas.top();
+            formulas.pop();
         }
         throw IncompleteFormulaException();
     }
