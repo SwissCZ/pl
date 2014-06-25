@@ -10,7 +10,7 @@
 \usepackage{listings}
 
 \department{Katedra softwarového inženýrství}
-\title{Implementace důkazového systému pro výrokovou logiku}
+\title{Implementace důkazového systému pro~výrokovou logiku}
 \authorGN{Jan}
 \authorFN{Švajcr}
 \authorWithDegrees{Jan Švajcr}
@@ -770,7 +770,7 @@ Připravili jsme dostatečný počet různých výrokových formulí tak, abycho
 
 Vstupními testovacími daty (pro infixní notaci) je následující posloupnost formulí:
 
-\verbatiminput{../impl/test/parser_infix_pos_in.txt}
+\VerbatimInput{../impl/test/parser_infix_pos_in.txt}
 
 \subsubsection{Výstupní data}
 
@@ -938,6 +938,8 @@ Aplikaci jsme úspěšně otestovali na následujících operačních systémech
 	\item MacOSX 10.5.8 (intel)
 	\item Ubuntu 14.04 (amd64)
 \end{itemize}
+
+Jelikož při implementaci používáme konstrukty jazyka C++ ve standardu C++11, potřebujeme k~sestavení aplikace překladač, který je zdrojový kód v~této podobě schopen přeložit. Takový překladač však neexistuje na všech systémech, na kterých bychom chtěli aplikaci testovat, což limituje naše možnosti při testování přenositelnosti.
 
 %
 %
