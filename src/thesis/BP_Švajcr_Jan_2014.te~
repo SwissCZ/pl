@@ -953,7 +953,7 @@ Tato práce nás naučila \emph{ověřovat} důkazy výrokových formulí v~Hilb
 
 Pro nalezení důkazu bychom využili rozhodnutelnosti logiky, tedy skutečnosti, že dokazatelné jsou právě tautologie\footnote{Tautologie -- výroková formule, která je vždy pravdivá.}, a~ty se dají efektivně poznat. Je totiž zřejmé, že hledat důkaz formule má smysl až tehdy, když zjistíme, že je dokazatelná.
 
-Vztah mezi výpočetní složitostí procedury, která výrokové důkazy \emph{ověřuje} (takovou proceduru jsme implementovali), a~složitostí procedury, která výrokové důkazy \emph{nachází}, je hlubokou otevřenou otázkou teoretické informatiky. Je totiž jednou z~populárních reformulací tzv. \emph{PNP problému}. Tyto souvislosti jdou ovšem značně nad rámec našeho zadání, a~proto jsme se jimi nezabývali. Namísto toho odkazujeme čtenáře na \cite{krajicek} a~\cite{cook}.
+Vztah mezi výpočetní složitostí procedury, která výrokové důkazy \emph{ověřuje} (takovou proceduru jsme implementovali), a složitostí procedury, která výrokové důkazy \emph{nachází}, je hlubokou otevřenou otázkou teoretické informatiky. Je totiž jednou z~populárních reformulací tzv. \emph{PNP problému}. Tyto souvislosti jdou ovšem značně nad rámec našeho zadání, a proto jsme se jimi nezabývali. Namísto toho odkazujeme čtenáře na \cite{krajicek} a \cite{cook}.
 
 \subsection{Návrh obsluhy}
 
