@@ -22,7 +22,7 @@ private:
     ///< Formulas deducing this one
 
     bool preserve = false;
-    ///< Optimal proof component flag
+    ///< Minimal proof component flag
 public:
     ProofMember(Formula*,
                 list<ProofMember*> = list<ProofMember*>());
@@ -41,14 +41,14 @@ public:
     const list<ProofMember*>& getWitnesses() const;
 
     /**
-     * Optimal proof component flag getter.
-     * @return Optimal proof component flag
+     * Minimal proof component flag getter.
+     * @return Minimal proof component flag
      */
     bool getPreserve() const;
 
     /**
-     * Optimal proof component flag setter.
-     * @param preserve Optimal proof component flag flag to be set
+     * Minimal proof component flag setter.
+     * @param preserve Minimal proof component flag flag to be set
      */
     void setPreserve(bool preserve);
 };
