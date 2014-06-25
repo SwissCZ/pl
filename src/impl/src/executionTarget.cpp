@@ -218,7 +218,7 @@ int ProofHandler::execute(Configuration& config) const
     }
 
     // Proof optimization
-    if (exit == EXIT_SUCCESS && target == OPTIMIZE)
+    if (exit == EXIT_SUCCESS && target == OPTIMIZE && !proof.empty())
     {
         list<ProofMember*> queue;
         unsigned preserved = 0;

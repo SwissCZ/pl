@@ -1,4 +1,4 @@
-.A>+BCDE
-*A>+BCD
-.A>+BC
-.A>+BCD
+.A=+B>CDEF
+*A=+B>CDE
+.A=+B>CD
+.A=+B>CDE

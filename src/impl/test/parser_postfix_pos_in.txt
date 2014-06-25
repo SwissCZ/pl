@@ -2,5 +2,5 @@ A
 A-
 AB.
 A-B-.-
-ABC+D>.
-A-B-C-+-D->-.-
+ABCD>+E=.
+A-B-C-D->-+-E-=-.-

@@ -1,4 +1,4 @@
-Unnecessary element '=' at position 8.
-Illegal character '*' at position 7.
+Unnecessary element '>' at position 10.
+Illegal character '*' at position 9.
 Incomplete formula.
 Unexpected end of stream.

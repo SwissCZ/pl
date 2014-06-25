@@ -1,4 +1,4 @@
-.Dd June 22, 2014
+.Dd June 24, 2014
 .Dt PL 1
 .Os
 .Sh NAME
@@ -26,9 +26,9 @@ This means we are reducing the possible complexity of formulas
 to 26 propositional variables, which is enough for our purposes.
 .Pp
 The following table describes how the propositional connectives are expressed
-as ASCII, words, and TeX.
-.Bl -column "biconditional" "ASCII" "Words" "TeX"
-.It Em Connective Ta Em ASCII Ta Em words Ta Em TeX
+as ASCII, words, and LaTeX.
+.Bl -column "biconditional" "ASCII" "Words" "LaTeX"
+.It Em Connective Ta Em ASCII Ta Em words Ta Em LaTeX
 .It Li negation Ta - Ta not Ta \eneg
 .It Li conjunction Ta . Ta and Ta \ewedge
 .It Li disjunction Ta + Ta or Ta \evee
@@ -43,7 +43,7 @@ is not a valid formula, but '(A+B)' is. White space is silently ignored,
 except newlines, which always mark the end of a formula.
 .Ss Output
 Three types of output syntax are supported: prefix, infix and postfix.
-The connectives can be output as ASCII, words, or TeX,
+The connectives can be output as ASCII, words, or LaTeX,
 as described in the table above. Naturally,
 the ASCII output can be piped back into
 .Nm
@@ -79,7 +79,7 @@ which can be one of
 .Cm ascii ,
 .Cm words
 or
-.Cm tex .
+.Cm latex .
 By default,
 .Cm ascii
 is used.

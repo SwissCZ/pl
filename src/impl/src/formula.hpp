@@ -15,7 +15,7 @@ enum Language
 {
     ASCII, ///< ASCII characters
     WORDS, ///< English words
-    TEX ///< LaTeX language
+    LATEX ///< LaTeX macros
 };
 
 //! Propositional formula

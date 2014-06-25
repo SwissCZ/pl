@@ -1,4 +1,4 @@
-ABC+D>.=
-ABC+D>*
-ABC+D>
-ABC+D>.
+ABCD>+E=.>
+ABCD>+E=*
+ABCD>+E=
+ABCD>+E=.

@@ -3,7 +3,7 @@
 
 #include "configuration.hpp"
 #include "executionTarget.hpp"
-#include "syntaxException.hpp"
+#include "usageException.hpp"
 
 map<string, Parser> Configuration::inputSyntaxes = {
     {"prefix", &parsePrefix},
@@ -20,7 +20,7 @@ map<string, Printer> Configuration::outputSyntaxes = {
 map<string, Language> Configuration::outputLanguages = {
     {"ascii", ASCII},
     {"words", WORDS},
-    {"tex", TEX}
+    {"latex", LATEX}
 };
 
 Configuration::Configuration(int argc,

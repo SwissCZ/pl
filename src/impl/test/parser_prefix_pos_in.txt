@@ -2,5 +2,5 @@ A
 -A
 .AB
 -.-A-B
-.A>+BCD
--.-A->-+-B-C-D
+.A=+B>CDE
+-.-A-=-+-B->-C-D-E

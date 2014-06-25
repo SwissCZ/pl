@@ -8,31 +8,31 @@ map<char, map<Language, string>> Formula::dictionary = {
         {
             {ASCII, "-"},
             {WORDS, " not "},
-            {TEX, " \\neg "}
+            {LATEX, " \\neg "}
         }},
     {'.',
         {
             {ASCII, "."},
             {WORDS, " and "},
-            {TEX, " \\wedge "}
+            {LATEX, " \\wedge "}
         }},
     {'+',
         {
             {ASCII, "+"},
             {WORDS, " or "},
-            {TEX, " \\vee "}
+            {LATEX, " \\vee "}
         }},
     {'>',
         {
             {ASCII, ">"},
             {WORDS, " implies "},
-            {TEX, " \\Rightarrow "}
+            {LATEX, " \\Rightarrow "}
         }},
     {'=',
         {
             {ASCII, "="},
-            {WORDS, " if and only if "},
-            {TEX, " \\Leftrightarrow "}
+            {WORDS, " iff "},
+            {LATEX, " \\Leftrightarrow "}
         }}
 };
 

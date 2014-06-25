@@ -10,7 +10,7 @@ using namespace std;
 /**
  * Exception caused by invalid program syntax.
  */
-class SyntaxException
+class UsageException
 {
 private:
     char option;
@@ -19,8 +19,8 @@ private:
     string message;
     ///< Exception details
 public:
-    SyntaxException(char,
-                    string);
+    UsageException(char,
+                   string);
 
     /**
      * Composes a syntax error message.
@@ -34,7 +34,7 @@ public:
 /**
  * Thrown when an illegal option is set.
  */
-class IllegalOptionException: public SyntaxException
+class IllegalOptionException: public UsageException
 {
 public:
     IllegalOptionException(char);
@@ -45,7 +45,7 @@ public:
 /**
  * Thrown when an illegal option value is set.
  */
-class IllegalValueException: public SyntaxException
+class IllegalValueException: public UsageException
 {
 public:
     IllegalValueException(char,
@@ -57,7 +57,7 @@ public:
 /**
  * Thrown when an invalid file is given.
  */
-class InvalidFileException: public SyntaxException
+class InvalidFileException: public UsageException
 {
 public:
     InvalidFileException(char,
@@ -69,7 +69,7 @@ public:
 /**
  * Thrown when a mandatory option value is not set.
  */
-class MissingValueException: public SyntaxException
+class MissingValueException: public UsageException
 {
 public:
     MissingValueException(char);
@@ -80,7 +80,7 @@ public:
 /**
  * Thrown when multiple targets are set to be performed.
  */
-class MultipleTargetsException: public SyntaxException
+class MultipleTargetsException: public UsageException
 {
 public:
     MultipleTargetsException(char);
