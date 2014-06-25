@@ -190,7 +190,7 @@ int ProofHandler::execute(Configuration& config) const
                     case VERIFY:
                         cout << "Formula not deducible." << endl;
                         break;
-                    case OPTIMIZE:
+                    case MINIMIZE:
                         cerr << "Invalid proof given." << endl;
                         break;
                 }
@@ -207,7 +207,7 @@ int ProofHandler::execute(Configuration& config) const
                     case VERIFY:
                         cerr << exception.getMessage() << endl;
                         break;
-                    case OPTIMIZE:
+                    case MINIMIZE:
                         cerr << "Invalid formula " << proof.size() + 1 << "." << endl;
                         break;
                 }
@@ -217,8 +217,8 @@ int ProofHandler::execute(Configuration& config) const
         }
     }
 
-    // Proof optimization
-    if (exit == EXIT_SUCCESS && target == OPTIMIZE && !proof.empty())
+    // Proof minimization
+    if (exit == EXIT_SUCCESS && target == MINIMIZE && !proof.empty())
     {
         list<ProofMember*> queue;
         unsigned preserved = 0;
@@ -238,7 +238,7 @@ int ProofHandler::execute(Configuration& config) const
         {
             if (config.getEcho())
             {
-                cerr << "Proof already optimal." << endl;
+                cerr << "Proof already minimal." << endl;
             }
             exit = EXIT_FAILURE;
         } else

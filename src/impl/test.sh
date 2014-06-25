@@ -72,21 +72,21 @@ then
 	TEST_SUCCESS=0
 fi
 
-### Proof optimizer tests
+### Proof minimizer tests
 
 # Positive test
-$PL_CMD -O 0 -f "proof_checker_pos_in.txt" > $OUT_PATH"proof_optimizer_pos_test.txt" 2>&1
-if ! diff "proof_optimizer_pos_out.txt" $OUT_PATH"proof_optimizer_pos_test.txt" > "/dev/null" 2>&1;
+$PL_CMD -M 0 -f "proof_checker_pos_in.txt" > $OUT_PATH"proof_minimizer_pos_test.txt" 2>&1
+if ! diff "proof_minimizer_pos_out.txt" $OUT_PATH"proof_minimizer_pos_test.txt" > "/dev/null" 2>&1;
 then
-	echo "> Proof optimizer: Positive test failed!"
+	echo "> Proof minimizer: Positive test failed!"
 	TEST_SUCCESS=0
 fi
 
 # Negative test
-$PL_CMD -O 0 -f "proof_optimizer_pos_out.txt" > $OUT_PATH"proof_optimizer_neg_test.txt" 2>&1
-if ! diff "proof_optimizer_neg_out.txt" $OUT_PATH"proof_optimizer_neg_test.txt" > "/dev/null" 2>&1;
+$PL_CMD -M 0 -f "proof_minimizer_pos_out.txt" > $OUT_PATH"proof_minimizer_neg_test.txt" 2>&1
+if ! diff "proof_minimizer_neg_out.txt" $OUT_PATH"proof_minimizer_neg_test.txt" > "/dev/null" 2>&1;
 then
-	echo "> Proof optimizer: Negative test failed!"
+	echo "> Proof minimizer: Negative test failed!"
 	TEST_SUCCESS=0
 fi
 

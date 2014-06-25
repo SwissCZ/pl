@@ -13,7 +13,7 @@ using namespace std;
 enum ProofTarget
 {
     VERIFY, ///< Verify the proof only
-    OPTIMIZE ///< Optimize the verified proof
+    MINIMIZE ///< Minimize the verified proof
 };
 
 //! Program execution target
@@ -59,7 +59,7 @@ public:
 //! Proof handling
 
 /**
- * Verify or optimize a proof given as a sequence of formulas.
+ * Verify or minimize a proof given as a sequence of formulas.
  */
 class ProofHandler: public ExecutionTarget
 {

@@ -29,7 +29,7 @@ Configuration::Configuration(int argc,
     int option;
 
     opterr = 0;
-    while ((option = getopt(argc, argv, ":Aef:i:l:O:o:P:s")) != -1)
+    while ((option = getopt(argc, argv, ":Aef:i:l:M:o:P:s")) != -1)
     {
         switch (option)
         {
@@ -73,12 +73,12 @@ Configuration::Configuration(int argc,
                     throw IllegalValueException(option, optarg);
                 }
                 break;
-            case 'O':
+            case 'M':
                 if (target == NULL)
                 {
                     try
                     {
-                        target = new ProofHandler(stoul(optarg), OPTIMIZE);
+                        target = new ProofHandler(stoul(optarg), MINIMIZE);
                     } catch (invalid_argument& exception)
                     {
                         throw IllegalValueException(option, optarg);

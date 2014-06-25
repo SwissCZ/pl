@@ -197,16 +197,14 @@ Důkaz lze zobecnit na tzv. \emph{důkaz z~předpokladů} rozšířením stávaj
 
 \subsubsection{Minimální důkaz}
 
-Protože se v~této práci také zabýváme optimalizací, resp. minimalizací důkazů, definujeme nyní důkaz, který nazveme \emph{minimálním}.
+Protože se v~této práci také zabýváme minimalizací, definujeme nyní \emph{minimální důkaz}.
 
 \begin{dfn}
 \label{dfn:minimal_proof}
-Buď $\varphi_1, \ldots, \varphi_n$ posloupnost formulí tvořící důkaz formule $\varphi_n$. Tento důkaz nazveme minimálním, pokud vynecháním libovolné formule posloupnosti $\varphi_1, \ldots, \varphi_n$ přestane důkaz být korektním.
+Buď $\varphi_1, \ldots, \varphi_n$ posloupnost formulí tvořící důkaz formule $\varphi_n$. Tento důkaz nazveme \emph{minimálním}, pokud vynecháním libovolné formule posloupnosti $\varphi_1, \ldots, \varphi_n$ přestane důkaz být korektním.
 \end{dfn}
 
-Takový důkaz tedy neobsahuje zbytečné poddůkazy ani duplicitní formule, protože, pokud nějaká formule $\varphi_i$ vyplývá z~nějakých předchozích formulí pomocí odvozovacího pravidla, pak stejným způsobem vyplývá i~z~každých jejich předchozích, speciálně z~prvních, výskytů.
-
-Neznamená to však, že neexistuje jiný důkaz téže formule, který by byl např. úspornější. Hledání takového důkazu však přesahuje rozsah této práce.
+Takový důkaz tedy neobsahuje zbytečné poddůkazy ani duplicitní formule, protože, pokud nějaká formule $\varphi_i$ vyplývá z~nějakých předchozích formulí pomocí odvozovacího pravidla, pak stejným způsobem vyplývá i~z~každých jejich předchozích, speciálně z~prvních, výskytů. Neznamená to však, že neexistuje jiný důkaz téže formule, který by byl např. úspornější.
 
 %
 %
@@ -222,7 +220,7 @@ Mezi nefunkční požadavky řadíme náležitosti, které popisují způsob, ja
 
 \section{Funkční požadavky}
 
-Úkolem je vypracovat aplikaci \emph{pl} (propositional logic), která primárně dokáže rozhodnout, zdali je daná posloupnost výrokových formulí korektním formálním důkazem v~Hilbertově systému. Požadavkem nad rámec zadání je optimalizace těchto důkazů. Elementární funkcionalitou programu je syntaktická analýza vstupních formulí a~jejich případný výpis ve zvolené alternativní notaci a~jazyce. Nekorektní vstup program správně detekuje a~případně jeho nekorektnost podrobně hlásí.
+Úkolem je vypracovat aplikaci \emph{pl} (propositional logic), která primárně dokáže rozhodnout, zdali je daná posloupnost výrokových formulí korektním formálním důkazem v~Hilbertově systému. Požadavkem nad rámec zadání je minimalizace těchto důkazů. Elementární funkcionalitou programu je syntaktická analýza vstupních formulí a~jejich případný výpis ve zvolené alternativní notaci a~jazyce. Nekorektní vstup program správně detekuje a~případně jeho nekorektnost podrobně hlásí.
 
 Aplikaci je třeba náležitě otestovat a~metody užité při testování zdokumentovat. Dále je třeba vytvořit dokumentaci zdrojového kódu a~uživatelskou příručku k~aplikaci.
 
@@ -319,9 +317,9 @@ Protože součástí ověření důkazu je rozpoznání axiomů, nabídneme tuto
 
 Tato funkcionalita je hlavním cílem této práce. Na vstupní posloupnost formulí je nahlíženo jako na posloupnost členů důkazu, přičemž aplikace ověří, zdali je důkaz korektním. Je možné ověřovat i~důkaz z~předpokladů. Tehdy je prvních $n$ vstupních formulí považováno za prvky teorie, pak následují formule vlastního důkazu. Výstupem aplikace jsou podrobnosti o~dokazatelnosti, popř. nedokazatelnosti každého členu důkazu.
 
-\subsection{Optimalizace důkazu}
+\subsection{Minimalizace důkazu}
 
-Důkaz je nejprve ověřen stejně jako v~předchozím případě. Následně, pokud je to možné, je optimalizován do nejúspornější možné podoby (viz definici \ref{dfn:minimal_proof}). Výstupem je důkaz téže formule právě v~této podobě.
+Důkaz je nejprve ověřen stejně jako v~předchozím případě. Následně, pokud je to možné, je minimalizován do nejúspornější možné podoby (viz definici \ref{dfn:minimal_proof}). Výstupem je důkaz téže formule právě v~této podobě.
 
 \section{Návrh}
 
@@ -358,12 +356,12 @@ Nefunkčním požadavkem na uživatelské rozhraní je obsluha pomocí přepína
 	\item[-i syntax] (input syntax) Nastaví danou vstupní notaci formulí. Možné hodnoty jsou: \emph{prefix}, \emph{infix} a~\emph{postfix}. Implicitní hodnota je \emph{infix}.
 	\item[-l language] (output language of connectives) Nastaví danou výstupní formu jazyka logických spojek. Možné hodnoty jsou: \emph{ascii}, \emph{words} a~\emph{latex}. Implicitní hodnota je \emph{ascii}.
 	\item[-o syntax] (output syntax) Nastaví danou výstupní notaci formulí. Možné hodnoty jsou: \emph{prefix}, \emph{infix} a~\emph{postfix}. Implicitní hodnota je \emph{infix}.
-	\item[-O n] (proof optimizer) Optimalizuje důkaz ze vstupní posloupnosti formulí. Parametr \emph{n} vyjadřuje počet formulí množiny předpokladů, které na vstupu předcházejí skutečnému důkazu.
+	\item[-M n] (proof minimizer) Minimalizuje důkaz ze vstupní posloupnosti formulí. Parametr \emph{n} vyjadřuje počet formulí množiny předpokladů, které na vstupu předcházejí skutečnému důkazu.
 	\item[-P n] (proof checker) Ověří důkaz ze vstupní posloupnosti formulí. Parametr \emph{n} vyjadřuje počet formulí množiny předpokladů, které na vstupu předcházejí skutečnému důkazu.
-	\item[-s] (strict) Způsobí zastavení vykonávání programu při prvním neúspěchu, např. nekorektním syntaktickém zápisu formule. Přepínače \texttt{-O} a~\texttt{-P} takové chování povolují automaticky, protože nemá smysl dále optimalizovat či ověřovat evidentně nekorektní důkaz.
+	\item[-s] (strict) Způsobí zastavení vykonávání programu při prvním neúspěchu, např. nekorektním syntaktickém zápisu formule. Přepínače \texttt{-M} a~\texttt{-P} takové chování povolují automaticky, protože nemá smysl dále minimalizovat či ověřovat evidentně nekorektní důkaz.
 \end{description}
 
-\emph{Axiom checker}, \emph{proof checker} a~\emph{proof optimizer} budeme nazývat \emph{cíli} aplikace. Volba cíle je nepovinná, je však povoleno spustit aplikaci s~jediným zvoleným cílem.
+\emph{Axiom checker}, \emph{proof checker} a~\emph{proof minimizer} budeme nazývat \emph{cíli} aplikace. Volba cíle je nepovinná, je však povoleno spustit aplikaci s~jediným zvoleným cílem.
 
 %
 %
@@ -434,22 +432,22 @@ Přijatá vstupní formule je vypsána na výstupu pomocí metody \texttt{printF
 
 \subsubsection{ProofHandler}
 
-Tato třída představuje cíle proof checker a~proof optimizer.
+Tato třída představuje cíle proof checker a~proof minimizer.
 
 \paragraph{executeTarget}
 
 Určitý počet přijatých vstupních formulí je nejprve zařazen mezi prvky teorie. Tyto formule totiž ještě nejsou členy vlastního důkazu. Zbylé formule jsou zpracovány následovně.
 
-Přijatá formule je postupně ověřena jako axiom metodou \texttt{isAxiom}, jako prvek teorie a~jako formule odvoditelná v~rámci daného důkazového systému metodou \texttt{isDeducible}. Každá formule splňující jedno z~těchto kritérií je přidána do seznamu prvků třídy \texttt{ProofMember} představujícího důkaz. Nesplňuje-li formule ani jedno z~uvedených kritérií, důkaz není korektním a~aplikace končí neúspěchem. Je-li instance \texttt{ProofHandler} nastavena jako cíl proof optimizer, následuje iterativní algoritmus optimalizace důkazu.
+Přijatá formule je postupně ověřena jako axiom metodou \texttt{isAxiom}, jako prvek teorie a~jako formule odvoditelná v~rámci daného důkazového systému metodou \texttt{isDeducible}. Každá formule splňující jedno z~těchto kritérií je přidána do seznamu prvků třídy \texttt{ProofMember} představujícího důkaz. Nesplňuje-li formule ani jedno z~uvedených kritérií, důkaz není korektním a~aplikace končí neúspěchem. Je-li instance \texttt{ProofHandler} nastavena jako cíl proof minimizer, následuje iterativní algoritmus minimalizace důkazu.
 
-Inicializujeme zásobník prvků třídy \texttt{ProofMember} a~uložíme na něj poslední člen důkazu. Dokud není zásobník prázdný, prohlašujeme jeho vrchol členem optimálního důkazu metodou \texttt{setPreserve} a~jeho přímé svědky ukládáme na zásobník. Zároveň sledujeme počet takto zpracovaných prvků. Je-li na konci tento počet shodný s~počtem členů důkazu, důkaz již byl minimálním, tedy nelze jej optimalizovat.
+Inicializujeme zásobník prvků třídy \texttt{ProofMember} a~uložíme na něj poslední člen důkazu. Dokud není zásobník prázdný, prohlašujeme jeho vrchol členem minimálního důkazu metodou \texttt{setPreserve} a~jeho přímé svědky ukládáme na zásobník. Zároveň sledujeme počet takto zpracovaných prvků. Je-li na konci tento počet shodný s~počtem členů důkazu, důkaz již byl minimálním, tedy nelze jej minimalizovat.
 
 \begin{algorithm}
 \KwData{$Z$ je zásobník členů důkazu}
 ulož poslední člen důkazu na $Z$\;
 \While{$Z$ není prázdný}
 {
-	vrchol $Z$ je členem optimálního důkazu\;
+	vrchol $Z$ je členem minimálního důkazu\;
 	\ForEach{svědek $s$ vrcholu $Z$}
 	{
 		ulož $s$ na $Z$\;
@@ -457,7 +455,7 @@ ulož poslední člen důkazu na $Z$\;
 }
 \end{algorithm}
 
-Členy důkazu, které jsme označili jako členy optimálního důkazu, vypíšeme na výstup.
+Členy důkazu, které jsme označili jako členy minimálního důkazu, vypíšeme na výstup.
 
 \subsection{Třída Formula}
 
@@ -618,7 +616,7 @@ Tento typ výjimky představuje případ nekorektního zápisu formule (týká s
 
 \subsection{Třída ProofMember}
 
-Tato třída představuje člen důkazu jako komplexní strukturu. Objekt této třídy obsahuje výrokovou formuli jakožto člen důkazu, seznam přímých svědků tohoto členu a~logickou proměnnou \texttt{preserve} vyhrazenou pro algoritmus optimalizace důkazu.
+Tato třída představuje člen důkazu jako komplexní strukturu. Objekt této třídy obsahuje výrokovou formuli jakožto člen důkazu, seznam přímých svědků tohoto členu a~logickou proměnnou \texttt{preserve} vyhrazenou pro algoritmus minimalizace důkazu.
 
 \subsection{Třída ProofSystem}
 
@@ -723,7 +721,7 @@ V~této kapitole popíšeme užité metody testování aplikace, jak požaduje z
 	\end{itemize}
 	\item Rozpoznání axiomu.
 	\item Ověření důkazu.
-	\item Optimalizaci důkazu.
+	\item Minimalizaci důkazu.
 \end{itemize}
 
 Základní myšlenkou pro maximalizaci pokrytí případů testy je v~každé této oblasti provést následující typy testů:
@@ -846,7 +844,7 @@ Pro testování ověření důkazu jsme využili pozměněný důkaz formule $A 
 
 \subsection{Pozitivní test}
 
-Pozitivní test ověřuje korektní ověření značně neoptimálního avšak korektního důkazu.
+Pozitivní test ověřuje korektní ověření značně neminimálního avšak korektního důkazu.
 
 \subsubsection{Vstupní data}
 
@@ -876,13 +874,13 @@ Výstupními testovacími daty je následující posloupnost hlášení:
 
 \VerbatimInput{../impl/test/proof_checker_neg_out.txt}
 
-\section{Optimalizace důkazu}
+\section{Minimalizace důkazu}
 
 Pro testování ověření důkazu jsme využili pozměněný důkaz formule $A \Rightarrow A$ z~příkladu \ref{exm:proof_a>a}.
 
 \subsection{Pozitivní test}
 
-Pozitivní test ověřuje korektní optimalizaci značně neoptimálního důkazu.
+Pozitivní test ověřuje korektní minimalizaci značně neminimálního důkazu.
 
 \subsubsection{Vstupní data}
 
@@ -894,23 +892,23 @@ Vstupními testovacími daty je následující posloupnost formulí:
 
 Výstupními testovacími daty je následující posloupnost formulí:
 
-\VerbatimInput{../impl/test/proof_optimizer_pos_out.txt}
+\VerbatimInput{../impl/test/proof_minimizer_pos_out.txt}
 
 \subsection{Negativní test}
 
-Negativní test ověřuje korektní odmítnutí již optimálního důkazu.
+Negativní test ověřuje korektní odmítnutí již minimálního důkazu.
 
 \subsubsection{Vstupní data}
 
 Vstupními testovacími je následující posloupnost formulí:
 
-\VerbatimInput{../impl/test/proof_optimizer_pos_out.txt}
+\VerbatimInput{../impl/test/proof_minimizer_pos_out.txt}
 
 \subsubsection{Výstupní data}
 
 Výstupními testovacími daty je následující hlášení:
 
-\VerbatimInput{../impl/test/proof_optimizer_neg_out.txt}
+\VerbatimInput{../impl/test/proof_minimizer_neg_out.txt}
 
 \section{Další testy}
 
@@ -930,7 +928,16 @@ groff -z -mdoc
 
 \subsection{Test přenositelnosti}
 
-Aplikaci jsme úspěšně otestovali na operačních systémech Linux, FreeBSD, OpenBSD, Mac OS X.
+Aplikaci jsme úspěšně otestovali na následujících operačních systémech:
+
+\begin{itemize}
+	\item Debian 7.5 (i386)
+	\item FreeBSD 10.0 (amd64)
+	\item OpenBSD 5.5 (i386, amd64, macppc)
+	\item OpenBSD 5.4 (amd64)
+	\item MacOSX 10.5.8 (intel)
+	\item Ubuntu 14.04 (amd64)
+\end{itemize}
 
 %
 %
@@ -946,6 +953,8 @@ Tato práce nás naučila \emph{ověřovat} důkazy výrokových formulí v~Hilb
 
 Pro nalezení důkazu bychom využili rozhodnutelnosti logiky, tedy skutečnosti, že dokazatelné jsou právě tautologie\footnote{Tautologie -- výroková formule, která je vždy pravdivá.}, a~ty se dají efektivně poznat. Je totiž zřejmé, že hledat důkaz formule má smysl až tehdy, když zjistíme, že je dokazatelná.
 
+Vztah mezi výpočetní složitostí procedury, která výrokové důkazy \emph{ověřuje} (takovou proceduru jsme implementovali), a složitostí procedury, která výrokové důkazy \emph{nachází}, je hlubokou otevřenou otázkou teoretické informatiky. Je totiž jednou z populárních reformulací tzv. \emph{PNP problému}. Tyto souvislosti jdou ovšem značně nad rámec našeho zadání, a proto jsme se jimi nezabývali. Namísto toho odkazujeme čtenáře na \cite{krajicek} a \cite{cook}.
+
 \subsection{Návrh obsluhy}
 
 Zavedeme nový přepínač \texttt{-F} (find a~proof).
@@ -957,7 +966,7 @@ Přepínač \texttt{-F} je novým cílem aplikace \texttt{pl}. Při jeho použit
 
 V~části \ref{sec:hilbert} jsme zmínili, že Hilbertův systém není jediným formálním důkazovým systémem výrokové logiky. Pravidlo modus ponens však zřejmě nejlépe odpovídá postupům našeho uvažování\cite{sochor}. Existují ovšem i~jiná formální odvozovací pravidla, např. \emph{pravidlo rezoluce}, které zavádí \emph{Gentzenův systém}.
 
-Stávající implementaci bychom mohli rozšířit právě o~tento důkazový systém. Aplikace by tak mohla důkazy v~tomto systému ověřovat, optimalizovat nebo je mezi těmito systémy převádět.
+Stávající implementaci bychom mohli rozšířit právě o~tento důkazový systém. Aplikace by tak mohla důkazy v~tomto systému ověřovat, minimalizovat nebo je mezi těmito systémy převádět.
 
 \subsection{Pravidlo rezoluce}
 
@@ -975,7 +984,7 @@ Každou takto odvozenou formuli nazýváme \emph{rezolventou}.
 
 Zavedeme nový přepínač \texttt{-r} (deduction rule).
 
-Přepínač \texttt{-r} s~hodnotami \texttt{hilbert} a~\texttt{gentzen} je rozšířením stávající funkcionality práce s~důkazy. Určuje, kterému důkazovému systému náleží vstupní důkaz, který chceme ověřit nebo optimalizovat.
+Přepínač \texttt{-r} s~hodnotami \texttt{hilbert} a~\texttt{gentzen} je rozšířením stávající funkcionality práce s~důkazy. Určuje, kterému důkazovému systému náleží vstupní důkaz, který chceme ověřit nebo minimalizovat.
 
 \subsubsection{Překlad důkazů}
 
