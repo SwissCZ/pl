@@ -416,7 +416,7 @@ Tato abstraktní třída představuje cíl aplikace. Hierarchii tříd rodiny \t
 
 Účelem této abstraktní metody je provést cíl v~závislosti na konfiguraci aplikace a~vrátit příslušnou návratovou hodnotu. Základem všech implementací této metody je cyklické zpracování formulí vstupní posloupnosti, které vždy začíná přijetím formule metodou \texttt{parseFormula}. V~případě nekorektního vstupu je mimo cyklus zachycena výjimka typu \texttt{ParseException} a~vypsáno chybové hlášení získané metodou \texttt{getMessage}. Některé cíle v~rámci cyklu zohledňují konfigurační příznak \texttt{strict} a~v~případě neúspěšné iterace cyklus předčasně zastavují.
 
-\subsubsection{AxiomChecker}
+\subsubsection{Třída AxiomChecker}
 
 Tato třída představuje cíl axiom checker.
 
@@ -424,15 +424,15 @@ Tato třída představuje cíl axiom checker.
 
 Přijatá vstupní formule je v~rámci daného důkazového systému metodou \texttt{isAxiom} ověřena jako axiom. Následuje uvolnění formule z~paměti a~výpis hlášení o~shodě či neshodě s~konkrétním typem axiomu.
 
-\subsubsection{DefaultTarget}
+\subsubsection{Třída DefaultTarget}
 
-Tato třída představuje stav spuštění bez explicitního cíle.
+Tato třída představuje stav spuštění aplikace bez explicitního cíle.
 
 \paragraph{executeTarget}
 
 Přijatá vstupní formule je vypsána na výstupu pomocí metody \texttt{printFormula} a~následně je uvolněna z~paměti.
 
-\subsubsection{ProofHandler}
+\subsubsection{Třída ProofHandler}
 
 Tato třída představuje cíle proof checker a~proof minimizer.
 
@@ -644,7 +644,6 @@ Tato metoda ověří, zdali je daná formule instancí některého z~axiomů dů
 		\KwRet{typ axiomu $\alpha$}\;
 	}
 }
-\KwRet{$0$}\;
 \end{algorithm}
 
 \paragraph{isDeducible}
