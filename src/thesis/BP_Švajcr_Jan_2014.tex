@@ -633,7 +633,7 @@ Tato abstraktní třída představuje důkazový systém výrokové logiky. Obje
 
 \paragraph{isAxiom}
 
-Účelem této metody je ověřit, zdali je daná formule instancí některého z~axiomů důkazového systému. Implementace spočívá v~porovnání dané formule s~jednotlivými typy axiomů pomocí metody \texttt{matches}.
+Tato metoda ověří, zdali je daná formule instancí některého z~axiomů důkazového systému. Implementace spočívá v~porovnání dané formule s~jednotlivými typy axiomů pomocí metody \texttt{matches}.
 
 \begin{algorithm}
 \KwData{$\psi$ je daná formule}
@@ -644,7 +644,7 @@ Tato abstraktní třída představuje důkazový systém výrokové logiky. Obje
 		\KwRet{typ axiomu $\alpha$}\;
 	}
 }
-\KwRet{false}\;
+\KwRet{$0$}\;
 \end{algorithm}
 
 \paragraph{isDeducible}
