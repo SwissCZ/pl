@@ -51,13 +51,13 @@ Ještě předtím, než se ponoříme do problematiky implementace, je třeba an
 
 \chapter{Formální kontext}
 
-V~úvodní kapitole se seznámíme s~několika základními pojmy výrokového počtu a~zavedeme terminologii užitou v~tomto textu, abychom na ni mohli čtenáře později odkázat. Tato část slouží jako teoretický základ celé práce. Čtenář znalý výrokové logiky ji může vynechat.
+V~úvodní kapitole se seznámíme s~několika základními pojmy výrokového počtu a~zavedeme terminologii užitou v~tomto textu, abychom na ni mohli čtenáře později odkázat. Tato část slouží jako teoretický základ celé práce. Čtenář znalý výrokové logiky ji může vynechat. Standardní terminologii, značení a~hlavní myšlenky přebíráme z~\cite{sochor} a~\cite{stary}.
 
 \section{Výrok}
 
 Nejprve zavedeme elementární pojem \emph{výrok}.
 
-Výrok je takové tvrzení, o~kterém má smysl uvažovat, zdali je pravdivé, či nikoliv. Výrokům tedy přiřazujeme \emph{pravdivostní hodnoty} pravda (true) nebo nepravda (false)\cite{sochor}.
+Výrok je takové tvrzení, o~kterém má smysl uvažovat, zdali je pravdivé, či nikoliv. Výrokům tedy přiřazujeme \emph{pravdivostní hodnoty} pravda (true) nebo nepravda (false).
 
 \begin{exm}
 Věta \uv{Dnes je hezký den.} je výrok. Je na čtenáři, aby rozhodl o~pravdivosti tohoto výroku. Jiný čtenář by mohl případně rozhodnout opačně.
@@ -92,7 +92,7 @@ Každá operace specificky určuje pravdivostní hodnotu složeného výroku v~z
 Ústředním pojmem pro tuto práci je \emph{formule}.
 
 \begin{dfn}
-Ve výrokové logice definujeme formuli takto\cite{sochor}:
+Ve výrokové logice definujeme formuli takto:
 \begin{enumerate}
 	\item Každá elementární formule je formulí.
 	\item Vznikne-li $\alpha$ unární logickou operací z~formule $\beta$ nebo binární logickou operací z~formulí $\beta$ a~$\gamma$ , je $\alpha$ také formulí.
@@ -149,7 +149,7 @@ Odvozovací pravidla popisují způsoby, jakými lze z~daných výrokových form
 \subsection{Hilbertův systém}
 \label{sec:hilbert}
 
-\emph{Hilbertův systém} je důkazový systém klasické výrokové logiky. Za účelem úspornosti jazyka se omezuje pouze na dvě logické spojky: negaci a~implikaci. Tyto dvě spojky tvoří tzv. \emph{minimální univerzální množinu}, proto všechny ostatní spojky můžeme vyjádřit těmito a~touto redukcí neomezujeme vyjadřovací možnosti jazyka\cite{stary}. Způsob, jakým lze vyjadřovat jedny spojky pomocí druhých, zkoumat nebudeme.
+\emph{Hilbertův systém} je důkazový systém klasické výrokové logiky. Za účelem úspornosti jazyka se omezuje pouze na dvě logické spojky: negaci a~implikaci. Tyto dvě spojky tvoří tzv. \emph{minimální univerzální množinu}, proto všechny ostatní spojky můžeme vyjádřit těmito a~touto redukcí neomezujeme vyjadřovací možnosti jazyka. Způsob, jakým lze vyjadřovat jedny spojky pomocí druhých, zkoumat nebudeme.
 
 Axiomem Hilbertova systému je každá formule některého z~následujících syntaktických tvarů:
 
@@ -165,11 +165,11 @@ Množina odvozovacích pravidel obsahuje jediný prvek, pravidlo \emph{modus pon
 Z~formulí $\varphi$ a~$\varphi \Rightarrow \psi$ odvoď formuli $\psi$.
 \end{dfn}
 
-V~této práci se nadále budeme zabývat výhradně tímto axiomatickým systémem. Existují však i~jiné důkazové systémy, které jsou navzájem ekvivalentní\cite{stary} (viz část \ref{sec:gentzen}).
+V~této práci se nadále budeme zabývat výhradně tímto axiomatickým systémem. Existují však i~jiné důkazové systémy, které jsou navzájem ekvivalentní (viz část \ref{sec:gentzen}).
 
 \subsection{Důkaz}
 
-Nyní zavedeme klíčový pojem \emph{důkaz}\cite{stary}.
+Nyní zavedeme klíčový pojem \emph{důkaz}.
 
 \begin{dfn}
 Buď $\varphi$ výroková formule. Řekneme, že konečná posloupnost výrokových formulí $\varphi_1 , \ldots, \varphi_n$ je \emph{důkazem} formule $\varphi$, pokud $\varphi_n$ je formule $\varphi$, a~každá formule $\varphi_i$ z~této posloupnosti je buďto instancí některého axiomu, nebo je z~některých předchozích $\varphi_j, \ldots , \varphi_k$, kde $j, \ldots , k < i$, odvozena odvozovacím pravidlem. Pokud existuje důkaz formule $\varphi$, řekneme, že je tato formule je \emph{dokazatelná} ve výrokové logice, a~píšeme $\vdash \varphi$.
@@ -177,7 +177,7 @@ Buď $\varphi$ výroková formule. Řekneme, že konečná posloupnost výrokov�
 
 Každý důkaz tedy nutně začíná axiomem a~triviálně každá instance axiomu je dokazatelnou formulí.
 
-Pro nás klíčová je skutečnost, že důkaz vychází z~konečně mnoha daných předpokladů, postupuje dle konečně mnoha daných pravidel a~je v~každém kroku ověřitelný, což lze provést i~mechanicky\cite{stary}. Na druhou stranu to nedává žádný návod, jak případně důkaz dané formule nalézt. Ostatně tato problematika již přesahuje rozsah této práce.
+Pro nás klíčová je skutečnost, že důkaz vychází z~konečně mnoha daných předpokladů, postupuje dle konečně mnoha daných pravidel a~je v~každém kroku ověřitelný, což lze provést i~mechanicky. Na druhou stranu to nedává žádný návod, jak případně důkaz dané formule nalézt. Ostatně tato problematika již přesahuje rozsah této práce.
 
 \begin{exm}
 \label{exm:proof_a>a}
@@ -197,14 +197,16 @@ Důkaz lze zobecnit na tzv. \emph{důkaz z~předpokladů} rozšířením stávaj
 
 \subsubsection{Minimální důkaz}
 
-Protože se v~této práci také zabýváme minimalizací, definujeme nyní \emph{minimální důkaz}.
+Přirozený požadavek na jednoduchost vede k~otázce, zdali daný důkaz není v~nějakém smyslu zbytečně složitý. Například stočlenná posloupnost libovolných instancí axiomů je formálně korektním důkazem (svého posledního členu), který lze ovšem zkrátit na setinu původní délky. Podobně, pokud v~nějakém důkazu na náhodně zvoleném místě rozvineme nějaký jiný důkaz, vnikne posloupnost, která je opět formálně korektním důkazem, ovšem zbytečně složitým.
+
+Ptáme se tedy, zdali předložený důkaz neobsahuje podobné \uv{zbytečnosti}, což nás vede k~pojmu \emph{minimální důkaz}.
 
 \begin{dfn}
 \label{dfn:minimal_proof}
 Buď $\varphi_1, \ldots, \varphi_n$ posloupnost formulí tvořící důkaz formule $\varphi_n$. Tento důkaz nazveme \emph{minimálním}, pokud vynecháním libovolné formule posloupnosti $\varphi_1, \ldots, \varphi_n$ přestane důkaz být korektním.
 \end{dfn}
 
-Takový důkaz tedy neobsahuje zbytečné poddůkazy ani duplicitní formule, protože, pokud nějaká formule $\varphi_i$ vyplývá z~nějakých předchozích formulí pomocí odvozovacího pravidla, pak stejným způsobem vyplývá i~z~každých jejich předchozích, speciálně z~prvních, výskytů. Neznamená to však, že neexistuje jiný důkaz téže formule, který by byl např. úspornější.
+Takový důkaz tedy neobsahuje zbytečné poddůkazy ani duplicitní formule, protože, pokud nějaká formule $\varphi_i$ vyplývá z~nějakých předchozích formulí pomocí odvozovacího pravidla, pak stejným způsobem vyplývá i~z~každých jejich předchozích, speciálně z~prvních, výskytů. Z~minimálního důkazu už nelze nic odstranit. To však neznamená, že neexistuje nějaký úplně jiný důkaz téže formule, který by byl ještě úspornější.
 
 %
 %
@@ -232,11 +234,11 @@ Aplikace bude podporována na platformách systému UNIX a~implementována v~jaz
 
 \subsection{Vstup}
 
-Aplikace čte buď ze standardního vstupu, anebo ze souboru textový ASCII vstup v~podobě posloupnosti řádek obsahujících výrokové formule zapsané ve stanoveném jazyce. Podporován je prefixní, infixní i~postfixní zápis formulí. Vstup nevyhovující stanovené formě je považován za nekorektní a~je odmítnut.
+Aplikace čte buďto ze standardního vstupu nebo ze souboru textový ASCII vstup v~podobě posloupnosti řádek obsahujících výrokové formule zapsané ve stanoveném jazyce. Podporován je prefixní, infixní i~postfixní zápis formulí. Vstup nevyhovující stanovené formě je považován za nekorektní a~je odmítnut.
 
 \subsection{Výstup}
 
-Forma výstupu závisí na zvolené funkcionalitě, ke které je program nakonfigurován při spuštění. Podporován je výpis formulí v~prefixní, infixní i~postfixní notaci. Výstupní jazyk formulí může mít podobu ASCII znaků, přirozeného jazyka nebo jazyka \LaTeX. Výstupem programu může být v~určitých případech chybové hlášení o~nekorektním vstupu.
+Forma výstupu závisí na zvolené funkcionalitě, ke které je program nakonfigurován při spuštění. Podporován je výpis formulí v~prefixní, infixní i~postfixní notaci. Výstupní jazyk formulí může mít podobu ASCII znaků, přirozeného jazyka nebo jazyka \LaTeX{}. Výstupem programu může být v~určitých případech chybové hlášení o~nekorektním vstupu.
 
 \subsection{Dokumentace}
 
@@ -270,7 +272,7 @@ C++11 je jedním z~posledních standardů jazyka C++. Vybrali jsme jej předevš
 
 \subsection{Make}
 
-Nástroj \texttt{make} slouží k~zjednodušení sestavování programů. Jeho předností je zejména schopnost na základě časové známky určit, které součásti programu je třeba zkompilovat v~případě změny zdrojového kódu. K~řízení sestavení tento nástroj využívá konfiguračního souboru \texttt{Makefile}. Ten má předepsanou strukturu a~obsahuje definice pravidel, tzv. \emph{cílů}, které mají svůj název a~konkrétní účel. Cíl je definován posloupností příkazů pro \texttt{shell}, které jsou provedeny při jeho volání. Každý cíl může navíc obsahovat \emph{závislosti}. Závislost je další cíl, který je volán přednostně. Speciálními (konečnými) cíli bývá kompilace konkrétního zdrojového souboru.
+Nástroj \texttt{make} slouží k~zjednodušení sestavování programů. Jeho předností je zejména schopnost na základě časové známky určit, které součásti programu je třeba zkompilovat v~případě změny zdrojového kódu. Sestavení tento nástroj řídí konfiguračním souborem \texttt{Makefile}. Ten má předepsanou strukturu a~obsahuje definice pravidel, tzv. \emph{cílů}, které mají svůj název a~konkrétní účel. Cíl je definován posloupností příkazů pro \texttt{shell}, které jsou provedeny při jeho volání. Každý cíl může navíc obsahovat \emph{závislosti}. Závislost je další cíl, který je volán přednostně. Speciálními (konečnými) cíli bývá kompilace konkrétního zdrojového souboru.
 
 My použijeme nástroj GNU \texttt{make}, který je jednou z~implementací klasického \texttt{make} rozšířenou o~pokročilé funkce. Z~nich konkrétně využijeme např. \emph{pattern rules}, \emph{wildcard characters} či \emph{string functions}\cite{gmake}.
 
@@ -282,7 +284,7 @@ My budeme dokumentaci zapisovat především do hlavičkových souborů \texttt{
 
 \subsection{Mdoc}
 
-Manuálové stránky systému UNIX lze psát ve speciálním značkovacím jazyce. Takový jazyk je ve skutečnosti balíček maker pro jazyk \emph{troff}. Troff pochází ze 70. let a~podobně jako např. \TeX slouží k~sazbě textu. Jazyk zpracovává stejnojmenný textový procesor, který podporuje právě zmíněné balíčky maker pro tento jazyk. Jednotlivá makra, podobně jako např. značky jazyka HTML, formátují daný obsah do požadované podoby\cite{troff}. Běžné manuálové stránky užívají balíček maker \texttt{man}. My však zvolíme sofistikovanější balíček \texttt{mdoc}, který narozdíl od \texttt{man} disponuje sémantickou koncepcí maker. Záznam o~tomto balíčku nalezneme v~sekci \emph{mdoc(7)} manuálových stránek\cite{mdoc}.
+Manuálové stránky systému UNIX lze psát ve speciálním značkovacím jazyce. Takový jazyk je ve skutečnosti balíček maker pro jazyk \emph{troff}. Troff pochází ze 70. let a~podobně jako např. \TeX{} slouží k~sazbě textu. Jazyk zpracovává stejnojmenný textový procesor, který podporuje právě zmíněné balíčky maker pro tento jazyk. Jednotlivá makra, podobně jako např. značky jazyka HTML, formátují daný obsah do požadované podoby\cite{troff}. Běžné manuálové stránky užívají balíček maker \texttt{man}. My však zvolíme sofistikovanější balíček \texttt{mdoc}, který narozdíl od \texttt{man} disponuje sémantickou koncepcí maker. Záznam o~tomto balíčku nalezneme v~sekci \emph{mdoc(7)} manuálových stránek\cite{mdoc}.
 
 Aby manuálová stránka byla dostupná pomocí příkazu \texttt{man}, musí splňovat určité náležitosti. Název souboru manuálové stránky má následující formát:
 
@@ -307,7 +309,7 @@ Na základě funkčních požadavků nastíníme možné případy užití aplik
 
 \subsection{Převod notace}
 
-Elementární funkcionalitou aplikace je převod formulí dané notace do notace vybrané. Zároveň je tato funkcionalita vhodná i~pro kontrolu syntaktického zápisu formulí. Forma logických spojek výstupu je dostupná v~podobě znaků ASCII (stejně jako vstup), v~přirozeném jazyce nebo v~jazyce \LaTeX.
+Elementární funkcionalitou aplikace je převod formulí dané notace do notace vybrané. Zároveň je tato funkcionalita vhodná i~pro kontrolu syntaktického zápisu formulí. Forma logických spojek výstupu je dostupná v~podobě znaků ASCII (stejně jako vstup), v~přirozeném jazyce nebo v~jazyce \LaTeX{}.
 
 \subsection{Rozpoznání axiomu}
 
@@ -336,7 +338,7 @@ Kromě výstupní notace lze zvolit i~jednu ze tří výstupních forem (jazyků
 \caption{Výstupní formy logických spojek}
 \label{tab:connectives_language}
 \begin{tabular}{|c||c|c|c|}\hline
-Operátor & ASCII & Slovní & \LaTeX \tabularnewline \hline \hline
+Operátor & ASCII & Slovní & \LaTeX{} \tabularnewline \hline \hline
 Negace & \verb|-| & \verb|not| & \verb|\neg| \tabularnewline \hline
 Konjunkce & \verb|.| & \verb|and| & \verb|\wedge| \tabularnewline \hline
 Disjunkce & \verb|+| & \verb|or| & \verb|\vee| \tabularnewline \hline
@@ -356,8 +358,8 @@ Nefunkčním požadavkem na uživatelské rozhraní je obsluha pomocí přepína
 	\item[-i syntax] (input syntax) Nastaví danou vstupní notaci formulí. Možné hodnoty jsou: \emph{prefix}, \emph{infix} a~\emph{postfix}. Implicitní hodnota je \emph{infix}.
 	\item[-l language] (output language of connectives) Nastaví danou výstupní formu jazyka logických spojek. Možné hodnoty jsou: \emph{ascii}, \emph{words} a~\emph{latex}. Implicitní hodnota je \emph{ascii}.
 	\item[-o syntax] (output syntax) Nastaví danou výstupní notaci formulí. Možné hodnoty jsou: \emph{prefix}, \emph{infix} a~\emph{postfix}. Implicitní hodnota je \emph{infix}.
-	\item[-M n] (proof minimizer) Minimalizuje důkaz ze vstupní posloupnosti formulí. Parametr \emph{n} vyjadřuje počet formulí množiny předpokladů, které na vstupu předcházejí skutečnému důkazu.
-	\item[-P n] (proof checker) Ověří důkaz ze vstupní posloupnosti formulí. Parametr \emph{n} vyjadřuje počet formulí množiny předpokladů, které na vstupu předcházejí skutečnému důkazu.
+	\item[-M n] (proof minimizer) Minimalizuje důkaz ze vstupní posloupnosti formulí. Parametr \emph{n} vyjadřuje počet formulí množiny předpokladů, které na vstupu předcházejí samotnému důkazu.
+	\item[-P n] (proof checker) Ověří důkaz ze vstupní posloupnosti formulí. Parametr \emph{n} vyjadřuje počet formulí množiny předpokladů, které na vstupu předcházejí samotnému důkazu.
 	\item[-s] (strict) Způsobí zastavení vykonávání programu při prvním neúspěchu, např. nekorektním syntaktickém zápisu formule. Přepínače \texttt{-M} a~\texttt{-P} takové chování povolují automaticky, protože nemá smysl dále minimalizovat či ověřovat evidentně nekorektní důkaz.
 \end{description}
 
@@ -424,7 +426,7 @@ Přijatá vstupní formule je v~rámci daného důkazového systému metodou \te
 
 \subsubsection{DefaultTarget}
 
-Tato třída představuje stav spuštění aplikace bez cíle.
+Tato třída představuje stav spuštění bez explicitního cíle.
 
 \paragraph{executeTarget}
 
@@ -459,7 +461,7 @@ ulož poslední člen důkazu na $Z$\;
 
 \subsection{Třída Formula}
 
-Struktura výrokové formule má stromový charakter, a~proto jsme ji implementovali jako \emph{výrazový strom}. Tato abstraktní třída představuje uzel tohoto stromu, tedy dílčí formuli celého výrazu. Objekt této třídy obsahuje znak reprezentující uzel jako logickou spojku nebo výrok. Hierarchii tříd rodiny \texttt{Formula} znázorňuje diagram \ref{fig:formula}.
+Struktura výrokové formule má stromový charakter, a~proto jsme ji implementovali jako \emph{syntaktický strom}. Tato abstraktní třída představuje uzel tohoto stromu, tedy dílčí formuli celého výrazu. Objekt této třídy obsahuje znak reprezentující uzel jako logickou spojku nebo výrok. Hierarchii tříd rodiny \texttt{Formula} znázorňuje diagram \ref{fig:formula}.
 
 \begin{figure}
 \centering
@@ -507,7 +509,7 @@ Implementace spočívá v~porovnání metodou \texttt{equals} dané formule s~fo
 
 \subsubsection{Třída Binary}
 
-Tato třída představuje binární operátor. Objekt této třídy obsahuje odkaz na svůj levý a~pravý operand, tedy levého a~pravého potomka tohoto uzlu ve výrazovém stromu formule.
+Tato třída představuje binární operátor. Objekt této třídy obsahuje odkaz na svůj levý a~pravý operand, tedy levého a~pravého potomka tohoto uzlu v~syntaktickém stromu formule.
 
 \paragraph{equals}
 
@@ -537,7 +539,7 @@ Implementace spočívá v~porovnání reprezentujícího symbolu této a~dané f
 
 \subsubsection{Třída Unary}
 
-Tato třída představuje formuli složenou unárním operátorem. Objekt této třídy obsahuje odkaz na svůj operand, tedy potomka tohoto uzlu ve výrazovém stromu formule.
+Tato třída představuje formuli složenou unárním operátorem. Objekt této třídy obsahuje odkaz na svůj operand, tedy potomka tohoto uzlu v~syntaktickém stromu formule.
 
 \paragraph{equals}
 
@@ -549,7 +551,7 @@ Implementace spočívá v~porovnání reprezentujícího symbolu této a~dané f
 
 \subsection{Parser formulí}
 
-Parserem abstraktně nazveme tu část programu, která převádí vstup z~textové do vnitřní formy. V~našem případě jej reprezentují samostatné funkce \emph{parsePrefix}, \emph{parseInfix} a~\emph{parsePostfix}. Každá z~těchto funkcí slouží ke zpracování vstupních formulí v~příslušné notaci. V~případě úspěchu funkce vrací kořen výrazového stromu přijaté formule.
+Parserem abstraktně nazveme tu část programu, která převádí vstup z~textové do vnitřní formy. V~našem případě jej reprezentují samostatné funkce \emph{parsePrefix}, \emph{parseInfix} a~\emph{parsePostfix}. Každá z~těchto funkcí slouží ke zpracování vstupních formulí v~příslušné notaci. V~případě úspěchu funkce vrací kořen syntaktického stromu přijaté formule.
 
 Syntaktická analýza postupuje v~cyklu po jednotlivých znacích vstupního proudu, aby mohla být přerušena již v~místě případné syntaktické chyby, tedy ještě před přijetím celého vstupu. Nyní popíšeme algoritmy syntaktické analýzy korektního vstupu těchto funkcí.
 
@@ -559,7 +561,7 @@ Prefixní parser ukládá přijaté logické operátory na zvláštní zásobní
 
 \paragraph{parseInfix}
 
-Infixní parser ukládá přijaté logické operátory na zvláštní zásobník s~operátory a~elementární formule na zvláštní zásobník s~formulemi. K~orientaci ve struktuře formule využívá další zásobník se stavy zpracování větví výrazového stromu. Každá taková úroveň zpracování může mít následující stav:
+Infixní parser ukládá přijaté logické operátory na zvláštní zásobník s~operátory a~elementární formule na zvláštní zásobník s~formulemi. K~orientaci ve struktuře formule využívá další zásobník se stavy zpracování větví syntaktického stromu. Každá taková úroveň zpracování může mít následující stav:
 
 \begin{description}
 	\item[UNARY] Byl nastaven unární operátor. 
@@ -642,11 +644,12 @@ Tato abstraktní třída představuje důkazový systém výrokové logiky. Obje
 		\KwRet{typ axiomu $\alpha$}\;
 	}
 }
+\KwRet{false}\;
 \end{algorithm}
 
 \paragraph{isDeducible}
 
-Účelem této abstraktní metody je ověřit, zdali je daná formule v~rámci daného důkazu odvoditelná pravidlem důkazového systému. Metoda je abstraktní, protože každý konkrétní důkazový systém odvozuje formule jiným způsobem, resp. pravidlem. Návratovou hodnotou je posloupnost indexů členů důkazu, ze kterých je daná formule odvoditelná. Tato posloupnost je prázdná v~případě, že formuli v~rámci daného důkazu odvodit nelze.
+Účelem této abstraktní metody je ověřit, zdali je daná formule dokazatelná z~předchozích kroků daného důkazu. Metoda je abstraktní, protože každý konkrétní důkazový systém odvozuje formule jiným způsobem, resp. odvozovacím pravidlem. Návratovou hodnotou je posloupnost indexů členů důkazu, ze kterých je daná formule odvoditelná. Tato posloupnost je prázdná v~případě, že formuli v~rámci daného důkazu odvodit nelze.
 
 \subsubsection{Třída HilbertSystem}
 
@@ -654,7 +657,7 @@ Tato třída představuje Hilbertův systém. Pro účely odvozování formulí 
 
 \paragraph{isDeducible}
 
-Tato metoda ověří, zdali je daná formule v~rámci daného důkazu odvoditelná pravidlem modus ponens. Implementace spočívá v~procházení jednotlivých formulí daného důkazu, přičemž na jednu z~formulí je nahlíženo jako na předpoklad pravidla modus ponens ($\varphi$) a~na druhou jako na jeho implikaci ($\varphi \Rightarrow \psi$). Daná formule ($\psi$) je odvoditelná, je-li nalezena dvojice formulí vyhovující právě těmto tvarům.
+Implementace spočívá v~procházení jednotlivých formulí daného důkazu, přičemž na jednu z~formulí je nahlíženo jako na předpoklad pravidla modus ponens ($\varphi$) a~na druhou jako na jeho implikaci ($\varphi \Rightarrow \psi$). Daná formule ($\psi$) je odvoditelná, je-li nalezena dvojice formulí vyhovující právě těmto tvarům.
 
 \begin{algorithm}
 \KwData{$\psi$ je daná formule}
@@ -939,7 +942,7 @@ Aplikaci jsme úspěšně otestovali na následujících operačních systémech
 	\item Ubuntu 14.04 (amd64)
 \end{itemize}
 
-Jelikož při implementaci používáme konstrukty jazyka C++ ve standardu C++11, potřebujeme k~sestavení aplikace překladač, který je zdrojový kód v~této podobě schopen přeložit. Takový překladač však neexistuje na všech systémech, na kterých bychom chtěli aplikaci testovat, což limituje naše možnosti při testování přenositelnosti.
+Jelikož při implementaci používáme konstrukty jazyka C++ ve standardu C++11, potřebujeme k~sestavení aplikace překladač, který je zdrojový kód v~této podobě schopen přeložit. Takový překladač však neexistuje na některých dalších systémech, což do jisté míry omezuje další (pohodlnou) přenositelnost.
 
 %
 %
@@ -1003,7 +1006,7 @@ Zadání této bakalářské práce vychází z~velkého množství požadavků 
 %
 
 \begin{conclusion}
-Tato práce mi dala možnost uplatnit mnohé znalosti, které mi předala Fakulta informačních technologií ČVUT v~Praze během mého bakalářského studia. Zejména jsem uplatnil programovací dovednost v~jazyce C++, dokumentaci kódu ve stylu Doxygen, sestavování programu pomocí nástroje \texttt{make}, sazbu textu v~\LaTeX a znalost v~oblasti výrokové logiky. Své dosavadní znalosti jsem navíc rozšířil. Nových znalostí jsem nabyl konkrétně v~oblasti tvorby manuálových stránek pro systém UNIX pomocí balíčku maker \texttt{mdoc}. V~neposlední řadě jsem si poprvé zkusil literární činnost ve velkém rozsahu.
+Tato práce mi dala možnost uplatnit mnohé znalosti, které mi předala Fakulta informačních technologií ČVUT v~Praze během mého bakalářského studia. Zejména jsem uplatnil programovací dovednost v~jazyce C++, dokumentaci kódu ve stylu Doxygen, sestavování programu pomocí nástroje \texttt{make}, sazbu textu v~\LaTeX{} a~znalost v~oblasti výrokové logiky. Své dosavadní znalosti jsem navíc rozšířil. Nových znalostí jsem nabyl konkrétně v~oblasti tvorby manuálových stránek pro systém UNIX pomocí balíčku maker \texttt{mdoc}. V~neposlední řadě jsem si poprvé zkusil literární činnost v~tomto rozsahu.
 \end{conclusion}
 
 %
