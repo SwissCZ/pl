@@ -5,7 +5,6 @@ BINDIR	= $(PREFIX)/bin
 MANDIR	= $(PREFIX)/man/man1
 
 BUILD	= build
-DOC	= doc
 OUT	= out
 SRC	= src
 
@@ -22,7 +21,7 @@ build: .folders $(FILES)
 
 # Remove all outputs
 clean:
-	rm -rf $(BUILD) $(OUT) $(DOC)
+	rm -rf $(BUILD) $(OUT)
 
 # Generate the documentation
 doc:
